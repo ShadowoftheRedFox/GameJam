@@ -1,18 +1,18 @@
 extends Node
 
-# pour le futur, pour pré charger les scnènes:
+# for the future, to pre load scenes:
 # https://docs.godotengine.org/en/stable/tutorials/io/background_loading.html#doc-background-loading
 
-# scène actuellement chargé
+# current loaded scene
 var current_scene = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var root = get_tree().root
-	# charge la première scène dans la liste
+	# load the first scece found
 	current_scene = root.get_child(-1)
 
-# utilisé comme: Global.goto_scene("res://chemin/vers/script.gd")
+# use like: Global.goto_scene("res://chemin/vers/script.gd")
 func goto_scene(path):
 	# This function will usually be called from a signal callback,
 	# or some other function in the current scene.
