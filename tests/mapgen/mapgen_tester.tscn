@@ -2,9 +2,5 @@
 
 [ext_resource type="Script" path="res://tests/mapgen/mapgen_tester.gd" id="1_4vm3i"]
 
-[node name="Mapgen_tester" type="Node"]
+[node name="Mapgen_tester" type="Node2D"]
 script = ExtResource("1_4vm3i")
-
-[node name="GraphNode" type="GraphNode" parent="."]
-offset_right = 9.0
-offset_bottom = 55.0

@@ -41,3 +41,7 @@ func get_connection(direction: String) -> Node:
         # WHERE IS MY STD::EXPECTED, OR GO-LIKE ERROR HANDLING OR RESULT<T, E>
         _:
             return null
+
+# Called when the node is added to the scene tree for the first time
+func _ready():
+    $Label.text = str(room_id)
