@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://ovshi1ynyjwu"]
+
+[ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_s64cl"]
+
+[node name="Room" type="Node2D"]
+script = ExtResource("1_s64cl")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -28.0
+offset_top = -19.0
+offset_right = 28.0
+offset_bottom = 18.0
+text = "ID"
+horizontal_alignment = 1
+vertical_alignment = 1
