@@ -113,3 +113,8 @@ func _check_load_status(path:String = "res://scenes/UI/MainMenu.tscn")->void:
 			loading.finish_transition(transition_end) 
 			# emit our scene change end
 			scene_changed.emit() 
+
+var mapgen_unique_id_counter: int = 0
+func mapgen_get_next_unique_id() -> int:
+    mapgen_unique_id_counter += 1
+    return mapgen_unique_id_counter
