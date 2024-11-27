@@ -20,6 +20,7 @@ offset_right = 82.5
 offset_bottom = 23.0
 grow_horizontal = 2
 text = "GameJam CYTech"
+horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
