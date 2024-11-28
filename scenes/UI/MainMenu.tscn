@@ -9,63 +9,136 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_l6wv8")
 
-[node name="Title" type="Label" parent="."]
+[node name="Main" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -82.5
-offset_right = 82.5
-offset_bottom = 23.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
 text = "GameJam CYTech"
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -85.5
-offset_right = 165.0
-offset_bottom = 85.5
-grow_vertical = 2
+[node name="MarginContainer" type="MarginContainer" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
 theme_override_constants/margin_left = 120
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 80
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("1_l6wv8")
 
-[node name="New" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="New" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../Quit")
 text = "Nouvelle partie"
 
-[node name="Continue" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Continue" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Continuer la partie"
 
-[node name="Host" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Host" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Héberger une partie"
 
-[node name="Options" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Options" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Options"
 
-[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Quit" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../New")
 text = "Quitter"
 
-[connection signal="pressed" from="MarginContainer/VBoxContainer/New" to="MarginContainer/VBoxContainer" method="_on_new_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Continue" to="MarginContainer/VBoxContainer" method="_on_continue_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Host" to="MarginContainer/VBoxContainer" method="_on_host_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Options" to="MarginContainer/VBoxContainer" method="_on_options_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Quit" to="MarginContainer/VBoxContainer" method="_on_quit_pressed"]
+[node name="Host" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Host"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Héberger une partie"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Host"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Host/MarginContainer"]
+layout_mode = 2
+
+[node name="Online" type="Button" parent="Host/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Héberger en ligne
+"
+
+[node name="Local" type="Button" parent="Host/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Héberger localement"
+
+[node name="Back" type="Button" parent="Host/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Retour"
+
+[node name="Options" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Options"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Options"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Options"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Options/MarginContainer"]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="Options/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Retour"
+
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Quit" to="Main/MarginContainer/VBoxContainer" method="_on_quit_pressed"]
+[connection signal="pressed" from="Host/MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Options/MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
