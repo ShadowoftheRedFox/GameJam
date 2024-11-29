@@ -53,7 +53,7 @@ func show_id():
 func hide_id():
 	$Label.hide()
 	$Map.show()
-	
+
 func generate_room() -> bool:
 	if room_id == -1:
 		printerr("Room has not been generated yet")
@@ -61,5 +61,20 @@ func generate_room() -> bool:
 	if left == null and right == null and up == null and down == null:
 		printerr("Room is not connected to any otehr room!")
 		return false
+	
+	# get our path in levels folder
+	var path: String = ""
+	if get_connection("down") != null:
+		path += "down_"
+	if get_connection("left") != null:
+		path += "left_"
+	if get_connection("right") != null:
+		path += "right_"
+	if get_connection("up") != null:
+		path += "up_"
+	if path.ends_with("_"):
+		path = path.erase(len(path)-1)
+
+	print("Room ", room_id, " can choose between ", Global.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
 	
 	return true
