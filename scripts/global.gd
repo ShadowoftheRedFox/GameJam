@@ -60,9 +60,9 @@ func _deferred_change_scene(path:String = "res://scenes/UI/MainMenu.tscn"):
 	# launch the transition effect
 	loading.start_transition(transition_start)
 	# Load the new scene.
-	_load_new_scne(path)
+	_load_new_scene(path)
 
-func _load_new_scne(path:String)->void:
+func _load_new_scene(path:String)->void:
 	# wait for the transition effect to finish
 	if loading != null:
 		await loading.transition_completed

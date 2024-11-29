@@ -9,7 +9,8 @@ func _ready() -> void:
 ##### Main menu #####
 
 func _on_new_pressed() -> void:
-	pass # Replace with function body.
+	#TODO unload scene
+	pass
 
 
 func _on_continue_pressed() -> void:

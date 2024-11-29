@@ -1,3 +1,5 @@
+class_name MapGenerator
+
 extends Node
 
 const Room = preload("res://scenes/mapgen/room.tscn")

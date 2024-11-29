@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c6efwceppjp36"]
+[gd_scene load_steps=3 format=3 uid="uid://c6efwceppjp36"]
 
 [ext_resource type="Script" path="res://scripts/UI/MainMenu.gd" id="1_l6wv8"]
+[ext_resource type="Script" path="res://scripts/game/new_game.gd" id="2_0rf50"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -44,6 +45,7 @@ size_flags_vertical = 4
 layout_mode = 2
 focus_neighbor_top = NodePath("../Quit")
 text = "Nouvelle partie"
+script = ExtResource("2_0rf50")
 
 [node name="Continue" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -224,6 +226,7 @@ visible = false
 layout_mode = 2
 
 [connection signal="pressed" from="Main/MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/New" to="Main/MarginContainer/VBoxContainer/New" method="_on_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]

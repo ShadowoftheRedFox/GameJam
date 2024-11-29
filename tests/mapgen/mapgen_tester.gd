@@ -13,6 +13,7 @@ var map = gen.create_map(WIDTH, HEIGHT, EXTRA_CONNECTION_PROBABILITY)
 func _ready() -> void:
 	for row in map:
 		for room in row:
+			room.show_id()
 			print(" ", room.room_id, " ")
 		print("\n")
 
