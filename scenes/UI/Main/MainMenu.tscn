@@ -1,0 +1,102 @@
+[gd_scene load_steps=7 format=3 uid="uid://c6efwceppjp36"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/MainMenu.gd" id="1_v1k7h"]
+[ext_resource type="Script" path="res://scripts/game/new_game.gd" id="2_fqtjt"]
+[ext_resource type="PackedScene" uid="uid://ch5ssq88yx1t6" path="res://scenes/UI/Main/Multiplayer/Multiplayer.tscn" id="3_8c6ax"]
+[ext_resource type="PackedScene" uid="uid://bro2asdburtfg" path="res://scenes/UI/Main/Options/Options.tscn" id="4_41hkr"]
+[ext_resource type="PackedScene" uid="uid://dwrjfxf12yrvt" path="res://scenes/UI/Main/NewGame/NewGame.tscn" id="5_vkava"]
+[ext_resource type="PackedScene" uid="uid://b8ushcso2djve" path="res://scenes/UI/Main/Continue/Continue.tscn" id="6_v7v2s"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v1k7h")
+
+[node name="Main" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "GameJam CYTech"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="HBoxContainer" parent="Main"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Main/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Main/MarginContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="New" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Quit")
+text = "Nouvelle partie"
+script = ExtResource("2_fqtjt")
+
+[node name="Continue" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Continuer la partie"
+
+[node name="Multiplayer" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Multijoueur"
+
+[node name="Options" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Options"
+
+[node name="Quit" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../New")
+text = "Quitter"
+
+[node name="CenterContainer" type="CenterContainer" parent="Main/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Multiplayer" parent="." instance=ExtResource("3_8c6ax")]
+visible = false
+layout_mode = 1
+
+[node name="Options" parent="." instance=ExtResource("4_41hkr")]
+visible = false
+layout_mode = 1
+
+[node name="NewGame" parent="." instance=ExtResource("5_vkava")]
+visible = false
+layout_mode = 1
+
+[node name="Continue" parent="." instance=ExtResource("6_v7v2s")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/New" to="Main/MarginContainer/MarginContainer/VBoxContainer/New" method="_on_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Multiplayer" to="." method="_on_multiplayer_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="back_pressed" from="Multiplayer" to="." method="_on_multiplayer_back_pressed"]
+[connection signal="back_pressed" from="Options" to="." method="_on_options_back_pressed"]

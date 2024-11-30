@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://cfk1t3qe38si4"]
+
+[node name="Sounds" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sound" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Music" type="MarginContainer" parent="Sound"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Sound/Music"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Sound/Music/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_stretch_ratio = 0.2
+text = "Musique
+"
+
+[node name="HSlider" type="HSlider" parent="Sound/Music/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Sfx" type="MarginContainer" parent="Sound"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Sound/Sfx"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Sound/Sfx/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_stretch_ratio = 0.2
+text = "Effet"
+
+[node name="HSlider" type="HSlider" parent="Sound/Sfx/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Entities" type="MarginContainer" parent="Sound"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Sound/Entities"]
+layout_mode = 2
+size_flags_stretch_ratio = 4.0
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Sound/Entities/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_stretch_ratio = 0.2
+text = "Entité"
+
+[node name="HSlider" type="HSlider" parent="Sound/Entities/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4

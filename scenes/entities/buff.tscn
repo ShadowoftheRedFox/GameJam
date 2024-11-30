@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://d1cpj26wd0fqw"]
+
+[ext_resource type="Script" path="res://scripts/entities/buff.gd" id="1_gm7h6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_05cxr"]
+
+[sub_resource type="Gradient" id="Gradient_gqkhd"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_dm61r"]
+gradient = SubResource("Gradient_gqkhd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t2h72"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 0.0
+gravity = Vector3(0, 98, 0)
+
+[node name="Buff" type="Node2D"]
+script = ExtResource("1_gm7h6")
+particle_emission_shape = 1
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_05cxr")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+texture = SubResource("GradientTexture2D_dm61r")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+process_material = SubResource("ParticleProcessMaterial_t2h72")

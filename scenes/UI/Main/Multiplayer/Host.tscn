@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://bdvt30ldb25s8"]
+
+[node name="Host" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Host" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Host"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="LabelIP" type="Label" parent="Host/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "IP du serveur :"
+
+[node name="IP" type="TextEdit" parent="Host/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
+scroll_fit_content_height = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Host"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LabelPort" type="Label" parent="Host/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Port du serveur :"
+
+[node name="Port" type="TextEdit" parent="Host/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "8000"
+placeholder_text = "8000"
+scroll_fit_content_height = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Host"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LabelMaxPlayer" type="Label" parent="Host/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Nombre de joueur max :"
+
+[node name="MaxPlayer" type="TextEdit" parent="Host/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "5"
+placeholder_text = "5"
+scroll_fit_content_height = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Host"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SaveSelector" type="MenuButton" parent="Host/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Choisissez une sauvegarde"
+flat = false
+
+[node name="Button" type="Button" parent="Host"]
+layout_mode = 2
+disabled = true
+text = "Héberger"
+
+[node name="HostError" type="Label" parent="Host"]
+layout_mode = 2

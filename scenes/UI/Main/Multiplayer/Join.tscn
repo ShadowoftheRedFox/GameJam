@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://br7bwm535odl2"]
+
+[node name="Join" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Join" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Join"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="LabelIP" type="Label" parent="Join/HBoxContainer"]
+layout_mode = 2
+text = "IP du serveur: "
+
+[node name="IP" type="TextEdit" parent="Join/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
+scroll_fit_content_height = true
+
+[node name="LabelPort" type="Label" parent="Join/HBoxContainer"]
+layout_mode = 2
+text = "Port du serveur: "
+
+[node name="Port" type="TextEdit" parent="Join/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "8000"
+placeholder_text = "8000"
+
+[node name="Button" type="Button" parent="Join"]
+layout_mode = 2
+disabled = true
+text = "Rejoindre"
+
+[node name="JoinError" type="Label" parent="Join"]
+layout_mode = 2
