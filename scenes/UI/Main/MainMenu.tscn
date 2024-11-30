@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://c6efwceppjp36"]
+[gd_scene load_steps=7 format=3 uid="uid://c6efwceppjp36"]
 
 [ext_resource type="Script" path="res://scripts/UI/Main/MainMenu.gd" id="1_v1k7h"]
+[ext_resource type="PackedScene" uid="uid://d1cpj26wd0fqw" path="res://scenes/entities/buff.tscn" id="2_s43ht"]
 [ext_resource type="PackedScene" uid="uid://ch5ssq88yx1t6" path="res://scenes/UI/Main/Multiplayer/Multiplayer.tscn" id="3_8c6ax"]
 [ext_resource type="PackedScene" uid="uid://bro2asdburtfg" path="res://scenes/UI/Main/Options/Options.tscn" id="4_41hkr"]
 [ext_resource type="PackedScene" uid="uid://dwrjfxf12yrvt" path="res://scenes/UI/Main/NewGame/NewGame.tscn" id="5_vkava"]
@@ -71,8 +72,22 @@ text = "Quitter"
 
 [node name="CenterContainer" type="CenterContainer" parent="Main/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
+size_flags_vertical = 4
 size_flags_stretch_ratio = 2.0
+
+[node name="Buff" parent="Main/MarginContainer/CenterContainer" instance=ExtResource("2_s43ht")]
+scale = Vector2(3, 3)
+particle_amount = 200
+particle_scale_max = 5.0
+particle_color = Color(0.679518, 0.0882298, 0.368955, 1)
+particle_lifetime = 3.0
+particle_spread = 2.0
+particle_emission_shape = 6
+sphere_radius = 10.0
+ring_axis = Vector3(0, 0, 1)
+ring_radius = 30.0
+ring_inner_radius = 35.0
 
 [node name="Multiplayer" parent="." instance=ExtResource("3_8c6ax")]
 visible = false
