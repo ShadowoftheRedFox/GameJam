@@ -46,6 +46,7 @@ text = "Port du serveur :"
 [node name="Port" type="TextEdit" parent="Host/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 text = "8000"
 placeholder_text = "8000"
 scroll_fit_content_height = true
@@ -63,6 +64,7 @@ text = "Nombre de joueur max :"
 [node name="MaxPlayer" type="TextEdit" parent="Host/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 text = "5"
 placeholder_text = "5"
 scroll_fit_content_height = true
@@ -71,12 +73,19 @@ scroll_fit_content_height = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SaveSelector" type="MenuButton" parent="Host/HBoxContainer4"]
+[node name="Label" type="Label" parent="Host/HBoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-text = "Choisissez une sauvegarde"
-flat = false
+text = "Choisissez une sauvegarde: "
+
+[node name="OptionButton" type="OptionButton" parent="Host/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+selected = 0
+item_count = 1
+popup/item_0/text = "LabHyrinTical"
+popup/item_0/disabled = true
 
 [node name="Button" type="Button" parent="Host"]
 layout_mode = 2

@@ -22,6 +22,7 @@ size_flags_vertical = 4
 
 [node name="LabelIP" type="Label" parent="Join/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "IP du serveur: "
 
 [node name="IP" type="TextEdit" parent="Join/HBoxContainer"]
@@ -31,15 +32,21 @@ text = "127.0.0.1"
 placeholder_text = "127.0.0.1"
 scroll_fit_content_height = true
 
-[node name="LabelPort" type="Label" parent="Join/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Join"]
 layout_mode = 2
+size_flags_vertical = 4
+
+[node name="LabelPort" type="Label" parent="Join/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Port du serveur: "
 
-[node name="Port" type="TextEdit" parent="Join/HBoxContainer"]
+[node name="Port" type="TextEdit" parent="Join/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "8000"
 placeholder_text = "8000"
+scroll_fit_content_height = true
 
 [node name="Button" type="Button" parent="Join"]
 layout_mode = 2
