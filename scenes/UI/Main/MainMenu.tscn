@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://c6efwceppjp36"]
+[gd_scene load_steps=6 format=3 uid="uid://c6efwceppjp36"]
 
 [ext_resource type="Script" path="res://scripts/UI/Main/MainMenu.gd" id="1_v1k7h"]
-[ext_resource type="Script" path="res://scripts/game/new_game.gd" id="2_fqtjt"]
 [ext_resource type="PackedScene" uid="uid://ch5ssq88yx1t6" path="res://scenes/UI/Main/Multiplayer/Multiplayer.tscn" id="3_8c6ax"]
 [ext_resource type="PackedScene" uid="uid://bro2asdburtfg" path="res://scenes/UI/Main/Options/Options.tscn" id="4_41hkr"]
 [ext_resource type="PackedScene" uid="uid://dwrjfxf12yrvt" path="res://scenes/UI/Main/NewGame/NewGame.tscn" id="5_vkava"]
@@ -51,7 +50,6 @@ size_flags_vertical = 4
 layout_mode = 2
 focus_neighbor_top = NodePath("../Quit")
 text = "Nouvelle partie"
-script = ExtResource("2_fqtjt")
 
 [node name="Continue" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -93,10 +91,11 @@ visible = false
 layout_mode = 1
 
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
-[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/New" to="Main/MarginContainer/MarginContainer/VBoxContainer/New" method="_on_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Multiplayer" to="." method="_on_multiplayer_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
 [connection signal="back_pressed" from="Multiplayer" to="." method="_on_multiplayer_back_pressed"]
 [connection signal="back_pressed" from="Options" to="." method="_on_options_back_pressed"]
+[connection signal="back_pressed" from="NewGame" to="." method="_on_new_game_back_pressed"]
+[connection signal="back_pressed" from="Continue" to="." method="_on_continue_back_pressed"]

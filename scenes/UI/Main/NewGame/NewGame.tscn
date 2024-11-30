@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://dwrjfxf12yrvt"]
+[gd_scene load_steps=2 format=3 uid="uid://dwrjfxf12yrvt"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/NewGame/new_game.gd" id="1_cpd2w"]
 
 [node name="NewGame" type="Control"]
 layout_mode = 3
@@ -7,3 +9,86 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_cpd2w")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -19.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_right = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="SaveName" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SaveName"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Nom de la sauvegarde :"
+
+[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/SaveName"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+placeholder_text = "LabHyrinTical"
+scroll_fit_content_height = true
+
+[node name="Difficulty" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Difficulty"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Difficulté :"
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/Difficulty"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "Facile"
+popup/item_1/text = "Moyen"
+popup/item_1/id = 1
+popup/item_2/text = "Difficile"
+popup/item_2/id = 2
+popup/item_3/text = "Impossible"
+popup/item_3/id = 3
+
+[node name="New" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Nouvelle partie"
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Retour"
+
+[node name="Error" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Nouvelle partie"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

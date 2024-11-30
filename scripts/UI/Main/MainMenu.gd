@@ -8,12 +8,12 @@ func _ready() -> void:
 func _on_new_pressed() -> void:
     $Main.hide()
     $NewGame.show()
-    # TODO grab focus
+    $NewGame/MarginContainer/VBoxContainer/Back.grab_focus()
 
 func _on_continue_pressed() -> void:
     $Main.hide()
     $Continue.show()
-    # TODO grab focus
+    $Continue/MarginContainer/VBoxContainer/Back.grab_focus()
     
 
 func _on_multiplayer_pressed() -> void:
@@ -43,4 +43,14 @@ func _on_multiplayer_back_pressed() -> void:
 
 func _on_options_back_pressed() -> void:
     $Options.hide()
+    generic_back_pressed()
+
+
+func _on_new_game_back_pressed() -> void:
+    $NewGame.hide()
+    generic_back_pressed()
+
+
+func _on_continue_back_pressed() -> void:
+    $Continue.hide()
     generic_back_pressed()
