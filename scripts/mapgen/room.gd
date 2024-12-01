@@ -75,6 +75,6 @@ func generate_room() -> bool:
 	if path.ends_with("_"):
 		path = path.erase(len(path)-1)
 
-	print("Room ", room_id, " can choose between ", Global.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
+	print("Room ", room_id, " can choose between ", GeneratorController.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
 	
 	return true

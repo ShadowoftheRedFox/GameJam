@@ -16,7 +16,7 @@ func create_map(width: int, height: int, probability: float) -> Array:
         var row = []
         for x in range(width):
             var node = Room.instantiate()
-            node.room_id = Global.mapgen_get_next_unique_id()
+            node.room_id = GeneratorController.mapgen_get_next_unique_id()
             row.append(node)
         map.append(row)
 
