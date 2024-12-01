@@ -11,9 +11,12 @@ gradient = SubResource("Gradient_gqkhd")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t2h72"]
 particle_flag_disable_z = true
-emission_shape = 3
-emission_box_extents = Vector3(20, 20, 1)
-gravity = Vector3(0, 0, 0)
+emission_shape = 2
+emission_sphere_radius = 10.0
+spread = 20.0
+gravity = Vector3(5, 5, 0)
+scale_max = 5.0
+color = Color(0.679518, 0.0882298, 0.368955, 1)
 
 [node name="Buff" type="Node2D"]
 script = ExtResource("1_gm7h6")
@@ -25,9 +28,12 @@ particle_emission_shape = 1
 shape = SubResource("CircleShape2D_05cxr")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(0, 1, 1, 1)
 texture = SubResource("GradientTexture2D_dm61r")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 process_material = SubResource("ParticleProcessMaterial_t2h72")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
