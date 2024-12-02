@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://f1rdo3ub840a"]
+
+[ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_yvebt"]
+
+[node name="BaseRoom" type="Node2D"]
+script = ExtResource("1_yvebt")

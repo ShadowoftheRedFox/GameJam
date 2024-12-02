@@ -10,9 +10,9 @@ func _on_new_pressed() -> void:
     var new_button: Button = $MarginContainer/VBoxContainer/New
     var save_name: LineEdit = $MarginContainer/VBoxContainer/SaveName/LineEdit
     var difficulty: OptionButton = $MarginContainer/VBoxContainer/Difficulty/OptionButton
-    var size: OptionButton = $MarginContainer/VBoxContainer/Size/OptionButton
+    var map_size: OptionButton = $MarginContainer/VBoxContainer/Size/OptionButton
     if new_button.disabled == false:
-        GameController.new_game(save_name.text, difficulty.selected, size.selected)
+        GameController.new_game(save_name.text, difficulty.selected, map_size.selected)
 
 
 func _on_line_edit_text_changed(new_text: String) -> void:

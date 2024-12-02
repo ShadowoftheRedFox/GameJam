@@ -32,11 +32,11 @@ func get_num_files_in_dir(path: String, ends_with = ".tscn") -> int:
 @export var ROOM_WIDTH: int = 10
 @export var ROOM_HEIGHT: int = 10
 
-func generate_map() -> void:
+func generate_map(map_size: int = 0) -> void:
     print("Starting new game...")
     print("Generating map...")
     var generator = MapGenerator.new()
-    var map: Array = generator.create_map(MAP_WIDTH, MAP_HEIGHT, EXTRA_CONNECTION_PROBABILITY)
+    var map: Array = generator.create_map((map_size + 1) * MAP_WIDTH, (map_size + 1) * MAP_HEIGHT, EXTRA_CONNECTION_PROBABILITY)
     if len(map) == 0:
         printerr("Something went wrong when generating map, found size 0")
         return
@@ -44,7 +44,7 @@ func generate_map() -> void:
     for row: Array in map:
         for room: MapRoom in row:
             var res: bool = room.generate_room()
-            if not res:
+            if res == false:
                 printerr("Something went wrong with room ", room.room_id)
                 return
     # TODO save map and show it

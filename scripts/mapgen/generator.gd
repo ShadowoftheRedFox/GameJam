@@ -2,7 +2,7 @@ class_name MapGenerator
 
 extends Node
 
-const Room = preload("res://scenes/mapgen/room.tscn")
+const Room = preload("res://scenes/levels/BaseRoom.tscn")
 # TODO: USE A REAL ALGORITHM
 var rng = RandomNumberGenerator.new()
 
