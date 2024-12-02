@@ -4,6 +4,14 @@ extends Control
 func _ready() -> void:
     # grab the keyboard focus on specific button
     $Main/MarginContainer/MarginContainer/VBoxContainer/New.grab_focus()
+    
+    # enable the button is any save available
+    update_continue_state()
+    SaveController.saves_changed.connect(update_continue_state, ConnectFlags.CONNECT_PERSIST)
+
+func update_continue_state() -> void:
+    # enable or disable the continue button
+    $Main/MarginContainer/MarginContainer/VBoxContainer/Continue.disabled = len(SaveController.save_names) == 0
 
 func _on_new_pressed() -> void:
     $Main.hide()
