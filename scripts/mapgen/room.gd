@@ -90,5 +90,9 @@ func generate_room() -> bool:
         else:
             printerr("resource can't instantiate")
             return false
+    else:
+        printerr("can't find resource path")
+        return false
+        
     
     return true
