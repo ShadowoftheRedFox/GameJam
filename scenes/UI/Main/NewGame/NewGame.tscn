@@ -37,12 +37,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Nom de la sauvegarde :"
 
-[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/SaveName"]
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 placeholder_text = "LabHyrinTical"
-scroll_fit_content_height = true
 
 [node name="Difficulty" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -64,6 +63,28 @@ popup/item_1/id = 1
 popup/item_2/text = "Difficile"
 popup/item_2/id = 2
 popup/item_3/text = "Impossible"
+popup/item_3/id = 3
+
+[node name="Size" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Size"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Taille de la carte :"
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/Size"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 4
+popup/item_0/text = "Petite"
+popup/item_1/text = "Moyenne"
+popup/item_1/id = 1
+popup/item_2/text = "Grande"
+popup/item_2/id = 2
+popup/item_3/text = "Immense"
 popup/item_3/id = 3
 
 [node name="New" type="Button" parent="MarginContainer/VBoxContainer"]
@@ -90,5 +111,6 @@ offset_bottom = 23.0
 grow_horizontal = 2
 text = "Nouvelle partie"
 
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/SaveName/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

@@ -22,6 +22,7 @@ EventController="*res://scripts/Controllers/event_controller.gd"
 GameController="*res://scripts/Controllers/game_controller.gd"
 TransitionController="*res://scripts/Controllers/transition_controller.gd"
 GeneratorController="*res://scripts/Controllers/generator_controller.gd"
+SaveController="*res://scripts/Controllers/save_controller.gd"
 
 [dotnet]
 
