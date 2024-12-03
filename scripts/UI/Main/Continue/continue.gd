@@ -10,6 +10,7 @@ func _ready() -> void:
     SaveController.saves_changed.connect(check_save, ConnectFlags.CONNECT_PERSIST)
     
 func check_save() -> void:
+    # TODO gamemode 
     # remove everything
     Options.clear()
     if len(SaveController.save_names) > 0:
