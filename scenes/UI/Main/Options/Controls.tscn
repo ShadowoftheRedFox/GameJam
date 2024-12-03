@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://b5vnqd8k8r6jg"]
+[gd_scene load_steps=2 format=3 uid="uid://b5vnqd8k8r6jg"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/Options/controls.gd" id="1_pqbqu"]
 
 [node name="Controls" type="Control"]
 layout_mode = 3
@@ -7,3 +9,34 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_pqbqu")
+
+[node name="ControlsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Up" type="MarginContainer" parent="ControlsContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlsContainer/Up"]
+layout_mode = 2
+size_flags_stretch_ratio = 4.0
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="ControlsContainer/Up/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Haut"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="ControlsContainer/Up/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
