@@ -81,8 +81,8 @@ func generate_room() -> bool:
         printerr("No room available for ", path)
         return false
     
-    var room_id = randi_range(0, amount_room_available -1)
-    var room_path := "res://scenes/levels/" + path + "/" + str(room_id) + ".tscn" 
+    var level_id = randi_range(0, amount_room_available -1)
+    var room_path := "res://scenes/levels/" + path + "/" + str(level_id) + ".tscn" 
     if ResourceLoader.exists(room_path) :
         var resource: PackedScene = ResourceLoader.load(room_path, "PackedScene")
         if resource.can_instantiate():
