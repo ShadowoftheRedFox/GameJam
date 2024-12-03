@@ -47,7 +47,8 @@ func _ready() -> void:
         #printerr("Error while saving")
     #if !delete_save("ploof"):
         #printerr("Error while deleting")
-    print("Ploof exists: ", is_save_name("Ploof"))
+    #print("Ploof exists: ", is_save_name("Ploof"))
+    pass
 
 #### Game save ####
 func is_save_name(save_name: String) -> bool:
