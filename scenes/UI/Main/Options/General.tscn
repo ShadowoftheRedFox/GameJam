@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dk00cn8bktxtp"]
+
+[node name="General" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sound" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="PlayerName" type="MarginContainer" parent="Sound"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Sound/PlayerName"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Sound/PlayerName/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Nom de joueur :"
+
+[node name="TextEdit" type="TextEdit" parent="Sound/PlayerName/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Ploof"
+scroll_fit_content_height = true
+
+[node name="PlayerColor" type="MarginContainer" parent="Sound"]
+layout_mode = 2
+theme_override_constants/margin_right = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Sound/PlayerColor"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Sound/PlayerColor/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Couleur de joueur :"
+
+[node name="ColorPicker" type="ColorPickerButton" parent="Sound/PlayerColor/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Color"
+color = Color(1, 0, 0, 1)
+edit_alpha = false
