@@ -10,6 +10,8 @@ var save_id_count: int = 0
 var general_save_data: Array[Dictionary] = []
 var general_save_file: FileAccess = null
 
+# TODO change save name to id to save name FIXED to save name editablea
+
 @warning_ignore("unused_signal") signal saves_changed
 
 #### Load game data ####
