@@ -19,6 +19,7 @@ var ground_direction: float = 0.0
 
 #### Graphic ####
 @onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
 func _enter_tree() -> void:
     set_multiplayer_authority(name.to_int())
@@ -27,6 +28,13 @@ func _physics_process(delta: float) -> void:
     if is_multiplayer_authority() or is_multiplayer == false:
         direction = Input.get_vector("Left", "Right", "Up", "Down")
         ground_direction = Input.get_axis("Left", "Right")
+        
+        # idle
+        if ground_direction == 0:
+            anim_sprite_2d.play("idle")
+        else:
+            # walk
+            anim_sprite_2d.play("walk")
         
         # TODO differentiate on player position and buffs
         
@@ -39,8 +47,10 @@ func _physics_process(delta: float) -> void:
             # flip the sprite 
             if ground_direction >= 0:
                 sprite_2d.flip_h = false
+                anim_sprite_2d.flip_h = false
             else:
                 sprite_2d.flip_h = true
+                anim_sprite_2d.flip_h = true
         else:
             velocity.x = move_toward(velocity.x, 0, walk_speed)
         

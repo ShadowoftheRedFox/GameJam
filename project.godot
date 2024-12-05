@@ -23,6 +23,8 @@ GameController="*res://scripts/Controllers/game_controller.gd"
 TransitionController="*res://scripts/Controllers/transition_controller.gd"
 GeneratorController="*res://scripts/Controllers/generator_controller.gd"
 SaveController="*res://scripts/Controllers/save_controller.gd"
+MultiplayerController="*res://scripts/Controllers/multiplayer_controller.gd"
+Server="*res://scripts/multiplayer/server.gd"
 
 [dotnet]
 

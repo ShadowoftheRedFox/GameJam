@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://br7bwm535odl2"]
+[gd_scene load_steps=2 format=3 uid="uid://br7bwm535odl2"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/Multiplayer/join.gd" id="1_65hvf"]
 
 [node name="Join" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_65hvf")
 
 [node name="Join" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -48,10 +51,14 @@ text = "8000"
 placeholder_text = "8000"
 scroll_fit_content_height = true
 
-[node name="Button" type="Button" parent="Join"]
+[node name="Launch" type="Button" parent="Join"]
 layout_mode = 2
 disabled = true
 text = "Rejoindre"
 
 [node name="JoinError" type="Label" parent="Join"]
 layout_mode = 2
+
+[connection signal="text_changed" from="Join/HBoxContainer/IP" to="." method="_on_ip_text_changed"]
+[connection signal="text_changed" from="Join/HBoxContainer2/Port" to="." method="_on_port_text_changed"]
+[connection signal="pressed" from="Join/Launch" to="." method="_on_launch_pressed"]
