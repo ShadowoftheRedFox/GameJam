@@ -98,4 +98,7 @@ text = "Héberger"
 [node name="HostError" type="Label" parent="Host"]
 layout_mode = 2
 
+[connection signal="text_changed" from="Host/HBoxContainer/IP" to="." method="_on_ip_text_changed"]
+[connection signal="text_changed" from="Host/HBoxContainer2/Port" to="." method="_on_port_text_changed"]
+[connection signal="text_changed" from="Host/HBoxContainer3/MaxPlayer" to="." method="_on_max_player_text_changed"]
 [connection signal="pressed" from="Host/Launch" to="." method="_on_launch_pressed"]

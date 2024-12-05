@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ch5ssq88yx1t6"]
+[gd_scene load_steps=5 format=3 uid="uid://ch5ssq88yx1t6"]
 
 [ext_resource type="Script" path="res://scripts/UI/Main/Multiplayer/Multiplayer.gd" id="1_kiuv4"]
 [ext_resource type="PackedScene" uid="uid://br7bwm535odl2" path="res://scenes/UI/Main/Multiplayer/Join.tscn" id="1_xaijk"]
 [ext_resource type="PackedScene" uid="uid://bdvt30ldb25s8" path="res://scenes/UI/Main/Multiplayer/Host.tscn" id="2_flbpf"]
+[ext_resource type="Script" path="res://scripts/multiplayer/server.gd" id="2_il0fe"]
 
 [node name="Multiplayer" type="Control"]
 layout_mode = 3
@@ -42,6 +43,7 @@ theme_override_constants/margin_bottom = 80
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Margin/HBoxContainer/Main"]
 layout_mode = 2
+script = ExtResource("2_il0fe")
 
 [node name="Join" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
 layout_mode = 2

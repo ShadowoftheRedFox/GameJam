@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://dk00cn8bktxtp"]
+[gd_scene load_steps=2 format=3 uid="uid://dk00cn8bktxtp"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/Options/general.gd" id="1_vos0s"]
 
 [node name="General" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_vos0s")
 
 [node name="Sound" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -56,3 +59,6 @@ size_flags_horizontal = 3
 text = "Color"
 color = Color(1, 0, 0, 1)
 edit_alpha = false
+
+[connection signal="text_changed" from="Sound/PlayerName/HBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
+[connection signal="color_changed" from="Sound/PlayerColor/HBoxContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
