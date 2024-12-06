@@ -45,7 +45,11 @@ func _on_edit_pressed() -> void:
 
 
 func _on_delete_pressed() -> void:
-    # TODO confirmation popup
+    $AcceptDialog.show()
+
+
+func _on_accept_dialog_confirmed() -> void:
+    $AcceptDialog.hide()
     var success = SaveController.delete_save(Options.get_item_text(Options.selected))
     if success == false:
         Error.text = "Une erreur est survenue en essayant d'effacer la sauvegarde"
@@ -53,3 +57,7 @@ func _on_delete_pressed() -> void:
         Error.text = ""
     else:
         check_save()
+
+
+func _on_accept_dialog_canceled() -> void:
+        $AcceptDialog.hide()

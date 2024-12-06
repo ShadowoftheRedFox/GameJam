@@ -40,7 +40,6 @@ text = "Nom de la sauvegarde :"
 [node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
 
 [node name="Resume" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -76,8 +75,17 @@ offset_bottom = 23.0
 grow_horizontal = 2
 text = "Continuer une partie"
 
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+title = "Confirmation"
+initial_position = 2
+size = Vector2i(378, 100)
+ok_button_text = "Oui, supprimer"
+dialog_text = "Êtes-vous sur de vouloir effacer la sauvegarde?"
+
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/SaveName/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Edit" to="." method="_on_edit_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="canceled" from="AcceptDialog" to="." method="_on_accept_dialog_canceled"]
+[connection signal="confirmed" from="AcceptDialog" to="." method="_on_accept_dialog_confirmed"]
