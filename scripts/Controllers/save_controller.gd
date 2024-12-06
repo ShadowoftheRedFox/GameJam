@@ -48,6 +48,8 @@ func _init() -> void:
         general_config.save(CONFIG_PATH)
         return
     
+    get_parameters()
+    
     # get the amount of saved game
     var save_amount = general_config.get_value("General", "save_amount", 0)
     if save_amount == 0:
@@ -59,8 +61,6 @@ func _init() -> void:
         save_names.append(key_name)
     
     print("Found ", len(save_names), " saves")
-    get_parameters()
-    #printerr(save_names)
     saves_changed.emit()
     parameters_changed.emit()
     
@@ -75,15 +75,19 @@ func _ready() -> void:
 #### Parameters save ####
 
 func setup_parameters() -> void:
-     general_config.set_value("Multiplayer", "name", "Player" + str(randi()))
-     general_config.set_value("Multiplayer", "color", Color.BLUE.to_html(false))
-    # TODO save key input overrides
-     general_config.set_value("Controls", "Up", "z")
+    general_config.set_value("Multiplayer", "name", "Player" + str(randi()))
+    general_config.set_value("Multiplayer", "color", Color.BLUE.to_html(false))
     
-     general_config.set_value("Sounds", "music", 100)
-     general_config.set_value("Sounds", "sfx", 100)
-     general_config.set_value("Sounds", "entities", 100)
+    # save each action and it's default key
+    var input_map = InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
+    for input_name in input_map:
+        var event_key: InputEvent = InputMap.action_get_events(input_name)[0]
+        general_config.set_value("Controls", input_name, event_key.as_text())
     
+    general_config.set_value("Sounds", "music", 100)
+    general_config.set_value("Sounds", "sfx", 100)
+    general_config.set_value("Sounds", "entities", 100)
+
 func get_parameters() -> void:
     parameters.Multiplayer.name = general_config.get_value("Multiplayer", "name", "Player0")
     parameters.Multiplayer.name = general_config.get_value("Multiplayer", "name", "Player0")
@@ -95,8 +99,56 @@ func get_parameters() -> void:
     parameters.Sounds.music = int(general_config.get_value("Sounds", "music", 100))
     parameters.Sounds.sfx = int(general_config.get_value("Sounds", "sfx", 100))
     parameters.Sounds.entities = int(general_config.get_value("Sounds", "entities", 100))
+    override_input_map()
+
+func save_control(label_name: String, key: String) -> void:
+    var index = 0
+    for pair in parameters.Controls:
+        if pair[0] == label_name:
+            parameters.Controls[index][1] = key
+            save_parameters()
+            override_input_map()
+            return
+        index += 1
+    
+    parameters.Controls.append([label_name, key])
+    save_parameters()
+    override_input_map()
+
+func override_input_map() -> void:
+    for pair in parameters.Controls:
+        var event := InputEventKey.new()
+        event.set_keycode(OS.find_keycode_from_string(pair[1]))
+        
+        if InputMap.has_action(pair[0]):
+            InputMap.action_erase_events(pair[0])
+            InputMap.action_add_event(pair[0], event)
+        else:
+            InputMap.add_action(pair[0])
+            InputMap.action_add_event(pair[0], event)
+    parameters_changed.emit()
 
 func save_parameters() -> void:
+    general_config.set_value("Multiplayer", "name", parameters.Multiplayer.name)
+    general_config.set_value("Multiplayer", "color", parameters.Multiplayer.color)
+
+    # if array empty, load from InputMap
+    if len(parameters.Controls) == 0:
+        var input_map = InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
+        for input_name in input_map:
+            var event_key: InputEvent = InputMap.action_get_events(input_name)[0]
+            general_config.set_value("Controls", input_name, event_key.as_text())
+    else:
+        for pair in parameters.Controls:
+            general_config.set_value("Controls", pair[0], pair[1])
+
+    general_config.set_value("Sounds", "music", parameters.Sounds.music)
+    general_config.set_value("Sounds", "sfx", parameters.Sounds.sfx)
+    general_config.set_value("Sounds", "entities", parameters.Sounds.entities)
+    
+    for pair in parameters.Controls:
+        general_config.set_value("Controls", pair[0], pair[1])
+    
     general_config.save(CONFIG_PATH)
 
 #### Game save ####

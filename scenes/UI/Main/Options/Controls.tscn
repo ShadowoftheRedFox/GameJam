@@ -21,22 +21,18 @@ grow_vertical = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 10
 
-[node name="Up" type="MarginContainer" parent="ControlsContainer"]
+[node name="Reset" type="MarginContainer" parent="ControlsContainer"]
 layout_mode = 2
 theme_override_constants/margin_right = 100
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ControlsContainer/Up"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlsContainer/Reset"]
 layout_mode = 2
 size_flags_stretch_ratio = 4.0
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="ControlsContainer/Up/HBoxContainer"]
+[node name="Button" type="Button" parent="ControlsContainer/Reset/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Haut"
-horizontal_alignment = 1
-vertical_alignment = 1
+text = "Réinitialiser"
 
-[node name="Button" type="Button" parent="ControlsContainer/Up/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
+[connection signal="pressed" from="ControlsContainer/Reset/HBoxContainer/Button" to="." method="_on_reset_pressed"]

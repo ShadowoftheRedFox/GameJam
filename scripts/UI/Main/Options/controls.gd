@@ -2,9 +2,32 @@ extends Control
 
 @onready var CC = $ControlsContainer
 
-# Called when the node enters the scene tree for the first time.
+var waiting_button: Button = null
+var old_key_label: String = ""
+var waiting_label_name: String = ""
+var is_waiting = false
+
+func _input(event: InputEvent) -> void:
+    if is_waiting == false:
+        return
+    
+    # stop ui actions to mess while we listen to input
+    if event.is_action("ui_accept"):
+        accept_event()
+    
+    if event is InputEventKey and event.pressed:
+        waiting_button.text = event.as_text()
+        # save change
+        SaveController.save_control(waiting_label_name, event.as_text())
+        is_waiting = false
+
 func _ready() -> void:
-    InputMap.load_from_project_settings()
+    SaveController.parameters_changed.connect(_on_parameters_changed, ConnectFlags.CONNECT_PERSIST)
+    setup(false)
+    
+func setup(load_from_InputMap: bool = true) -> void:
+    if load_from_InputMap == true:
+        InputMap.load_from_project_settings()
     # all godot default actions start with ui, so ignore those
     var input_map = InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
     
@@ -26,7 +49,17 @@ func create_input_button(label_name: String, key_name: String) -> void:
     
     var label = Label.new()
     # node name
-    label.text = label_name
+    var french_label_name = ""
+    match label_name:
+        "Up":       french_label_name = "Haut"
+        "Down":     french_label_name = "Bas"
+        "Left":     french_label_name = "Gauche"
+        "Right":    french_label_name = "Droite"
+        "Jump":     french_label_name = "Saut"
+
+        _:          french_label_name = "Inconnu"
+    
+    label.text = french_label_name
     # text align
     label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -34,7 +67,7 @@ func create_input_button(label_name: String, key_name: String) -> void:
     label.grow_horizontal = Control.GROW_DIRECTION_BOTH
     label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     
-    var button = Button.new()
+    var button: Button = Button.new()
     # node name
     button.text = key_name
     # text align
@@ -47,8 +80,31 @@ func create_input_button(label_name: String, key_name: String) -> void:
     node.add_child(hbox)
     CC.add_child(node)
     
-    # TODO listen to event
-    # TODO change label_name from english to french
+    # listen to event
+    button.pressed.connect(update_input.bind(label_name, button), ConnectFlags.CONNECT_PERSIST)
 
-func update_input():
-    pass
+func update_input(label_name: String, button: Button):
+    # a new key want to be edited, cancel previous
+    if is_waiting == true:
+        waiting_button.text = old_key_label
+    
+    waiting_button = button
+    waiting_label_name = label_name
+    old_key_label = button.text
+    button.text = "En attente de touches..."
+    is_waiting = true
+
+func clear_buttons() -> void:
+    for child in CC.get_children():
+        if child.name != "Reset":
+            child.queue_free()
+
+func _on_parameters_changed() -> void:
+    clear_buttons()
+    setup(false)
+
+func _on_reset_pressed() -> void:
+    SaveController.parameters.Controls = []
+    SaveController.save_parameters()
+    clear_buttons()
+    setup()
