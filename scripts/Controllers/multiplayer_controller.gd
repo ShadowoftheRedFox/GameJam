@@ -1,6 +1,9 @@
 extends Node
 
-@rpc("any_peer", "call_local")
+var PlayerScene: PackedScene = load("res://scenes/entities/Player.tscn")
+var node_scene: Node = null
+
+@rpc("any_peer")
 func send_player_infos(data: Dictionary) -> void:
     if !Server.multiplayer_active:
         push_warning("Trying to send player info when no server active")
@@ -15,5 +18,42 @@ func send_player_infos(data: Dictionary) -> void:
         
     # update all connected peers with the new data
     if multiplayer.is_server():
+        printerr("From ", multiplayer.get_unique_id(),": Sending infos to peers")
         for i in GameController.Players:
             send_player_infos.rpc(GameController.Players.get(i, {}))
+    
+    # add a player if it isn't made yet
+    var index = 0
+    if node_scene == null:
+        node_scene = get_tree().root.get_node("/root/" + GameController.MultiPlayerNodeName)
+    
+    # spawn ourself first
+    var player_data: Dictionary = {}
+    if GameController.Players.has(multiplayer.get_unique_id()):
+        player_data = GameController.Players.get(multiplayer.get_unique_id(), {})
+        spawn_player(player_data, index)
+        index += 1
+    else:
+        print(multiplayer.get_unique_id(), ": No infos on own id")
+        return
+    
+    for i in GameController.Players:
+        printerr("id in players: ", i)
+        player_data = GameController.Players.get(i, {})
+        # player not in scene
+        if node_scene.get_node(str(i)) == null:
+            spawn_player(player_data, index)
+        index += 1
+
+func spawn_player(player_data: Dictionary, index: int) -> void:
+    var currentPlayer: BasePlayer = PlayerScene.instantiate()
+    currentPlayer.name = str(player_data.id)
+    currentPlayer.set_player_name(player_data.name)
+    node_scene.add_child(currentPlayer)
+    currentPlayer.set_authority(player_data.id)
+    printerr("From ", multiplayer.get_unique_id(),": New instance of Player ", player_data.id)
+    # find a spawn for the player
+    for spawn: Node2D in get_tree().get_nodes_in_group("PlayerSpawnPoint"):
+        if str(index) == spawn.name:
+            currentPlayer.global_position = spawn.global_position
+            break

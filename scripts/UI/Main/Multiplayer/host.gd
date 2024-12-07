@@ -67,7 +67,7 @@ func _on_port_text_changed() -> void:
 
 func _on_max_player_text_changed() -> void:
     if MaxPlayerText.text.is_valid_int():
-        if int(MaxPlayerText.text) >=2:
+        if int(MaxPlayerText.text) >=2 and int(MaxPlayerText.text) <= 32:
             Error.text = ""
             MultiplayerController.server.change_max_player(MaxPlayerText.text)
             MaxPlayerValid = true

@@ -20,12 +20,16 @@ var ground_direction: float = 0.0
 #### Graphic ####
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+    
+func set_player_name(player_name: String) -> void:
+    $DisplayName.text = player_name
 
-func _enter_tree() -> void:
-    set_multiplayer_authority(name.to_int())
+func set_authority(id: int) -> void:
+    $MultiplayerSynchronizer.set_multiplayer_authority(id)
 
 func _physics_process(delta: float) -> void:
-    if is_multiplayer_authority() or is_multiplayer == false:
+    var multi_auth = $MultiplayerSynchronizer.get_multiplayer_authority()
+    if multi_auth == multiplayer.get_unique_id() or is_multiplayer == false:
         direction = Input.get_vector("Left", "Right", "Up", "Down")
         ground_direction = Input.get_axis("Left", "Right")
         

@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://cdqa1c43nocou"]
+[gd_scene load_steps=51 format=3 uid="uid://cdqa1c43nocou"]
 
 [ext_resource type="Script" path="res://scripts/entities/player.gd" id="1_6hxiq"]
 [ext_resource type="Texture2D" uid="uid://teija122mjlo" path="res://assets/spritesheets/Soldier/Soldier.png" id="2_nbr5n"]
@@ -355,6 +355,14 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_truud"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("AnimatedSprite2D:animation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_6hxiq")
 
@@ -378,3 +386,14 @@ sprite_frames = SubResource("SpriteFrames_cjfn4")
 animation = &"idle"
 frame = 3
 frame_progress = 0.29779
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_truud")
+
+[node name="DisplayName" type="Label" parent="."]
+offset_left = -71.0
+offset_top = -57.0
+offset_right = 73.0
+offset_bottom = -34.0
+horizontal_alignment = 1
+vertical_alignment = 1

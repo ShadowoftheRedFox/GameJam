@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=4 uid="uid://jl7abtm056g4"]
+[gd_scene load_steps=5 format=4 uid="uid://jl7abtm056g4"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_gbb47"]
 [ext_resource type="Texture2D" uid="uid://um2sdjcg0s81" path="res://assets/tilemaps/tilesheet.webp" id="2_pqa2d"]
-[ext_resource type="PackedScene" uid="uid://cdqa1c43nocou" path="res://scenes/entities/Player.tscn" id="3_a0piq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ugjek"]
 texture = ExtResource("2_pqa2d")
@@ -50,19 +49,22 @@ sources/0 = SubResource("TileSetAtlasSource_ugjek")
 [node name="Roomtest" type="Node2D"]
 script = ExtResource("1_gbb47")
 
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_left = -28.0
-offset_top = -19.0
-offset_right = 28.0
-offset_bottom = 18.0
-text = "ID"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Map" type="TileMapLayer" parent="."]
+position = Vector2(576, 338)
 tile_map_data = PackedByteArray("AAD9/wEAAAAFAAAAAAD+/wEAAAAGAAAAAAD//wEAAAAGAAAAAAAAAAEAAAAGAAAAAAABAAEAAAAGAAAAAAACAAEAAAAHAAAAAAA=")
 tile_set = SubResource("TileSet_6u1k2")
 
-[node name="Player" parent="." instance=ExtResource("3_a0piq")]
-scale = Vector2(2, 2)
+[node name="PlayerSpawn" type="Node2D" parent="."]
+
+[node name="0" type="Node2D" parent="PlayerSpawn" groups=["PlayerSpawnPoint"]]
+position = Vector2(433, 345)
+
+[node name="1" type="Node2D" parent="PlayerSpawn" groups=["PlayerSpawnPoint"]]
+position = Vector2(690, 347)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 494.0
+offset_top = 460.0
+offset_right = 677.0
+offset_bottom = 483.0
+text = "Salle de test mulijoueur"

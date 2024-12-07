@@ -56,6 +56,7 @@ func create_input_button(label_name: String, key_name: String) -> void:
         "Left":     french_label_name = "Gauche"
         "Right":    french_label_name = "Droite"
         "Jump":     french_label_name = "Saut"
+        "Pause":     french_label_name = "Pause"
 
         _:          french_label_name = "Inconnu"
     

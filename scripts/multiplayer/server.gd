@@ -35,25 +35,34 @@ func _ready() -> void:
     # add listener for connection and deconnection of others
     
     # host and clients
-    multiplayer.peer_connected.connect(add_player)
-    multiplayer.peer_disconnected.connect(delete_player)
+    multiplayer.peer_connected.connect(peer_connected)
+    multiplayer.peer_disconnected.connect(peer_disconnected)
     
     # only clients
-    multiplayer.connected_to_server.connect(connected_to_server)
     multiplayer.connection_failed.connect(connection_failed)
+    multiplayer.connected_to_server.connect(connected_to_server)
 
-
+func peer_connected() -> void:
+    #print(multiplayer.get_unique_id(), ": Player connected")
+    pass
+    
+    
+func peer_disconnected() -> void:
+    #print(multiplayer.get_unique_id(), ": Player disconnected")
+    pass
+    
 func connection_failed() -> void:
-    print("connection failed")
+    print(multiplayer.get_unique_id(), ": connection failed")
     multiplayer_active = false
 
 
 func connected_to_server() -> void:
-    print("connected to server")
+    print(multiplayer.get_unique_id(), ": connected to server")
     # send the client data to host, id=1 is host
     MultiplayerController.send_player_infos.rpc_id(1, {
         "id": multiplayer.get_unique_id(),
-        "name": SaveController.parameters.Multiplayer.name,
+        #"name": SaveController.parameters.Multiplayer.name,
+        "name": str(multiplayer.get_unique_id()),
         "color": SaveController.parameters.Multiplayer.color,
         "score": 0
     })
@@ -105,18 +114,29 @@ func create_host(is_solo: bool = false) -> bool:
     # set own peer as multiplayer host (if changed to null, host deconnect)
     multiplayer.set_multiplayer_peer(peer)
     
-    # server ready at that point
-    print("Server ready")
+    # to differentiate between solo server and mutiplayer ones
     multiplayer_active = !is_solo
+    
+    # server ready at that point
+    print("Server ready, awaiting for players")
+    # start game for host
+    GameController.start_game()
+    MultiplayerController.send_player_infos({
+        "id": multiplayer.get_unique_id(),
+        #"name": SaveController.parameters.Multiplayer.name,
+        "name": str(multiplayer.get_unique_id()),
+        "color": SaveController.parameters.Multiplayer.color,
+        "score": 0
+    })
     
     players_on_host = get_tree().current_scene.get_node("Players")
     
     # add a player character for the host
     host_created.emit()
-    add_player()
     return true
     
 
+# fires only on client when join host
 func join_server() -> void:
     # instanciate a peer
     peer = ENetMultiplayerPeer.new()
@@ -130,22 +150,5 @@ func join_server() -> void:
     
     #connected_to_host.emit()
     GameController.start_game()
+    #print("Peer connected to host: ", multiplayer.get_unique_id())
     
-
-func add_player(id: int = 1) -> void:
-    # check if current user is the host
-    #if multiplayer.is_server():
-        #var player = player_scene.instantiate()
-        ## On attribue un id au joueur (ici le nom du noeud mais cela pourrait être l'attribut d'une classe
-        #player.name = str(id)
-        ## On ajoute le joueur à un moment où aucun autre code ne s'execute pour éviter des bugs
-        #players_on_host.call_deferred("add_child", player)
-    #else:
-        #player_connected.emit(id)
-    print("New peer connected : ", id)
-    
-
-func delete_player(id: int) -> void:
-    #var leaving_player = players_on_host.get_node(str(id))
-    #leaving_player.queue_free()
-    player_diconnected.emit(id)

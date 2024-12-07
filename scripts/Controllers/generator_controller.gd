@@ -1,6 +1,8 @@
 extends Node
 
 var mapgen_unique_id_counter: int = 0
+var seed = 0
+
 func mapgen_get_next_unique_id() -> int:
     mapgen_unique_id_counter += 1
     return mapgen_unique_id_counter
@@ -36,6 +38,9 @@ func generate_map(map_size: int = 0) -> void:
     print("Starting new game...")
     print("Generating map...")
     var generator = MapGenerator.new()
+    # to save the seed
+    seed = generator.rng.seed
+    
     var map: Array = generator.create_map((map_size + 1) * MAP_WIDTH, (map_size + 1) * MAP_HEIGHT, EXTRA_CONNECTION_PROBABILITY)
     if len(map) == 0:
         printerr("Something went wrong when generating map, found size 0")

@@ -2,7 +2,7 @@ class_name MapGenerator
 
 extends Node
 
-const Room = preload("res://scenes/levels/BaseRoom.tscn")
+var Room: PackedScene = load("res://scenes/levels/BaseRoom.tscn")
 # TODO: USE A REAL ALGORITHM
 var rng = RandomNumberGenerator.new()
 
@@ -15,7 +15,7 @@ func create_map(width: int, height: int, probability: float) -> Array:
     for y in range(height):
         var row = []
         for x in range(width):
-            var node = Room.instantiate()
+            var node := Room.instantiate()
             node.room_id = GeneratorController.mapgen_get_next_unique_id()
             row.append(node)
         map.append(row)
