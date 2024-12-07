@@ -1,10 +1,8 @@
 extends Control
 
-@onready var NameEdit: TextEdit = $Sound/PlayerName/HBoxContainer/TextEdit
-
-func _on_text_edit_text_changed() -> void:
-    if NameEdit.text.length() > 0:
-        SaveController.parameters.Multiplayer.name = NameEdit.text
+func _on_text_edit_text_changed(new_text: String) -> void:
+    if new_text.length() > 0:
+        SaveController.parameters.Multiplayer.name = new_text
         SaveController.save_parameters()
 
 

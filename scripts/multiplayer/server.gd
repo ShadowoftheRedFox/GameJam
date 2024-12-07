@@ -17,18 +17,6 @@ var compression_method: ENetConnection.CompressionMode = ENetConnection.COMPRESS
 var peer: ENetMultiplayerPeer
 # the scene loaded when a player joins
 var player_scene: PackedScene = load("res://scenes/entities/Player.tscn")
-# the node containing all player connected on host
-var players_on_host: Node2D 
-
-# gets calls on server and clients 
-signal player_connected
-signal player_diconnected
-
-# only on host
-signal host_created
-
-# only on client
-signal connected_to_host
 
 
 func _ready() -> void:
@@ -42,13 +30,13 @@ func _ready() -> void:
     multiplayer.connection_failed.connect(connection_failed)
     multiplayer.connected_to_server.connect(connected_to_server)
 
-func peer_connected() -> void:
-    #print(multiplayer.get_unique_id(), ": Player connected")
+func peer_connected(id: int) -> void:
+    print(multiplayer.get_unique_id(), ": Player ", id, " connected")
     pass
     
     
-func peer_disconnected() -> void:
-    #print(multiplayer.get_unique_id(), ": Player disconnected")
+func peer_disconnected(id: int) -> void:
+    print(multiplayer.get_unique_id(), ": Player ", id, " disconnected")
     pass
     
 func connection_failed() -> void:
@@ -121,6 +109,7 @@ func create_host(is_solo: bool = false) -> bool:
     print("Server ready, awaiting for players")
     # start game for host
     GameController.start_game()
+    # add a player character for the host
     MultiplayerController.send_player_infos({
         "id": multiplayer.get_unique_id(),
         #"name": SaveController.parameters.Multiplayer.name,
@@ -129,10 +118,6 @@ func create_host(is_solo: bool = false) -> bool:
         "score": 0
     })
     
-    players_on_host = get_tree().current_scene.get_node("Players")
-    
-    # add a player character for the host
-    host_created.emit()
     return true
     
 

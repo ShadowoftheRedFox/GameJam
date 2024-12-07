@@ -25,10 +25,16 @@ func set_player_name(player_name: String) -> void:
     $DisplayName.text = player_name
 
 func set_authority(id: int) -> void:
-    $MultiplayerSynchronizer.set_multiplayer_authority(id)
+    $MultiplayerSynchronizer.set_multiplayer_authority(id, true)
+    #print("Current id: ", multiplayer.get_unique_id(), " Target id: ", id)
+
+func disable_others_camera(id: int) -> void:
+    # disable camera of player instance if it's not our player   
+    if id != multiplayer.get_unique_id():
+        $Camera2D.enabled = false
 
 func _physics_process(delta: float) -> void:
-    var multi_auth = $MultiplayerSynchronizer.get_multiplayer_authority()
+    var multi_auth = int($DisplayName.text)
     if multi_auth == multiplayer.get_unique_id() or is_multiplayer == false:
         direction = Input.get_vector("Left", "Right", "Up", "Down")
         ground_direction = Input.get_axis("Left", "Right")

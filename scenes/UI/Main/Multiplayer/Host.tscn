@@ -29,12 +29,11 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "IP du serveur :"
 
-[node name="IP" type="TextEdit" parent="Host/HBoxContainer"]
+[node name="IP" type="LineEdit" parent="Host/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "127.0.0.1"
 placeholder_text = "127.0.0.1"
-scroll_fit_content_height = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Host"]
 layout_mode = 2
@@ -46,13 +45,12 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "Port du serveur :"
 
-[node name="Port" type="TextEdit" parent="Host/HBoxContainer2"]
+[node name="Port" type="LineEdit" parent="Host/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "8000"
 placeholder_text = "8000"
-scroll_fit_content_height = true
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Host"]
 layout_mode = 2
@@ -64,13 +62,12 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "Nombre de joueur max :"
 
-[node name="MaxPlayer" type="TextEdit" parent="Host/HBoxContainer3"]
+[node name="MaxPlayer" type="LineEdit" parent="Host/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "5"
 placeholder_text = "5"
-scroll_fit_content_height = true
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Host"]
 layout_mode = 2
