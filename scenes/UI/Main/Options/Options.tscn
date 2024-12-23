@@ -51,7 +51,6 @@ text = "Général"
 
 [node name="Sound" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Back")
 text = "Son"
 
 [node name="Control" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
@@ -60,7 +59,7 @@ text = "Contrôle"
 
 [node name="Back" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../Sound")
+focus_neighbor_bottom = NodePath("../General")
 text = "Retour"
 
 [node name="Sub" type="MarginContainer" parent="Margin/HBoxContainer"]
@@ -71,6 +70,11 @@ theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 150
 
+[node name="General" parent="Margin/HBoxContainer/Sub" instance=ExtResource("4_jd2n4")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 4
+
 [node name="Sounds" parent="Margin/HBoxContainer/Sub" instance=ExtResource("1_fp6hb")]
 visible = false
 layout_mode = 2
@@ -79,11 +83,6 @@ size_flags_vertical = 4
 [node name="Controls" parent="Margin/HBoxContainer/Sub" instance=ExtResource("2_c5y68")]
 visible = false
 layout_mode = 2
-
-[node name="General" parent="Margin/HBoxContainer/Sub" instance=ExtResource("4_jd2n4")]
-visible = false
-layout_mode = 2
-size_flags_vertical = 4
 
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/General" to="." method="_on_general_pressed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Sound" to="." method="_on_sound_pressed"]

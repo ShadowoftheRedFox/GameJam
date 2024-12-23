@@ -1,8 +1,7 @@
-[gd_scene load_steps=12 format=4 uid="uid://1v3eewmw8xhy"]
+[gd_scene load_steps=11 format=4 uid="uid://1v3eewmw8xhy"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_umgux"]
 [ext_resource type="Texture2D" uid="uid://um2sdjcg0s81" path="res://assets/tilemaps/tilesheet.webp" id="2_srunq"]
-[ext_resource type="PackedScene" uid="uid://cdqa1c43nocou" path="res://scenes/entities/Player.tscn" id="3_fc7m6"]
 [ext_resource type="PackedScene" uid="uid://bw07wguddjt14" path="res://scenes/platforms/1x1.tscn" id="3_qhg7p"]
 [ext_resource type="PackedScene" uid="uid://cx0ibmg12cpt6" path="res://scenes/platforms/2x1.tscn" id="4_8kq6o"]
 [ext_resource type="PackedScene" uid="uid://dgawu328wsjbu" path="res://scenes/platforms/3x1.tscn" id="5_j80ds"]
@@ -108,12 +107,6 @@ position = Vector2(81, -384)
 
 [node name="4x1" parent="Map" instance=ExtResource("6_d1o4c")]
 position = Vector2(-166, -48)
-
-[node name="Player" parent="." instance=ExtResource("3_fc7m6")]
-position = Vector2(362, 28)
-scale = Vector2(1.5, 1.5)
-floor_constant_speed = true
-air_jump_amount = 200
 
 [node name="Spawn" type="Marker2D" parent="."]
 position = Vector2(362, 36)

@@ -8,7 +8,7 @@ const SAVE_PATH = "user://"
 
 var general_config := ConfigFile.new()
 var save_names: Array[String] = []
-var save_real_name: Array[String] = []
+var save_display_names: Array[String] = []
 
 var general_save_data: Array[Dictionary] = []
 var general_save_file: FileAccess = null
@@ -57,7 +57,7 @@ func _init() -> void:
     
     # get the save names
     for key_name in general_config.get_section_keys("Save_names"):
-        save_real_name.append(general_config.get_value("Save_names", key_name, key_name))
+        save_display_names.append(general_config.get_value("Save_names", key_name, key_name))
         save_names.append(key_name)
     
     print("Found ", len(save_names), " saves")
@@ -155,10 +155,18 @@ func save_parameters() -> void:
 func is_save_name(save_name: String) -> bool:
     return save_names.has(save_name)
 
-func get_save_real_name(save_name: String) -> String:
+func is_save_display_name(save_display_name: String) -> bool:
+    return save_display_names.has(save_display_name)
+
+func get_save_display_name(save_name: String) -> String:
     if !is_save_name(save_name):
-        return ""
-    return save_real_name[save_names.find(save_name)]
+        return save_name
+    return save_display_names[save_names.find(save_name)]
+
+func get_save_name(save_display_name: String) -> String:
+    if !is_save_display_name(save_display_name):
+        return save_display_name
+    return save_names[save_display_names.find(save_display_name)] 
 
 # TODO edit argument as needed
 func create_new_save(save_name: String, _content: String = "") -> bool:
@@ -256,6 +264,7 @@ func delete_save(save_name: String) -> bool:
         printerr("Failed to delete save file : ", save_name)
         return false
     
+    save_display_names.erase(get_save_display_name(save_name))
     save_names.erase(save_name)
     general_config.erase_section_key("Save_names", save_name)
     general_config.set_value("General", "save_amount", len(save_names))

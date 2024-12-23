@@ -9,12 +9,12 @@ colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_1q152"]
 gradient = SubResource("Gradient_lj3yv")
-width = 100
-height = 100
+width = 15
+height = 20
 fill_from = Vector2(0.226496, 0.42735)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qpfcv"]
-size = Vector2(18, 20)
+size = Vector2(15, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uk5hm"]
 atlas = ExtResource("2_nbr5n")
@@ -367,16 +367,16 @@ properties/2/spawn = true
 properties/2/replication_mode = 2
 
 [node name="Player" type="CharacterBody2D"]
+scale = Vector2(2, 2)
 script = ExtResource("1_6hxiq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(0, -15)
-scale = Vector2(0.2, 0.3)
+position = Vector2(-1.5, -10)
 texture = SubResource("GradientTexture2D_1q152")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -10)
+position = Vector2(-1.5, -10)
 shape = SubResource("RectangleShape2D_qpfcv")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -386,9 +386,7 @@ position = Vector2(0, -7)
 texture_filter = 1
 position = Vector2(0, -7)
 sprite_frames = SubResource("SpriteFrames_cjfn4")
-animation = &"idle"
-frame = 3
-frame_progress = 0.29779
+animation = &"walk"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_truud")

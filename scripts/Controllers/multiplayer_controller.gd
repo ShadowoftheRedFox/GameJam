@@ -5,12 +5,21 @@ var node_scene: Node = null
 # amount of player spawned
 var index: int = 0
 
+signal player_infos(ind:int)
+
+func _ready() -> void:
+    Server.player_disconnected.connect(handle_player_disconnection)
+    
+func handle_player_disconnection(id: int) -> void:
+    # TODO maybe handle at the end of the frame to let other listeners the time to do their things
+    remove_player.call_deferred(id)
 
 @rpc("any_peer")
 func send_player_infos(data: Dictionary) -> void:
-    if node_scene == null:
-        node_scene = get_tree().root.get_node("/root/" + GameController.MultiPlayerNodeName)
-    
+    if Server.solo_active:
+        # FIXME remove that when we spawn the multiplayer players at their correct position
+        return
+        
     if !Server.multiplayer_active:
         push_warning("Trying to send player info when no server active")
         return
@@ -18,6 +27,15 @@ func send_player_infos(data: Dictionary) -> void:
     if !data.has("id"):
         printerr("Connected instances did not gives any id!")
         return
+        
+    player_infos.emit()
+    
+    if !GameController.game_started:
+        printerr("Game has not started")
+        return
+    
+    if node_scene == null:
+        node_scene = get_tree().root.get_node("/root/" + GameController.MultiPlayerNodeName)
     
     if !GameController.Players.has(data.get("id", 0)):
         GameController.Players.get_or_add(data.get("id"), data)
@@ -25,8 +43,7 @@ func send_player_infos(data: Dictionary) -> void:
         var player_data = GameController.Players.get(data.id, {})
         # player not in scene
         #if node_scene.get_node(str(data.id)) == null:
-        spawn_player(player_data, index)
-        index += 1
+        spawn_player(player_data)
         
     # update all connected peers with the new data
     if multiplayer.is_server():
@@ -55,7 +72,7 @@ func send_player_infos(data: Dictionary) -> void:
     #        spawn_player(player_data, index)
     #    index += 1
 
-func spawn_player(player_data: Dictionary, index: int) -> void:
+func spawn_player(player_data: Dictionary) -> void:
     var currentPlayer: BasePlayer = PlayerScene.instantiate()
     currentPlayer.name = str(player_data.id)
     currentPlayer.set_player_name(player_data.name)
@@ -67,4 +84,10 @@ func spawn_player(player_data: Dictionary, index: int) -> void:
     for spawn: Node2D in get_tree().get_nodes_in_group("PlayerSpawnPoint"):
         if str(index) == spawn.name:
             currentPlayer.global_position = spawn.global_position
+            index+=1
             break
+
+func remove_player(id: int) -> void:
+    var player_data = GameController.Players.get(id, {})
+    node_scene.get_node(str(player_data.id)).queue_free()
+    GameController.Players.erase(id)

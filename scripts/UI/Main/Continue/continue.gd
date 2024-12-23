@@ -13,9 +13,9 @@ func check_save() -> void:
     # TODO gamemode 
     # remove everything
     Options.clear()
-    if len(SaveController.save_names) > 0:
+    if len(SaveController.save_display_names) > 0:
         var i = 0
-        for save_name in SaveController.save_names:
+        for save_name in SaveController.save_display_names:
             Options.add_item(save_name, i)
             i += 1
         # enable other buttons
@@ -35,8 +35,9 @@ func _on_back_pressed() -> void:
 
 
 func _on_resume_pressed() -> void:
-    # TODO load and reseme game
-    pass 
+    # load and resume game
+    var save_display_name = Options.get_item_text(Options.selected)
+    GameController.launch_solo(SaveController.get_save_name(save_display_name))
 
 
 func _on_edit_pressed() -> void:

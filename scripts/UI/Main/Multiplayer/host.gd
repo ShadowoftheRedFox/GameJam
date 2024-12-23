@@ -8,6 +8,7 @@ var PortValid := true
 var MaxPlayerValid := true
 var SaveValid := false
 
+signal host_pressed
 
 func _ready() -> void:
     SaveController.saves_changed.connect(check_save, ConnectFlags.CONNECT_PERSIST)
@@ -38,6 +39,8 @@ func check_save() -> void:
 
 func _on_launch_pressed() -> void:
     GameController.launch_multiplayer(Options.get_item_text(Options.selected))
+    host_pressed.emit()
+    self.hide()
 
 
 func _on_ip_text_changed(new_text: String) -> void:

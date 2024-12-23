@@ -65,4 +65,3 @@ tile_map_data = PackedByteArray("AAD9/wEAAAAFAAAAAAD+/wEAAAAGAAAAAAD//wEAAAAGAAA
 tile_set = SubResource("TileSet_6u1k2")
 
 [node name="Player" parent="." instance=ExtResource("3_4fmae")]
-scale = Vector2(2, 2)

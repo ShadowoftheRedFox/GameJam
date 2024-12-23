@@ -6,6 +6,8 @@ extends Control
 var IpValid := true
 var PortValid := true
 
+signal join_pressed
+
 func _ready() -> void:
     enable_launch()
 
@@ -13,7 +15,12 @@ func enable_launch() -> void:
     Launch.disabled = !(IpValid and PortValid)
 
 func _on_launch_pressed() -> void:
-    GameController.join_multiplayer()
+    if !GameController.join_multiplayer():
+        Error.text = "Erreur lors de la connexion à l'hôte"
+        return
+        
+    join_pressed.emit()
+    self.hide()
 
 
 func _on_ip_text_changed(new_text: String) -> void:
