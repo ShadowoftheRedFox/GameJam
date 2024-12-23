@@ -16,6 +16,34 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_v1k7h")
 
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+size_flags_stretch_ratio = 2.0
+
+[node name="Buff" parent="CenterContainer" instance=ExtResource("2_s43ht")]
+particle_amount = 100
+particle_scale_max = 5.0
+particle_color = Color(0.679518, 0.0882298, 0.368955, 1)
+particle_lifetime = 3.0
+particle_spread = 20.0
+particle_direction = Vector2(-5, -5)
+particle_gravity = Vector2(5, 5)
+particle_emission_shape = 6
+sphere_radius = 10.0
+ring_axis = Vector3(0, 0, 1)
+ring_radius = 45.0
+ring_inner_radius = 35.0
+orb_color = Color(0.84956, 1.99743e-06, 3.85046e-07, 1)
+
 [node name="Main" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -33,6 +61,7 @@ horizontal_alignment = 1
 
 [node name="MarginContainer" type="HBoxContainer" parent="Main"]
 layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="Main/MarginContainer"]
 layout_mode = 2
@@ -69,27 +98,6 @@ text = "Options"
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../New")
 text = "Quitter"
-
-[node name="CenterContainer" type="CenterContainer" parent="Main/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
-size_flags_stretch_ratio = 2.0
-
-[node name="Buff" parent="Main/MarginContainer/CenterContainer" instance=ExtResource("2_s43ht")]
-particle_amount = 100
-particle_scale_max = 5.0
-particle_color = Color(0.679518, 0.0882298, 0.368955, 1)
-particle_lifetime = 3.0
-particle_spread = 20.0
-particle_direction = Vector2(-5, -5)
-particle_gravity = Vector2(5, 5)
-particle_emission_shape = 6
-sphere_radius = 10.0
-ring_axis = Vector3(0, 0, 1)
-ring_radius = 45.0
-ring_inner_radius = 35.0
-orb_color = Color(0.992157, 1, 1, 1)
 
 [node name="Multiplayer" parent="." instance=ExtResource("3_8c6ax")]
 visible = false

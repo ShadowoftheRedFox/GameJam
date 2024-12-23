@@ -254,6 +254,13 @@ func update_save(save_name: String, _content: String = "") -> bool:
     print("Successfully updated ", save_name)
     return true
     
+func save_game(save_name: String) -> bool:
+    print("Saving...")
+    var save = SaveController.get_save(save_name)
+    
+    print("Saved")
+    return true
+    
 func delete_save(save_name: String) -> bool:
     if !is_save_name(save_name):
         return false

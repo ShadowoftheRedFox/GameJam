@@ -11,6 +11,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_icrvw")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -39,24 +41,48 @@ theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 80
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MarginContainer/MarginContainer"]
+[node name="Main" type="VBoxContainer" parent="MarginContainer/MarginContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="Resume" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/VBoxContainer"]
+[node name="Resume" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Main"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../Quit")
 text = "Reprendre"
 
-[node name="Settings" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/VBoxContainer"]
+[node name="Settings" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Main"]
 layout_mode = 2
 text = "Options"
 
-[node name="Quit" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/VBoxContainer"]
+[node name="Save" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Main"]
+layout_mode = 2
+text = "Sauvegarder"
+
+[node name="Quit" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Main"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../Resume")
 text = "Quitter"
+
+[node name="Option" type="VBoxContainer" parent="MarginContainer/MarginContainer/MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Sound" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Option"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Back")
+text = "Son"
+
+[node name="Control" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Option"]
+layout_mode = 2
+text = "Contrôle"
+
+[node name="Back" type="Button" parent="MarginContainer/MarginContainer/MarginContainer/Option"]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../Sound")
+text = "Retour"
 
 [node name="Side" type="MarginContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
@@ -67,9 +93,19 @@ size_flags_stretch_ratio = 2.0
 layout_mode = 2
 
 [node name="Sounds" parent="MarginContainer/MarginContainer/Side/Options" instance=ExtResource("1_tj7fh")]
+visible = false
 layout_mode = 2
 size_flags_vertical = 6
 
 [node name="Controls" parent="MarginContainer/MarginContainer/Side/Options" instance=ExtResource("2_kumwd")]
+visible = false
 layout_mode = 2
 size_flags_vertical = 6
+
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Option/Sound" to="." method="_on_sound_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Option/Control" to="." method="_on_control_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Option/Back" to="." method="_on_back_pressed"]

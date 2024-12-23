@@ -5,12 +5,16 @@ var Players = {}
 const MultiplayerScene = preload("res://tests/multiplayer/roomtestmulti.tscn")
 const MultiPlayerNodeName = "MultiplayerScene"
 var game_started: bool = false
+var game_paused: bool = false
 var current_map: Array = []
 var current_room: MapRoom = null
-# so, we need to keep track of player in solo between rooms
+# we need to keep track of player in solo between rooms
 # so here we put the node
 # TODO think of something similar for multiplayer
 var player_node: BasePlayer = null
+
+func _init() -> void:
+    process_mode = PROCESS_MODE_ALWAYS
 
 func new_game(save_name: String, difficulty: int, map_size: int) -> void:
     # TODO create save
@@ -78,3 +82,36 @@ func hide_menu() -> void:
         if child.name == "MainMenu":
             # queue free?
             child.set_visible(false)
+
+func show_menu() -> void:
+    # show main menu
+    for child in get_tree().root.get_children():
+        if child.name == "MainMenu":
+            # queue free?
+            child.set_visible(true)
+
+func pause() -> void:
+    print("Called pause")
+    GameController.game_paused = true
+    player_node.get_node("Camera2D/Pause").show()
+    if Server.solo_active == true:
+        get_tree().paused = true
+    
+func unpause() -> void: 
+    print("Called unpause")
+    GameController.game_paused = false
+    player_node.get_node("Camera2D/Pause").hide()
+    if Server.solo_active == true:
+        get_tree().paused = false
+
+func stop_game() -> void:
+    SaveController.save_game(save_name_hosted)
+    Server.disconnect_server()
+    GeneratorController.free_map(current_map)
+    player_node.queue_free()
+    
+    game_started = false
+    current_map = []
+    current_room = null
+    player_node = null
+    show_menu()

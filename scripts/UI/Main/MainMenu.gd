@@ -1,4 +1,5 @@
 extends Control
+@onready var buff: Buff = $CenterContainer/Buff
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,11 +18,13 @@ func _on_new_pressed() -> void:
     $Main.hide()
     $NewGame.show()
     $NewGame/MarginContainer/VBoxContainer/Back.grab_focus()
+    buff.particle_color = Color.DARK_SLATE_BLUE
 
 func _on_continue_pressed() -> void:
     $Main.hide()
     $Continue.show()
     $Continue/MarginContainer/VBoxContainer/Back.grab_focus()
+    buff.particle_color = Color.DARK_ORANGE
     
 
 func _on_multiplayer_pressed() -> void:
@@ -29,12 +32,14 @@ func _on_multiplayer_pressed() -> void:
     $Main.hide()
     $Multiplayer.show()
     $Multiplayer/Margin/HBoxContainer/Main/VBoxContainer/Join.grab_focus()
+    buff.particle_color = Color.YELLOW
 
 func _on_options_pressed() -> void:
     # Hide all menu and show options
     $Main.hide()
     $Options.show()
     $Options/Margin/HBoxContainer/Main/VBoxContainer/Sound.grab_focus()
+    buff.particle_color = Color.DARK_BLUE
 
 func _on_quit_pressed() -> void:
     # quit game
@@ -43,6 +48,7 @@ func _on_quit_pressed() -> void:
 func generic_back_pressed() -> void:
     $Main.show()
     $Main/MarginContainer/MarginContainer/VBoxContainer/New.grab_focus()
+    buff.particle_color = Color.CRIMSON
 
 func _on_multiplayer_back_pressed() -> void:
     $Multiplayer.hide()

@@ -1,4 +1,5 @@
 @tool
+class_name Buff
 extends Node2D
 
 enum BuffPreset {
@@ -28,6 +29,8 @@ enum BuffPreset {
         return buff_name
     set(value):
         buff_name = value
+        if self.is_node_ready():
+            self.name = buff_name
 @export_group("Particle")
 @export var particle_amount: int = 8:
     get: 
@@ -163,7 +166,9 @@ enum BuffPreset {
         return size
     set(value):
         size = value
-        # TODO size
+        if self.is_node_ready():
+            light.scale = Vector2(size, size)
+@export_group("Sprite")
 @export var texture: Texture2D = null:
     get: 
         return texture
@@ -232,7 +237,8 @@ func apply_to_children() -> void:
     light.color = orb_color
     
     # TODO what change size? particle? sprite? or scale everything?
-    # size
+    # size is scale the orb
+    light.scale = Vector2(size, size)
     
     sprite.texture = texture
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=51 format=3 uid="uid://cdqa1c43nocou"]
+[gd_scene load_steps=52 format=3 uid="uid://cdqa1c43nocou"]
 
 [ext_resource type="Script" path="res://scripts/entities/player.gd" id="1_6hxiq"]
+[ext_resource type="PackedScene" uid="uid://d25ombvkr34fi" path="res://scenes/UI/Pause/Pause.tscn" id="2_g4qv6"]
 [ext_resource type="Texture2D" uid="uid://teija122mjlo" path="res://assets/spritesheets/Soldier/Soldier.png" id="2_nbr5n"]
 
 [sub_resource type="Gradient" id="Gradient_lj3yv"]
@@ -379,9 +380,6 @@ texture = SubResource("GradientTexture2D_1q152")
 position = Vector2(-1.5, -10)
 shape = SubResource("RectangleShape2D_qpfcv")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, -7)
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 position = Vector2(0, -7)
@@ -398,3 +396,16 @@ offset_right = 73.0
 offset_bottom = -34.0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -7)
+
+[node name="Pause" parent="Camera2D" instance=ExtResource("2_g4qv6")]
+visible = false
+offset_left = -288.0
+offset_top = -162.0
+offset_right = 864.0
+offset_bottom = 486.0
+scale = Vector2(0.5, 0.5)
+size_flags_horizontal = 0
+size_flags_vertical = 0

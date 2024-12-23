@@ -1,9 +1,6 @@
 class_name BasePlayer
 extends CharacterBody2D
 
-#### Multiplayer ####
-var is_multiplayer: bool = false
-
 #### Movement ####
 @export var WALK_SPEED: float = 300.0
 @export var AIR_SPEED: float = 300.0
@@ -12,8 +9,8 @@ var is_multiplayer: bool = false
 @export var AIR_JUMP_FORCE: float = 300.0
 @export var WALL_JUMP_FORCE: float = 300.0
 @export var AIR_JUMP_AMOUNT: int = 2;
-@export var MAX_INERTIE_X: float = 1000.0
-@export var MAX_INERTIE_Y: float = 1000.0
+@export var MAX_INERTIA_X: float = 1000.0
+@export var MAX_INERTIA_Y: float = 1000.0
 var air_jump_remaining: int = AIR_JUMP_AMOUNT
 
 var direction: Vector2 = Vector2.ZERO
@@ -36,8 +33,12 @@ func disable_others_camera(id: int) -> void:
         $Camera2D.enabled = false
 
 func _physics_process(delta: float) -> void:
+    if Input.is_action_just_pressed("Pause"):
+        GameController.pause()
+        return
+        
     var multi_auth = int($DisplayName.text)
-    if multi_auth == multiplayer.get_unique_id() or is_multiplayer == false:
+    if multi_auth == multiplayer.get_unique_id() or Server.solo_active == true:
         direction = Input.get_vector("Left", "Right", "Up", "Down")
         ground_direction = Input.get_axis("Left", "Right")
         
@@ -74,9 +75,12 @@ func _physics_process(delta: float) -> void:
         else:
             if Input.is_action_just_pressed("Jump") and air_jump_remaining > 0:
                 velocity.y = -JUMP_FORCE
-                #air_jump_remaining-=1
+                air_jump_remaining-=1
     
     if not is_on_floor():
         velocity += get_gravity() * delta
+    
+    # clamp speed
+    velocity = velocity.clamp(Vector2(-MAX_INERTIA_X, -MAX_INERTIA_Y),Vector2(MAX_INERTIA_X, MAX_INERTIA_Y))
     
     move_and_slide()

@@ -40,9 +40,12 @@ text = "Nom de la sauvegarde :"
 [node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_top = NodePath("../../Back")
+focus_neighbor_bottom = NodePath("../../Resume")
 
 [node name="Resume" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../SaveName/OptionButton")
 disabled = true
 text = "Reprendre la partie"
 
@@ -58,6 +61,7 @@ text = "Effacer la sauvegarde"
 
 [node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../SaveName/OptionButton")
 text = "Retour"
 
 [node name="Error" type="Label" parent="MarginContainer/VBoxContainer"]

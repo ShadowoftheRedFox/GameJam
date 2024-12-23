@@ -91,3 +91,4 @@ func remove_player(id: int) -> void:
     var player_data = GameController.Players.get(id, {})
     node_scene.get_node(str(player_data.id)).queue_free()
     GameController.Players.erase(id)
+    index-=1

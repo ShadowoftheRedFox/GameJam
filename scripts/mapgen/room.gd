@@ -78,6 +78,7 @@ func area_entered(body: Node2D, direction: String) -> void:
     # TODO transition
     # change player pos and display next room
     get_tree().root.add_child(next_room)
+    GameController.current_room = next_room
     # FIXME get the same relative pos from door to door (and not spawn from center)
     GameController.player_node.global_position = area.global_position
     get_tree().root.remove_child.call_deferred(self)

@@ -8,6 +8,7 @@ signal back_pressed
 func _ready() -> void:
     check_save()
     SaveController.saves_changed.connect(check_save, ConnectFlags.CONNECT_PERSIST)
+    $MarginContainer/VBoxContainer/Resume.grab_focus()
     
 func check_save() -> void:
     # TODO gamemode 
@@ -38,6 +39,7 @@ func _on_resume_pressed() -> void:
     # load and resume game
     var save_display_name = Options.get_item_text(Options.selected)
     GameController.launch_solo(SaveController.get_save_name(save_display_name))
+    back_pressed.emit()
 
 
 func _on_edit_pressed() -> void:
