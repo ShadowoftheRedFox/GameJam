@@ -6,6 +6,9 @@ var Room: PackedScene = load("res://scenes/levels/BaseRoom.tscn")
 # TODO: USE A REAL ALGORITHM
 var rng = RandomNumberGenerator.new()
 
+func set_seed(save_seed: int) -> void:
+    rng.seed = save_seed
+
 # Listen if you can't figure out what a function does based on its signature
 # then I screwed up.
 func create_map(width: int, height: int, probability: float) -> Array:
@@ -103,4 +106,37 @@ func create_map(width: int, height: int, probability: float) -> Array:
                     map[y][x + 1].set_connection("left", node)
 
 
+    return map
+
+func load_map(room_types: Array, width: int, height: int) -> Array:
+    var map = []
+
+    # Create nodes
+    for y in range(height):
+        var row = []
+        for x in range(width):
+            var node := Room.instantiate()
+            node.room_id = GeneratorController.mapgen_get_next_unique_id()
+            row.append(node)
+        map.append(row)
+        
+    for y in range(height):
+        for x in range(width):
+            var room: MapRoom = map[y][x]
+            
+            var room_right: Node = null
+            var room_up: Node = null
+            var room_down: Node = null
+            var room_left: Node = null
+            
+            if x > 0:
+                room_left = map[y][x-1]
+            if x < width - 1:
+                room_right = map[y][x+1]
+            if y > 0:
+                room_up = map[y-1][x]
+            if y < height - 1:
+                room_down = map[y+1][x]
+                
+            room.set_room(room_types[y][x], room_left, room_right, room_up, room_down)
     return map

@@ -4,12 +4,13 @@ signal back_pressed
 
 
 func _on_back_pressed() -> void:
+    hide_all()
     back_pressed.emit()
 
 func hide_all() -> void:
     $Margin/HBoxContainer/Sub/Controls.hide()
     $Margin/HBoxContainer/Sub/Sounds.hide()
-    $Margin/HBoxContainer/Sub/Sounds.hide()
+    $Margin/HBoxContainer/Sub/General.hide()
 
 func _on_sound_pressed() -> void:
     hide_all()

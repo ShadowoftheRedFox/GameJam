@@ -34,11 +34,10 @@ layout_mode = 2
 size_flags_horizontal = 2
 text = "Nom de joueur :"
 
-[node name="TextEdit" type="TextEdit" parent="Sound/PlayerName/HBoxContainer"]
+[node name="TextEdit" type="LineEdit" parent="Sound/PlayerName/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Ploof"
-scroll_fit_content_height = true
 
 [node name="PlayerColor" type="MarginContainer" parent="Sound"]
 layout_mode = 2

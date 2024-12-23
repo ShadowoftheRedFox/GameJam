@@ -5,14 +5,16 @@ extends CharacterBody2D
 var is_multiplayer: bool = false
 
 #### Movement ####
-@export var walk_speed: float = 300.0
-@export var air_speed: float = 300.0
-@export var wall_speed: float = 300.0
-@export var jump_force: float = 300.0
-@export var air_jump_force: float = 300.0
-@export var wall_jump_force: float = 300.0
-@export var air_jump_amount: int = 2;
-var air_jump_remaining: int = air_jump_amount
+@export var WALK_SPEED: float = 300.0
+@export var AIR_SPEED: float = 300.0
+@export var WALL_SPEED: float = 300.0
+@export var JUMP_FORCE: float = 300.0
+@export var AIR_JUMP_FORCE: float = 300.0
+@export var WALL_JUMP_FORCE: float = 300.0
+@export var AIR_JUMP_AMOUNT: int = 2;
+@export var MAX_INERTIE_X: float = 1000.0
+@export var MAX_INERTIE_Y: float = 1000.0
+var air_jump_remaining: int = AIR_JUMP_AMOUNT
 
 var direction: Vector2 = Vector2.ZERO
 var ground_direction: float = 0.0
@@ -25,10 +27,16 @@ func set_player_name(player_name: String) -> void:
     $DisplayName.text = player_name
 
 func set_authority(id: int) -> void:
-    $MultiplayerSynchronizer.set_multiplayer_authority(id)
+    $MultiplayerSynchronizer.set_multiplayer_authority(id, true)
+    #print("Current id: ", multiplayer.get_unique_id(), " Target id: ", id)
+
+func disable_others_camera(id: int) -> void:
+    # disable camera of player instance if it's not our player   
+    if id != multiplayer.get_unique_id():
+        $Camera2D.enabled = false
 
 func _physics_process(delta: float) -> void:
-    var multi_auth = $MultiplayerSynchronizer.get_multiplayer_authority()
+    var multi_auth = int($DisplayName.text)
     if multi_auth == multiplayer.get_unique_id() or is_multiplayer == false:
         direction = Input.get_vector("Left", "Right", "Up", "Down")
         ground_direction = Input.get_axis("Left", "Right")
@@ -46,7 +54,7 @@ func _physics_process(delta: float) -> void:
         #velocity = direction * air_speed
         
         if ground_direction:
-            velocity.x = ground_direction * walk_speed
+            velocity.x = ground_direction * WALK_SPEED
             
             # flip the sprite 
             if ground_direction >= 0:
@@ -56,17 +64,17 @@ func _physics_process(delta: float) -> void:
                 sprite_2d.flip_h = true
                 anim_sprite_2d.flip_h = true
         else:
-            velocity.x = move_toward(velocity.x, 0, walk_speed)
+            velocity.x = move_toward(velocity.x, 0, WALK_SPEED)
         
         # jump
         if is_on_floor():
-            air_jump_remaining = air_jump_amount
+            air_jump_remaining = AIR_JUMP_AMOUNT
             if Input.is_action_just_pressed("Jump"):
-                velocity.y = -jump_force
+                velocity.y = -JUMP_FORCE
         else:
             if Input.is_action_just_pressed("Jump") and air_jump_remaining > 0:
-                velocity.y = -jump_force
-                air_jump_remaining-=1
+                velocity.y = -JUMP_FORCE
+                #air_jump_remaining-=1
     
     if not is_on_floor():
         velocity += get_gravity() * delta

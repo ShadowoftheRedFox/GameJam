@@ -8,6 +8,7 @@ var server_ip: String = "127.0.0.1"
 var server_max_player: int = 2
 
 var multiplayer_active: bool = false
+var solo_active: bool = false
 
 # to compress transmitted data
 var compressed_data: bool = false
@@ -17,19 +18,9 @@ var compression_method: ENetConnection.CompressionMode = ENetConnection.COMPRESS
 var peer: ENetMultiplayerPeer
 # the scene loaded when a player joins
 var player_scene: PackedScene = load("res://scenes/entities/Player.tscn")
-# the node containing all player connected on host
-var players_on_host: Node2D 
 
-# gets calls on server and clients 
-signal player_connected
-signal player_diconnected
-
-# only on host
-signal host_created
-
-# only on client
-signal connected_to_host
-
+signal player_connected(id:int)
+signal player_disconnected(id:int)
 
 func _ready() -> void:
     # add listener for connection and deconnection of others
@@ -42,13 +33,15 @@ func _ready() -> void:
     multiplayer.connection_failed.connect(connection_failed)
     multiplayer.connected_to_server.connect(connected_to_server)
 
-func peer_connected() -> void:
-    #print(multiplayer.get_unique_id(), ": Player connected")
+func peer_connected(id: int) -> void:
+    print(multiplayer.get_unique_id(), ": Player ", id, " connected")
+    player_connected.emit(id)
     pass
     
     
-func peer_disconnected() -> void:
-    #print(multiplayer.get_unique_id(), ": Player disconnected")
+func peer_disconnected(id: int) -> void:
+    print(multiplayer.get_unique_id(), ": Player ", id, " disconnected")
+    player_disconnected.emit(id)
     pass
     
 func connection_failed() -> void:
@@ -101,10 +94,10 @@ func create_host(is_solo: bool = false) -> bool:
         ERR_ALREADY_IN_USE: # port can not be attributed
             push_warning("The server has already been created!")
         ERR_CANT_CREATE: # error while creating
-            printerr("Could not create the server!")
+            push_error("Could not create the server!")
             return false
         _: # handling others
-            printerr("Error while creating server: ", error)
+            push_error("Error while creating server: ", error)
             return false
     
     # compress packets if we want
@@ -116,11 +109,13 @@ func create_host(is_solo: bool = false) -> bool:
     
     # to differentiate between solo server and mutiplayer ones
     multiplayer_active = !is_solo
+    solo_active = is_solo
     
     # server ready at that point
     print("Server ready, awaiting for players")
     # start game for host
-    GameController.start_game()
+    #GameController.start_game()
+    # add a player character for the host
     MultiplayerController.send_player_infos({
         "id": multiplayer.get_unique_id(),
         #"name": SaveController.parameters.Multiplayer.name,
@@ -129,18 +124,15 @@ func create_host(is_solo: bool = false) -> bool:
         "score": 0
     })
     
-    players_on_host = get_tree().current_scene.get_node("Players")
-    
-    # add a player character for the host
-    host_created.emit()
     return true
     
 
 # fires only on client when join host
-func join_server() -> void:
+func join_server() -> bool:
     # instanciate a peer
     peer = ENetMultiplayerPeer.new()
-    peer.create_client(server_ip, server_port)
+    if peer.create_client(server_ip, server_port) != OK:
+        return false
     
     if compressed_data == true:
         peer.host.compress(compression_method)
@@ -149,6 +141,15 @@ func join_server() -> void:
     multiplayer_active = true
     
     #connected_to_host.emit()
-    GameController.start_game()
-    #print("Peer connected to host: ", multiplayer.get_unique_id())
+    #GameController.start_game()
+    print("Peer connected to host: ", multiplayer.get_unique_id())
+    return true
     
+func disconnect_server() -> void:
+    # TODO deconnection from server
+    multiplayer_active = false
+    solo_active = false
+    if multiplayer.is_server():
+        pass
+    else:
+        pass

@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://cfk1t3qe38si4"]
+[gd_scene load_steps=2 format=3 uid="uid://cfk1t3qe38si4"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/Options/sounds.gd" id="1_v2lqk"]
 
 [node name="Sounds" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_v2lqk")
 
 [node name="Sound" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -79,3 +82,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 100.0
+
+[connection signal="value_changed" from="Sound/Music/HBoxContainer/HSlider" to="." method="_on_music_value_changed"]
+[connection signal="value_changed" from="Sound/Sfx/HBoxContainer/HSlider" to="." method="_on_sfx_value_changed"]
+[connection signal="value_changed" from="Sound/Entities/HBoxContainer/HSlider" to="." method="_on_entities_value_changed"]
