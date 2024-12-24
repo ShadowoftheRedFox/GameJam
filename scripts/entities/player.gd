@@ -19,6 +19,11 @@ var ground_direction: float = 0.0
 #### Graphic ####
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+
+#func _ready() -> void:
+    ## set ratio for pause menu and label
+    #$DisplayName.scale = Vector2(1 / self.scale.x, 1 / self.scale.y)
+    #$Camera2D/Pause.scale = Vector2(1 / self.scale.x, 1 / self.scale.y)
     
 func set_player_name(player_name: String) -> void:
     $DisplayName.text = player_name

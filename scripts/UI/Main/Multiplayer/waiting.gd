@@ -1,42 +1,68 @@
 extends Control
 
 signal back_pressed
+var players_waiting: Array[int] = []
 
 func _ready() -> void:
-    print("Listening for server")
-    Server.player_connected.connect(display_player_waiter, CONNECT_PERSIST)
-    Server.player_disconnected.connect(remove_player, CONNECT_PERSIST)
+    Server.player_disconnected.connect(remove_player)
+    MultiplayerController.player_infos.connect(display_player)
 
 func _on_back_pressed() -> void:
     back_pressed.emit()
+    # remove waiting player
+    remove_all_players()
     # disconnect from server
-    Server.disconnect_server()
+    GameController.stop_game()
 
 func _on_start_pressed() -> void:
-    # TODO start game and everything for everyone
-    GameController.start_game()
-    pass
-
-func display_player_waiter(id: int) -> void:
-    # we know a signal is incoming
-    MultiplayerController.player_infos.connect(display_player.bind(id))
-    print("Waiting for infos")
+    # start game and everything for everyone
+    if multiplayer.is_server():
+        MultiplayerController.start_game.rpc()
     
-func display_player(id: int) -> void:
-    #if !GameController.game_started: 
-    #    return
-        
+func display_player(player_data: Dictionary) -> void:
+    if players_waiting.has(player_data.id):
+        return
+    
     var label: Label = Label.new()
-    var player_data: Dictionary = GameController.Players.get(id, {})
     label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
     label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-    label.name = player_data.name
+    label.name = str(player_data.id)
     label.text = player_data.name
     
     $VBoxContainer/PlayerList.add_child(label)
+    players_waiting.append(player_data.id)
+    update_buttons()
 
 func remove_player(id: int) -> void:
-    var player_data: Dictionary = GameController.Players.get(id, {})
-    if player_data.has("name"):
-        var label: Label = $VBoxContainer/PlayerList.get_node(player_data.name)
+    # host has disconnected
+    if id == 1:
+        remove_all_players()
+        back_pressed.emit()
+    if $VBoxContainer/PlayerList.has_node(str(id)) == true:
+        $VBoxContainer/PlayerList.get_node(str(id)).queue_free()
+        players_waiting.erase(id)
+        update_buttons()
+
+func remove_all_players() -> void:
+    for label in $VBoxContainer/PlayerList.get_children():
         label.queue_free()
+    players_waiting = []
+    update_buttons()
+
+
+func _on_visibility_changed() -> void:
+    if is_node_ready():
+        update_buttons()
+        
+func update_buttons() -> void:
+    
+    if multiplayer.multiplayer_peer != null and multiplayer.is_server():
+        if GameController.Players.size() < 2:
+            $VBoxContainer/Actions/Start.disabled = true
+            $VBoxContainer/Actions/Start.text = "Il faut au moins 2 joueurs pour commencer"
+        else:
+            $VBoxContainer/Actions/Start.disabled = false
+            $VBoxContainer/Actions/Start.text = "Commencer la partie"
+    else:
+        $VBoxContainer/Actions/Start.disabled = true
+        $VBoxContainer/Actions/Start.text = "Seul l'hôte peut commencer la partie"

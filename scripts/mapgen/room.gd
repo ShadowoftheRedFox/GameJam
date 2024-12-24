@@ -111,22 +111,22 @@ func generate_room() -> bool:
         path += "down_"
         var area: Area2D = $Map/Up
         if area != null:
-            area.body_entered.connect(area_entered.bind("down"), CONNECT_PERSIST)
+            area.body_entered.connect(area_entered.bind("down"))
     if get_connection("left") != null:
         path += "left_"
         var area: Area2D = $Map/Down
         if area != null:
-            area.body_entered.connect(area_entered.bind("left"), CONNECT_PERSIST)
+            area.body_entered.connect(area_entered.bind("left"))
     if get_connection("right") != null:
         path += "right_"
         var area: Area2D = $Map/Left
         if area != null:
-            area.body_entered.connect(area_entered.bind("right"), CONNECT_PERSIST)
+            area.body_entered.connect(area_entered.bind("right"))
     if get_connection("up") != null:
         path += "up_"
         var area: Area2D = $Map/Right
         if area != null:
-            area.body_entered.connect(area_entered.bind("up"), CONNECT_PERSIST)
+            area.body_entered.connect(area_entered.bind("up"))
         
     if path.ends_with("_"):
         path = path.erase(len(path)-1)

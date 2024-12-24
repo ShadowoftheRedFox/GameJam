@@ -60,7 +60,7 @@ func _init() -> void:
         save_display_names.append(general_config.get_value("Save_names", key_name, key_name))
         save_names.append(key_name)
     
-    print("Found ", len(save_names), " saves")
+    #print("Found ", len(save_names), " saves")
     saves_changed.emit()
     parameters_changed.emit()
     
@@ -256,7 +256,8 @@ func update_save(save_name: String, _content: String = "") -> bool:
     
 func save_game(save_name: String) -> bool:
     print("Saving...")
-    var save = SaveController.get_save(save_name)
+    # TODO save game
+    var _save = SaveController.get_save(save_name)
     
     print("Saved")
     return true

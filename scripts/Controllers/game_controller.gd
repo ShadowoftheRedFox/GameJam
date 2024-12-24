@@ -4,6 +4,7 @@ var save_name_hosted: String = ""
 var Players = {}
 const MultiplayerScene = preload("res://tests/multiplayer/roomtestmulti.tscn")
 const MultiPlayerNodeName = "MultiplayerScene"
+const PlayerScene = preload("res://scenes/entities/Player.tscn")
 var game_started: bool = false
 var game_paused: bool = false
 var current_map: Array = []
@@ -65,17 +66,6 @@ func launch_multiplayer(save_name: String) -> void:
 func join_multiplayer() -> bool:
     return Server.join_server()
 
-@rpc("any_peer")
-func start_game() -> void:
-    hide_menu()
-    game_started = true
-    #var map: Node = MultiplayerScene.instantiate()
-    #map.name = "MultiplayerScene"
-    #get_tree().root.add_child(map)
-    get_tree().root.add_child(current_map[0][0])
-    # TODO load game and spread info to all peer
-    # TODO spawn player in different room and at coos
-
 func hide_menu() -> void:
     # hide main menu
     for child in get_tree().root.get_children():
@@ -105,10 +95,13 @@ func unpause() -> void:
         get_tree().paused = false
 
 func stop_game() -> void:
-    SaveController.save_game(save_name_hosted)
-    Server.disconnect_server()
+    if game_started == true:
+        SaveController.save_game(save_name_hosted)
+    Server.stop_server()
     GeneratorController.free_map(current_map)
-    player_node.queue_free()
+    GameController.Players = {}
+    if player_node != null:
+        player_node.queue_free()
     
     game_started = false
     current_map = []

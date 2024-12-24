@@ -4,24 +4,26 @@ var can_unpause: bool = false
 
 @onready var control = $MarginContainer/MarginContainer/Side/Options/Controls
 @onready var sound = $MarginContainer/MarginContainer/Side/Options/Sounds
-
+@onready var resume =  $MarginContainer/MarginContainer/MarginContainer/Main/Resume
 func _init() -> void:
     process_mode = PROCESS_MODE_WHEN_PAUSED
 
 func _ready() -> void:
-    $MarginContainer/MarginContainer/MarginContainer/Main/Resume.grab_focus()
+    resume.grab_focus()
 
 func _input(event: InputEvent) -> void:
     if event.is_action_released("Pause"):
         if can_unpause:
             GameController.unpause()
             can_unpause = false
+            resume.grab_focus()
         else:
             can_unpause = true
 
 func _on_resume_pressed() -> void:
     GameController.unpause()
     can_unpause = false
+    resume.grab_focus()
 
 
 func _on_settings_pressed() -> void:
@@ -57,4 +59,5 @@ func _on_save_pressed() -> void:
 
 func _on_quit_pressed() -> void:
     GameController.unpause()
+    resume.grab_focus()
     GameController.stop_game()

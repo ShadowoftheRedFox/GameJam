@@ -7,7 +7,7 @@ signal back_pressed
 
 func _ready() -> void:
     check_save()
-    SaveController.saves_changed.connect(check_save, ConnectFlags.CONNECT_PERSIST)
+    SaveController.saves_changed.connect(check_save)
     $MarginContainer/VBoxContainer/Resume.grab_focus()
     
 func check_save() -> void:

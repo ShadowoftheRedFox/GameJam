@@ -22,7 +22,7 @@ func _input(event: InputEvent) -> void:
 		is_waiting = false
 
 func _ready() -> void:
-	SaveController.parameters_changed.connect(_on_parameters_changed, ConnectFlags.CONNECT_PERSIST)
+	SaveController.parameters_changed.connect(_on_parameters_changed)
 	setup(false)
 	
 func setup(load_from_InputMap: bool = true) -> void:
@@ -82,7 +82,7 @@ func create_input_button(label_name: String, key_name: String) -> void:
 	CC.add_child(node)
 	
 	# listen to event
-	button.pressed.connect(update_input.bind(label_name, button), ConnectFlags.CONNECT_PERSIST)
+	button.pressed.connect(update_input.bind(label_name, button))
 
 func update_input(label_name: String, button: Button):
 	# a new key want to be edited, cancel previous

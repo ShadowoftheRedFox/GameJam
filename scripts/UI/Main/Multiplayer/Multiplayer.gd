@@ -35,6 +35,7 @@ func _on_join_pressed() -> void:
 
 func _on_waiting_back_pressed() -> void:
     $Margin/HBoxContainer/Sub/Waiting.hide()
+    $Margin/HBoxContainer/Main.show()
     match  previous_menu:
         PreviousMenu.None: pass
         PreviousMenu.Join: $Margin/HBoxContainer/Sub/Join.show()
@@ -43,7 +44,9 @@ func _on_waiting_back_pressed() -> void:
 
 func _on_join_multiplayer_pressed() -> void:
     $Margin/HBoxContainer/Sub/Waiting.show()
+    $Margin/HBoxContainer/Main.hide()
 
 
 func _on_host_multiplayer_pressed() -> void:
     $Margin/HBoxContainer/Sub/Waiting.show()
+    $Margin/HBoxContainer/Main.hide()

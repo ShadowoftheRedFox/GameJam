@@ -1,7 +1,7 @@
 extends Control
 
 func _ready() -> void:
-    SaveController.parameters_changed.connect(_on_parameters_changed, ConnectFlags.CONNECT_PERSIST)
+    SaveController.parameters_changed.connect(_on_parameters_changed)
 
 func _on_parameters_changed() -> void:
     $Sound/Music/HBoxContainer/HSlider.value = float(SaveController.parameters.Sounds.music)

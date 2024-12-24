@@ -11,7 +11,7 @@ var SaveValid := false
 signal host_pressed
 
 func _ready() -> void:
-    SaveController.saves_changed.connect(check_save, ConnectFlags.CONNECT_PERSIST)
+    SaveController.saves_changed.connect(check_save)
     check_save()
 
 

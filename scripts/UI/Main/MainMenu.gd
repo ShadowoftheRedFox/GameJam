@@ -8,7 +8,7 @@ func _ready() -> void:
     
     # enable the button is any save available
     update_continue_state()
-    SaveController.saves_changed.connect(update_continue_state, ConnectFlags.CONNECT_PERSIST)
+    SaveController.saves_changed.connect(update_continue_state)
 
 func update_continue_state() -> void:
     # enable or disable the continue button

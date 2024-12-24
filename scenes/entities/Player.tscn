@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://cdqa1c43nocou"]
+[gd_scene load_steps=53 format=3 uid="uid://cdqa1c43nocou"]
 
 [ext_resource type="Script" path="res://scripts/entities/player.gd" id="1_6hxiq"]
 [ext_resource type="PackedScene" uid="uid://d25ombvkr34fi" path="res://scenes/UI/Pause/Pause.tscn" id="2_g4qv6"]
@@ -15,7 +15,7 @@ height = 20
 fill_from = Vector2(0.226496, 0.42735)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qpfcv"]
-size = Vector2(15, 20)
+size = Vector2(12, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uk5hm"]
 atlas = ExtResource("2_nbr5n")
@@ -367,8 +367,10 @@ properties/2/path = NodePath("AnimatedSprite2D:flip_h")
 properties/2/spawn = true
 properties/2/replication_mode = 2
 
+[sub_resource type="LabelSettings" id="LabelSettings_prnli"]
+font_size = 11
+
 [node name="Player" type="CharacterBody2D"]
-scale = Vector2(2, 2)
 script = ExtResource("1_6hxiq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -377,7 +379,7 @@ position = Vector2(-1.5, -10)
 texture = SubResource("GradientTexture2D_1q152")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1.5, -10)
+position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_qpfcv")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -390,10 +392,18 @@ animation = &"walk"
 replication_config = SubResource("SceneReplicationConfig_truud")
 
 [node name="DisplayName" type="Label" parent="."]
-offset_left = -71.0
-offset_top = -57.0
-offset_right = 73.0
-offset_bottom = -34.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -43.0
+offset_right = 72.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+label_settings = SubResource("LabelSettings_prnli")
 horizontal_alignment = 1
 vertical_alignment = 1
 

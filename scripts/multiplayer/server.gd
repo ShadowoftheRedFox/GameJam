@@ -1,4 +1,3 @@
-class_name MultiplayerServer
 extends Node
 
 # TODO password protected server?
@@ -15,42 +14,75 @@ var compressed_data: bool = false
 var compression_method: ENetConnection.CompressionMode = ENetConnection.COMPRESS_RANGE_CODER
 
 # generate peer instance
-var peer: ENetMultiplayerPeer
-# the scene loaded when a player joins
-var player_scene: PackedScene = load("res://scenes/entities/Player.tscn")
+var peer: ENetMultiplayerPeer = null
 
 signal player_connected(id:int)
 signal player_disconnected(id:int)
 
 func _ready() -> void:
     # add listener for connection and deconnection of others
-    
-    # host and clients
-    multiplayer.peer_connected.connect(peer_connected)
-    multiplayer.peer_disconnected.connect(peer_disconnected)
-    
-    # only clients
-    multiplayer.connection_failed.connect(connection_failed)
-    multiplayer.connected_to_server.connect(connected_to_server)
+    pass
+    # SOMEHOW, putting it here makes them go TWICE
+    # YET SOMEHOW PUTTING THIS CODE TWICE INTO HOST AND JOIN SOLVES IT
+    # WTF
+    ## host and clients
+    #multiplayer.peer_connected.connect(peer_connected)
+    #multiplayer.peer_disconnected.connect(peer_disconnected)
+    #
+    ## only clients
+    #multiplayer.connection_failed.connect(connection_failed)
+    #multiplayer.connected_to_server.connect(connected_to_server)
+    #multiplayer.server_disconnected.connect(disconnect_server)
+
+# just a handy function, print message preceded by the peer id
+enum MessageType {
+    PRINT = 0,
+    RICH = 1,
+    VERBOSE = 2,
+    ERR = 3,
+    RAW = 4,
+    PUSHERR = 5,
+    PUSHWARN = 6,
+    DEBUG = 7
+}
+func peer_print(message_type: MessageType, message: String) -> void:
+    var id = str(multiplayer.get_unique_id())
+    if id == "1":
+        id = "Host"
+
+    match (message_type):
+        MessageType.RICH:
+            print_rich(id + ": " + message)
+        MessageType.VERBOSE:
+            print_verbose(id + ": " + message)
+        MessageType.ERR:
+            printerr(id + ": " + message)
+        MessageType.RAW:
+            printraw(id + ": " + message)
+        MessageType.PUSHERR:
+            push_error(id + ": " + message)
+        MessageType.PUSHWARN:
+            push_warning(id + ": " + message)
+        MessageType.DEBUG:
+            print_debug(id + ": " + message)
+        MessageType.PRINT, _:
+            print(id + ": " + message)
 
 func peer_connected(id: int) -> void:
-    print(multiplayer.get_unique_id(), ": Player ", id, " connected")
+    peer_print(MessageType.PRINT, "Player " + str(id) + " connected")
     player_connected.emit(id)
-    pass
-    
     
 func peer_disconnected(id: int) -> void:
-    print(multiplayer.get_unique_id(), ": Player ", id, " disconnected")
+    peer_print(MessageType.PRINT, "Player " + str(id) + " disconnected")
     player_disconnected.emit(id)
-    pass
     
 func connection_failed() -> void:
-    print(multiplayer.get_unique_id(), ": connection failed")
+    peer_print(MessageType.PRINT, "connection failed")
     multiplayer_active = false
 
 
 func connected_to_server() -> void:
-    print(multiplayer.get_unique_id(), ": connected to server")
+    peer_print(MessageType.PRINT, "connected to server")
     # send the client data to host, id=1 is host
     MultiplayerController.send_player_infos.rpc_id(1, {
         "id": multiplayer.get_unique_id(),
@@ -74,8 +106,8 @@ func change_ip(text: String):
 
 
 func change_max_player(text: String):
-    # check validity of new ip (IPv4 or IPv6)
-    if text.is_valid_int() and int(text) >= 2:
+    # check validity of new max player
+    if text.is_valid_int() and int(text) >= 2 and int(text) <= 4095:
         server_max_player = int(text)
 
 
@@ -111,6 +143,15 @@ func create_host(is_solo: bool = false) -> bool:
     multiplayer_active = !is_solo
     solo_active = is_solo
     
+    # host and clients
+    multiplayer.peer_connected.connect(peer_connected)
+    multiplayer.peer_disconnected.connect(peer_disconnected)
+    
+    # only clients
+    multiplayer.connection_failed.connect(connection_failed)
+    multiplayer.connected_to_server.connect(connected_to_server)
+    multiplayer.server_disconnected.connect(stop_server)
+    
     # server ready at that point
     print("Server ready, awaiting for players")
     # start game for host
@@ -132,24 +173,52 @@ func join_server() -> bool:
     # instanciate a peer
     peer = ENetMultiplayerPeer.new()
     if peer.create_client(server_ip, server_port) != OK:
+        peer.close()
         return false
     
     if compressed_data == true:
         peer.host.compress(compression_method)
     
-    multiplayer.multiplayer_peer = peer
+    multiplayer.set_multiplayer_peer(peer)
     multiplayer_active = true
+    
+    # host and clients
+    multiplayer.peer_connected.connect(peer_connected)
+    multiplayer.peer_disconnected.connect(peer_disconnected)
+    
+    # only clients
+    multiplayer.connection_failed.connect(connection_failed)
+    multiplayer.connected_to_server.connect(connected_to_server)
+    multiplayer.server_disconnected.connect(stop_server)
     
     #connected_to_host.emit()
     #GameController.start_game()
-    print("Peer connected to host: ", multiplayer.get_unique_id())
+    peer_print(MessageType.PRINT, "Peer connected to host")
     return true
     
-func disconnect_server() -> void:
+func stop_server() -> void:
     # TODO deconnection from server
+    print("Stopping server...")
     multiplayer_active = false
     solo_active = false
+    
+    # since they're being sent twice with ready with the same callable
+    # but once and repeat with host and join generate errors :/
+    remove_signal_listener(multiplayer.peer_connected)
+    remove_signal_listener(multiplayer.peer_disconnected)
+    remove_signal_listener(multiplayer.connection_failed)
+    remove_signal_listener(multiplayer.connected_to_server)
+    remove_signal_listener(multiplayer.server_disconnected)
+    
+    # FIXME error when host disconnect in waiting room
     if multiplayer.is_server():
-        pass
+        for connected_peer in multiplayer.get_peers():
+            if connected_peer != 1:
+                multiplayer.multiplayer_peer.disconnect_peer(connected_peer)
+        multiplayer.multiplayer_peer.close()
     else:
-        pass
+        multiplayer.multiplayer_peer.close()
+        
+func remove_signal_listener(sig: Signal) -> void:
+    for dict in sig.get_connections():
+        sig.disconnect(dict.callable)
