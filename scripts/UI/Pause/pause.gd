@@ -6,15 +6,16 @@ var can_unpause: bool = false
 @onready var sound = $MarginContainer/MarginContainer/Side/Options/Sounds
 @onready var resume =  $MarginContainer/MarginContainer/MarginContainer/Main/Resume
 func _init() -> void:
-    process_mode = PROCESS_MODE_WHEN_PAUSED
+    # since should be WHEN_PAUSE in solo and ALWAYS in multi, just set always
+    process_mode = PROCESS_MODE_ALWAYS
 
 func _ready() -> void:
     resume.grab_focus()
 
 func _input(event: InputEvent) -> void:
-    if event.is_action_released("Pause"):
+    if Input.is_action_just_pressed("Pause"):
         if can_unpause:
-            GameController.unpause()
+            GameController.unpause.call_deferred()
             can_unpause = false
             resume.grab_focus()
         else:
@@ -24,7 +25,6 @@ func _on_resume_pressed() -> void:
     GameController.unpause()
     can_unpause = false
     resume.grab_focus()
-
 
 func _on_settings_pressed() -> void:
     $MarginContainer/MarginContainer/MarginContainer/Main.hide()

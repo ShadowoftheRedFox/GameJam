@@ -52,8 +52,6 @@ func generate_map(map_size: int = 0) -> Array:
             if res == false:
                 printerr("Something went wrong with room ", room.room_id)
                 return []
-    # TODO save map and show it
-    # TODO where to spawn player
     print("Rooms generated, starting...")
     return map
 

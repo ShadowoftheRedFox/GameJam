@@ -6,6 +6,7 @@ var players_waiting: Array[int] = []
 func _ready() -> void:
     Server.player_disconnected.connect(remove_player)
     MultiplayerController.player_infos.connect(display_player)
+    MultiplayerController.game_starting.connect(reset_menu)
 
 func _on_back_pressed() -> void:
     back_pressed.emit()
@@ -13,6 +14,11 @@ func _on_back_pressed() -> void:
     remove_all_players()
     # disconnect from server
     GameController.stop_game()
+
+func reset_menu() -> void: 
+    back_pressed.emit()
+    # remove waiting player
+    remove_all_players()
 
 func _on_start_pressed() -> void:
     # start game and everything for everyone

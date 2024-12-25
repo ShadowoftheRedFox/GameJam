@@ -49,6 +49,8 @@ func area_entered(body: Node2D, direction: String) -> void:
     # if door origin is not cleared yet
     if player_door_origin != "":
         return
+    if GameController.player_node == null:
+        return
     if body.name != GameController.player_node.name:
         return
     #print("player is going ", direction)
@@ -82,6 +84,8 @@ func area_entered(body: Node2D, direction: String) -> void:
     # FIXME get the same relative pos from door to door (and not spawn from center)
     GameController.player_node.global_position = area.global_position
     get_tree().root.remove_child.call_deferred(self)
+    # to "force" the player to be in front of the layer on its same level
+    GameController.player_node.move_to_front()
     
 
 # Called when the node is added to the scene tree for the first time

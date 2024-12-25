@@ -20,6 +20,9 @@ var ground_direction: float = 0.0
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
+#### Multiplayer Data ####
+var multiplayer_authority_id: int = 0
+
 #func _ready() -> void:
     ## set ratio for pause menu and label
     #$DisplayName.scale = Vector2(1 / self.scale.x, 1 / self.scale.y)
@@ -30,6 +33,7 @@ func set_player_name(player_name: String) -> void:
 
 func set_authority(id: int) -> void:
     $MultiplayerSynchronizer.set_multiplayer_authority(id, true)
+    multiplayer_authority_id = id
     #print("Current id: ", multiplayer.get_unique_id(), " Target id: ", id)
 
 func disable_others_camera(id: int) -> void:
@@ -38,12 +42,12 @@ func disable_others_camera(id: int) -> void:
         $Camera2D.enabled = false
 
 func _physics_process(delta: float) -> void:
-    if Input.is_action_just_pressed("Pause"):
-        GameController.pause()
-        return
+    # is_multiplayer_authority() should do it, but on debug multiple instance, create weird things
+    if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active == true:
+        if Input.is_action_just_pressed("Pause"):
+            GameController.pause()
+            return
         
-    var multi_auth = int($DisplayName.text)
-    if multi_auth == multiplayer.get_unique_id() or Server.solo_active == true:
         direction = Input.get_vector("Left", "Right", "Up", "Down")
         ground_direction = Input.get_axis("Left", "Right")
         
@@ -81,7 +85,15 @@ func _physics_process(delta: float) -> void:
             if Input.is_action_just_pressed("Jump") and air_jump_remaining > 0:
                 velocity.y = -JUMP_FORCE
                 air_jump_remaining-=1
-    
+    else: 
+        # manage animation for player that aren't ours
+        if velocity.x == 0:
+            # idle
+            anim_sprite_2d.play("idle")
+        else:
+            # walk
+            anim_sprite_2d.play("walk")
+        
     if not is_on_floor():
         velocity += get_gravity() * delta
     

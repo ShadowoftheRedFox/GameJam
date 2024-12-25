@@ -4,9 +4,11 @@ extends Node
 var index: int = 0
 
 signal player_infos(data: Dictionary)
+signal game_starting
 
 func _ready() -> void:
     Server.player_disconnected.connect(handle_player_disconnection)
+    Server.player_connected.connect(send_map_data)
     
 func handle_player_disconnection(id: int) -> void:
     # TODO maybe handle at the end of the frame to let other listeners the time to do their things
@@ -15,7 +17,6 @@ func handle_player_disconnection(id: int) -> void:
 @rpc("any_peer")
 func send_player_infos(data: Dictionary) -> void:
     if Server.solo_active:
-        # FIXME remove that when we spawn the multiplayer players at their correct position
         return
         
     if !Server.multiplayer_active:
@@ -37,64 +38,29 @@ func send_player_infos(data: Dictionary) -> void:
             send_player_infos.rpc(GameController.Players.get(i, {}))
     else:
         Server.peer_print(Server.MessageType.PRINT, "Getting infos from host")
-    
-    #if !GameController.game_started:
-        #printerr("Game has not started")
-        #return
-    #
-    #if node_scene == null:
-        #node_scene = get_tree().root.get_node("/root/" + GameController.MultiPlayerNodeName)
-    #
-    #if !GameController.Players.has(data.get("id", 0)):
-        #GameController.Players.get_or_add(data.get("id"), data)
-        ##printerr("id in players: ", data.id)
-        #var player_data = GameController.Players.get(data.id, {})
-        ## player not in scene
-        ##if node_scene.get_node(str(data.id)) == null:
-        #spawn_player(player_data)
-    
-    # add a player if it isn't made yet
-    # var index = 0
-    
-    # spawn ourself first
-    #var player_data: Dictionary = {}
-    #if GameController.Players.has(multiplayer.get_unique_id()):
-    #    player_data = GameController.Players.get(multiplayer.get_unique_id(), {})
-    #    spawn_player(player_data, index)
-    #    index += 1
-    #else:
-    #    print(multiplayer.get_unique_id(), ": No infos on own id")
-    #    return
-    
-    #for i in GameController.Players:
-    #    printerr("id in players: ", i)
-    #    var player_data = GameController.Players.get(i, {})
-    #    # player not in scene
-    #    if node_scene.get_node(str(i)) == null:
-    #        spawn_player(player_data, index)
-    #    index += 1
 
 @rpc("any_peer", "call_local")
 func start_game() -> void:
     if Server.solo_active == true or Server.multiplayer_active == false:
         push_warning("Server is not multiplayer, can not use 'start_game'")
         return
+    # tell our client listeners that the game is starting
+    game_starting.emit()
     # TODO maybe host is spectator?
     GameController.hide_menu()
     GameController.game_started = true
     var map: Node = GameController.MultiplayerScene.instantiate()
     map.name = "MultiplayerScene"
-    get_tree().root.add_child(map)
-    GameController.current_room = map
-    #get_tree().root.add_child(GameController.current_map[0][0])
-    #GameController.current_room = GameController.current_map[0][0]
-    # TODO load game and spread info to all peer
-    # TODO spawn player in different room and at coos
-    if multiplayer.is_server():
-        for i in GameController.Players:
-            spawn_player.rpc(GameController.Players.get(i, 1))
+    #get_tree().root.add_child(map)
+    #GameController.current_room = map
+    GameController.current_room = GameController.current_map[0][0]
+    get_tree().root.add_child(GameController.current_room)
+    # spawn all peer
+    #if multiplayer.is_server():
+    for i in GameController.Players:
+        # TODO spawn player in different room and at coos
+        spawn_player.call_deferred(GameController.Players.get(i, 1))
 
-@rpc("any_peer", "call_local")
 func spawn_player(player_data: Dictionary) -> void:
     var currentPlayer: BasePlayer = GameController.PlayerScene.instantiate()
     currentPlayer.name = str(player_data.id)
@@ -105,11 +71,13 @@ func spawn_player(player_data: Dictionary) -> void:
     currentPlayer.disable_others_camera(player_data.id)
     #Server.peer_print(Server.MessageType.ERR, "New instance of Player: " + str(player_data.id))
     # find a spawn for the player
-    for spawn: Node2D in get_tree().get_nodes_in_group("PlayerSpawnPoint"):
-        if str(index) == spawn.name:
-            currentPlayer.global_position = spawn.global_position
-            index+=1
-            break
+    if GameController.current_room.room.has_node("Spawn"):
+        var spawn = GameController.current_room.room.get_node("Spawn")
+        currentPlayer.global_position = spawn.global_position
+        index+=1
+    # remember our own player
+    if player_data.id == multiplayer.get_unique_id():
+        GameController.player_node = currentPlayer
 
 @rpc("any_peer", "call_local")
 func remove_player(id: int) -> void:
@@ -122,3 +90,13 @@ func remove_player(id: int) -> void:
         GameController.current_room.get_node(str(player_data.id)).queue_free()
     GameController.Players.erase(id)
     index-=1
+
+func send_map_data(id: int) -> void:
+    if multiplayer.is_server():
+        var save = SaveController.get_save(GameController.save_name_hosted)
+        # FIXME do not pass whole save if something sensitive is added 
+        receive_map_data.rpc_id(id, save[0])
+
+@rpc("call_remote")
+func receive_map_data(data: Dictionary) -> void:
+    GameController.load_game.call_deferred("", data)

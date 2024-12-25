@@ -75,6 +75,9 @@ func peer_connected(id: int) -> void:
 func peer_disconnected(id: int) -> void:
     peer_print(MessageType.PRINT, "Player " + str(id) + " disconnected")
     player_disconnected.emit(id)
+    # if the server has disconnected
+    if id == 1:
+        GameController.stop_game()
     
 func connection_failed() -> void:
     peer_print(MessageType.PRINT, "connection failed")
@@ -136,7 +139,7 @@ func create_host(is_solo: bool = false) -> bool:
     if compressed_data == true:
         peer.host.compress(compression_method)
     
-    # set own peer as multiplayer host (if changed to null, host deconnect)
+    # set own peer as multiplayer host
     multiplayer.set_multiplayer_peer(peer)
     
     # to differentiate between solo server and mutiplayer ones
@@ -146,21 +149,15 @@ func create_host(is_solo: bool = false) -> bool:
     # host and clients
     multiplayer.peer_connected.connect(peer_connected)
     multiplayer.peer_disconnected.connect(peer_disconnected)
-    
-    # only clients
-    multiplayer.connection_failed.connect(connection_failed)
-    multiplayer.connected_to_server.connect(connected_to_server)
-    multiplayer.server_disconnected.connect(stop_server)
-    
+        
     # server ready at that point
     print("Server ready, awaiting for players")
-    # start game for host
-    #GameController.start_game()
-    # add a player character for the host
+    
+    # send info for our own peer
     MultiplayerController.send_player_infos({
         "id": multiplayer.get_unique_id(),
-        #"name": SaveController.parameters.Multiplayer.name,
-        "name": str(multiplayer.get_unique_id()),
+        "name": SaveController.parameters.Multiplayer.name,
+        #"name": str(multiplayer.get_unique_id()),
         "color": SaveController.parameters.Multiplayer.color,
         "score": 0
     })
@@ -189,7 +186,7 @@ func join_server() -> bool:
     # only clients
     multiplayer.connection_failed.connect(connection_failed)
     multiplayer.connected_to_server.connect(connected_to_server)
-    multiplayer.server_disconnected.connect(stop_server)
+    multiplayer.server_disconnected.connect(GameController.stop_game)
     
     #connected_to_host.emit()
     #GameController.start_game()
@@ -197,20 +194,19 @@ func join_server() -> bool:
     return true
     
 func stop_server() -> void:
-    # TODO deconnection from server
+    # deconnection from server
     print("Stopping server...")
     multiplayer_active = false
     solo_active = false
     
     # since they're being sent twice with ready with the same callable
-    # but once and repeat with host and join generate errors :/
+    # but when set once with host and join, generate errors after relaunch :/
     remove_signal_listener(multiplayer.peer_connected)
     remove_signal_listener(multiplayer.peer_disconnected)
     remove_signal_listener(multiplayer.connection_failed)
     remove_signal_listener(multiplayer.connected_to_server)
     remove_signal_listener(multiplayer.server_disconnected)
     
-    # FIXME error when host disconnect in waiting room
     if multiplayer.is_server():
         for connected_peer in multiplayer.get_peers():
             if connected_peer != 1:

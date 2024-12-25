@@ -26,8 +26,6 @@ var parameters := {
     }
 }
 
-# TODO change save name to id to save name FIXED to save name editablea
-
 signal saves_changed
 signal parameters_changed
 

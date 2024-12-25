@@ -18,7 +18,7 @@ func _init() -> void:
     process_mode = PROCESS_MODE_ALWAYS
 
 func new_game(save_name: String, difficulty: int, map_size: int) -> void:
-    # TODO create save
+    # create save
     current_map = GeneratorController.generate_map(map_size)
     SaveController.create_new_save(save_name, JSON.stringify({
         "difficulty": difficulty,
@@ -28,10 +28,16 @@ func new_game(save_name: String, difficulty: int, map_size: int) -> void:
     }))
     launch_solo(save_name)
 
-func load_game(save_name: String) -> void:
+func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     print("loading map...")
-    var save = SaveController.get_save(save_name)
-    var save_data: Dictionary = save[0]
+    var save: Array[Dictionary] = []
+    var save_data: Dictionary  = {}
+    # load from ultiplayer data
+    if !multiplayer_data.is_empty() and save_name == "":
+        save_data = multiplayer_data
+    else:
+        save = SaveController.get_save(save_name)
+        save_data = save[0]
     current_map = GeneratorController.load_map(save_data.get("map"), save_data.get("map_size"), save_data.get("seed"))
     print("map loaded")
 
@@ -50,7 +56,7 @@ func launch_solo(save_name: String) -> void:
     current_room = current_map[0][0]
     get_tree().root.add_child(current_room)
     # TODO spawn player at spawn location on solo
-    player_node = load("res://scenes/entities/Player.tscn").instantiate()
+    player_node = PlayerScene.instantiate()
     var anchor = current_room.room.get_node("Spawn")
     get_tree().root.add_child(player_node)
     player_node.global_position = anchor.global_position
@@ -62,6 +68,7 @@ func launch_multiplayer(save_name: String) -> void:
         return
     
     save_name_hosted = save_name
+    load_game(save_name)
     
 func join_multiplayer() -> bool:
     return Server.join_server()
@@ -97,11 +104,13 @@ func unpause() -> void:
 func stop_game() -> void:
     if game_started == true:
         SaveController.save_game(save_name_hosted)
-    Server.stop_server()
     GeneratorController.free_map(current_map)
-    GameController.Players = {}
     if player_node != null:
         player_node.queue_free()
+    if current_room != null:
+        current_room.queue_free()
+    Server.stop_server()
+    GameController.Players = {}
     
     game_started = false
     current_map = []
