@@ -19,9 +19,32 @@ var ground_direction: float = 0.0
 #### Graphic ####
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var display_name: Label = $DisplayName
+# TODO bind camera to scene
+@onready var camera: Camera2D = $Camera2D
 
-#### Multiplayer Data ####
+#### Physic ####
+@onready var collider: CollisionShape2D = $CollisionShape2D
+
+#### Multiplayer ####
+#@onready var synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
+# the authority controlling this player (peer id)
 var multiplayer_authority_id: int = 0
+# room where the player is into
+# get set since we want to do change when the synchornizer changes it
+var skip_next_player_room: bool = false
+var player_room: Vector2 = Vector2(0, 0):
+    get:
+        return player_room
+    set(value):
+        player_room = value
+        if skip_next_player_room:
+            skip_next_player_room = false
+        else:
+            change_player_room()
+            
+# to know if we must render the player
+var player_disabled: bool = false
 
 #func _ready() -> void:
     ## set ratio for pause menu and label
@@ -41,7 +64,44 @@ func disable_others_camera(id: int) -> void:
     if id != multiplayer.get_unique_id():
         $Camera2D.enabled = false
 
+func change_player_room() -> void:
+    if GameController.game_started == false:
+        return
+    if Server.solo_active == true or multiplayer_authority_id == multiplayer.get_unique_id():
+        return
+    # check whether this player is in the same room as our player
+    if GameController.player_node != null:
+        for children in get_tree().root.get_children():
+            if children is BasePlayer: 
+                if GameController.player_node.player_room == children.player_room:
+                    children.enable_player()
+                else:
+                    children.disable_player()
+    else:
+        disable_player()
+
+func disable_player() -> void:
+    if player_disabled == true:
+        return
+    player_disabled = true
+    #sprite_2d.hide()
+    anim_sprite_2d.hide()
+    display_name.hide()
+    collider.set_deferred("disabled", true)
+
+func enable_player() -> void:
+    if player_disabled == false:
+        return
+    player_disabled = false
+    #sprite_2d.show()
+    anim_sprite_2d.show()
+    display_name.show()
+    collider.set_deferred("disabled", false)
+    
+
 func _physics_process(delta: float) -> void:
+    if self.is_queued_for_deletion() == true or player_disabled == true:
+        return
     # is_multiplayer_authority() should do it, but on debug multiple instance, create weird things
     if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active == true:
         if Input.is_action_just_pressed("Pause"):

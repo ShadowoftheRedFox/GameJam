@@ -1,5 +1,8 @@
 extends Node
 
+var GeneratorController = GeneratorControllerScript.new()
+const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
+
 var save_name_hosted: String = ""
 var Players = {}
 const MultiplayerScene = preload("res://tests/multiplayer/roomtestmulti.tscn")
@@ -16,6 +19,7 @@ var player_node: BasePlayer = null
 
 func _init() -> void:
     process_mode = PROCESS_MODE_ALWAYS
+    self.add_child(GeneratorController)
 
 func new_game(save_name: String, difficulty: int, map_size: int) -> void:
     # create save
@@ -78,14 +82,11 @@ func hide_menu() -> void:
     for child in get_tree().root.get_children():
         if child.name == "MainMenu":
             # queue free?
-            child.set_visible(false)
+            child.queue_free()
 
 func show_menu() -> void:
     # show main menu
-    for child in get_tree().root.get_children():
-        if child.name == "MainMenu":
-            # queue free?
-            child.set_visible(true)
+    get_tree().root.add_child(MainMenuScene.instantiate())
 
 func pause() -> void:
     print("Called pause")
@@ -110,8 +111,8 @@ func stop_game() -> void:
     if current_room != null:
         current_room.queue_free()
     Server.stop_server()
-    GameController.Players = {}
     
+    GameController.Players = {}
     game_started = false
     current_map = []
     current_room = null

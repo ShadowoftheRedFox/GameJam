@@ -67,13 +67,15 @@ func spawn_player(player_data: Dictionary) -> void:
     currentPlayer.set_player_name(player_data.name)
     currentPlayer.set_authority(player_data.id)
     # FIXME change player spawn in multi
-    GameController.current_room.add_child(currentPlayer)
+    get_tree().root.add_child(currentPlayer)
     currentPlayer.disable_others_camera(player_data.id)
     #Server.peer_print(Server.MessageType.ERR, "New instance of Player: " + str(player_data.id))
     # find a spawn for the player
     if GameController.current_room.room.has_node("Spawn"):
         var spawn = GameController.current_room.room.get_node("Spawn")
         currentPlayer.global_position = spawn.global_position
+        currentPlayer.skip_next_player_room = true
+        currentPlayer.player_room = GameController.current_room.room_position
         index+=1
     # remember our own player
     if player_data.id == multiplayer.get_unique_id():
@@ -86,8 +88,8 @@ func remove_player(id: int) -> void:
         return
     
     var player_data = GameController.Players.get(id, {})
-    if GameController.current_room.has_node(str(player_data.id)) == true:
-        GameController.current_room.get_node(str(player_data.id)).queue_free()
+    if get_tree().root.has_node(str(player_data.id)) == true:
+        get_tree().root.get_node(str(player_data.id)).queue_free()
     GameController.Players.erase(id)
     index-=1
 

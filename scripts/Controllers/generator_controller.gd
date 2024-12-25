@@ -1,3 +1,4 @@
+class_name GeneratorControllerScript
 extends Node
 
 var mapgen_unique_id_counter: int = 0

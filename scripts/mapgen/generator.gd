@@ -18,8 +18,9 @@ func create_map(width: int, height: int, probability: float) -> Array:
     for y in range(height):
         var row = []
         for x in range(width):
-            var node := Room.instantiate()
-            node.room_id = GeneratorController.mapgen_get_next_unique_id()
+            var node: MapRoom = Room.instantiate()
+            node.room_id = GameController.GeneratorController.mapgen_get_next_unique_id()
+            node.room_position = Vector2(x, y)
             row.append(node)
         map.append(row)
 
@@ -115,8 +116,9 @@ func load_map(room_types: Array, width: int, height: int) -> Array:
     for y in range(height):
         var row = []
         for x in range(width):
-            var node := Room.instantiate()
-            node.room_id = GeneratorController.mapgen_get_next_unique_id()
+            var node: MapRoom = Room.instantiate()
+            node.room_id = GameController.GeneratorController.mapgen_get_next_unique_id()
+            node.room_position = Vector2(x, y)
             row.append(node)
         map.append(row)
         

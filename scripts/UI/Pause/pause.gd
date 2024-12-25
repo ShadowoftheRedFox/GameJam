@@ -12,7 +12,7 @@ func _init() -> void:
 func _ready() -> void:
     resume.grab_focus()
 
-func _input(event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
     if Input.is_action_just_pressed("Pause"):
         if can_unpause:
             GameController.unpause.call_deferred()
