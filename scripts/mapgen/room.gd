@@ -85,9 +85,10 @@ func area_entered(body: Node2D, direction: String) -> void:
     # TODO transition
     # change player pos and display next room
     #get_tree().root.print_tree_pretty()
-    get_tree().root.add_child(next_room)
+    get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
     GameController.player_node.player_room = next_room.room_position
+    MultiplayerController.player_change_room.rpc(multiplayer.get_unique_id(), next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.player_node.global_position = area.global_position
     # BUG lmao wtf is going with this line in multiplayer

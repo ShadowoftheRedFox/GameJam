@@ -74,7 +74,6 @@ func spawn_player(player_data: Dictionary) -> void:
     if GameController.current_room.room.has_node("Spawn"):
         var spawn = GameController.current_room.room.get_node("Spawn")
         currentPlayer.global_position = spawn.global_position
-        currentPlayer.skip_next_player_room = true
         currentPlayer.player_room = GameController.current_room.room_position
         index+=1
     # remember our own player
@@ -102,3 +101,33 @@ func send_map_data(id: int) -> void:
 @rpc("call_remote")
 func receive_map_data(data: Dictionary) -> void:
     GameController.load_game.call_deferred("", data)
+
+@rpc("any_peer", "call_local")
+func player_change_room(id: int, room: Vector2) -> void:
+    if !GameController.game_started or Server.solo_active:
+        return
+    if GameController.player_node == null or !get_tree().root.has_node(str(id)):
+        return
+    
+    var player: BasePlayer = get_tree().root.get_node(str(id))
+        
+    player.player_room = room
+    
+    if player.skip_next_player_room:
+        player.skip_next_player_room = false
+        return
+    
+    if id == multiplayer.get_unique_id():
+        # if called from inside, change all other player nodes
+        for children in get_tree().root.get_children():
+            if children is BasePlayer:
+                if children.player_room != player.player_room:
+                    children.disable_player()
+                else:
+                    children.enable_player()
+    else:
+        # if called from outside, just change the player who changed room
+        if GameController.player_node.player_room == player.player_room:
+            player.enable_player()
+        else:
+            player.disable_player()

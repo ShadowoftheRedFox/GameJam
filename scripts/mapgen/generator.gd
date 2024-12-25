@@ -111,7 +111,7 @@ func create_map(width: int, height: int, probability: float) -> Array:
 
 func load_map(room_types: Array, width: int, height: int) -> Array:
     var map = []
-
+    
     # Create nodes
     for y in range(height):
         var row = []

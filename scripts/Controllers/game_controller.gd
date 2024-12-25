@@ -42,6 +42,7 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     else:
         save = SaveController.get_save(save_name)
         save_data = save[0]
+    # TODO threading
     current_map = GeneratorController.load_map(save_data.get("map"), save_data.get("map_size"), save_data.get("seed"))
     print("map loaded")
 
@@ -103,13 +104,18 @@ func unpause() -> void:
         get_tree().paused = false
 
 func stop_game() -> void:
-    if game_started == true:
+    if game_started == true and multiplayer.is_server():
         SaveController.save_game(save_name_hosted)
     GeneratorController.free_map(current_map)
     if player_node != null:
         player_node.queue_free()
     if current_room != null:
         current_room.queue_free()
+    
+    for children in get_tree().root.get_children():
+        if children is BasePlayer or children is MapRoom:
+            children.queue_free()
+    
     Server.stop_server()
     
     GameController.Players = {}
