@@ -1,15 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwrjfxf12yrvt"]
+[gd_scene load_steps=2 format=3 uid="uid://l2kxkjmkle6q"]
 
-[ext_resource type="Script" path="res://scripts/UI/Main/NewGame/new_game.gd" id="1_cpd2w"]
+[ext_resource type="Script" path="res://scripts/UI/Main/Continue/edit.gd" id="1_jckqa"]
 
-[node name="NewGame" type="Control"]
+[node name="Edit" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_cpd2w")
+script = ExtResource("1_jckqa")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -30,7 +30,7 @@ layout_mode = 2
 
 [node name="SaveName" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 6
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
@@ -40,12 +40,12 @@ text = "Nom de la sauvegarde :"
 [node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
 placeholder_text = "LabHyrinTical"
+alignment = 1
 
 [node name="Difficulty" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 6
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Difficulty"]
 layout_mode = 2
@@ -55,57 +55,58 @@ text = "Difficulté :"
 [node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/Difficulty"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="Size" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Size"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Taille de la carte :"
-
-[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/Size"]
-layout_mode = 2
-size_flags_horizontal = 3
+focus_neighbor_top = NodePath("../../Back")
 
 [node name="GameMode" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 6
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GameMode"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Mode de jeu :"
+text = "Mode de jeu"
 
 [node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/GameMode"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_top = NodePath("../../Back")
 
-[node name="New" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Save" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-disabled = true
-text = "Nouvelle partie"
+focus_neighbor_bottom = NodePath("../Difficulty/OptionButton")
+text = "Sauvegarder les modifications"
 
 [node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../Difficulty/OptionButton")
 text = "Retour"
 
 [node name="Error" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
+offset_left = -88.5
+offset_right = 88.5
+offset_bottom = 50.0
 grow_horizontal = 2
-text = "Nouvelle partie"
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Modifier la sauvegarde :"
+
+[node name="SaveName" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "LabHyrinTical"
 
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/SaveName/LineEdit" to="." method="_on_line_edit_text_changed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/Difficulty/OptionButton" to="." method="_on_option_difficulty_item_selected"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/GameMode/OptionButton" to="." method="_on_option_gamemode_item_selected"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

@@ -51,12 +51,12 @@ func get_connection(direction: String) -> Node:
 
 func area_entered(body: Node2D, direction: String) -> void:
     # only care about our player 
-    if body.name != GameController.player_node.name:
+    if body.name != GameController.main_player_instance.name:
         return
     # if door origin is not cleared yet
     if player_door_origin != "":
         return
-    if GameController.player_node == null:
+    if GameController.main_player_instance == null:
         return
     #print("player is going ", direction)
     # get the next room
@@ -87,14 +87,14 @@ func area_entered(body: Node2D, direction: String) -> void:
     #get_tree().root.print_tree_pretty()
     get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
-    GameController.player_node.player_room = next_room.room_position
+    GameController.main_player_instance.player_room = next_room.room_position
     MultiplayerController.player_change_room.rpc(multiplayer.get_unique_id(), next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
-    GameController.player_node.global_position = area.global_position
+    GameController.main_player_instance.global_position = area.global_position
     # BUG lmao wtf is going with this line in multiplayer
     get_tree().root.remove_child.call_deferred(self)
     # to "force" the player to be in front of the layer on its same level
-    GameController.player_node.move_to_front()
+    GameController.main_player_instance.move_to_front()
     
 
 # Called when the node is added to the scene tree for the first time
@@ -120,30 +120,14 @@ func generate_room() -> bool:
     
     # get our path in levels folder
     var path: String = ""
-    var area: Area2D = $Map/Down
     if get_connection("down") != null:
         path += "down_"
-        if area != null:
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("down"))
     if get_connection("left") != null:
         path += "left_"
-        area = $Map/Left
-        if area != null:
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("left"))
     if get_connection("right") != null:
         path += "right_"
-        area = $Map/Right
-        if area != null:
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("right"))
     if get_connection("up") != null:
         path += "up_"
-        area = $Map/Up
-        if area != null:
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("up"))
         
     if path.ends_with("_"):
         path = path.erase(len(path)-1)
@@ -168,6 +152,8 @@ func generate_room() -> bool:
         printerr("can't find resource path")
         return false
         
+    # setup area listeners
+    set_area_listeners.call_deferred()
     
     return true
 
@@ -191,30 +177,41 @@ func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, ro
         match direction:
             "down":
                 set_connection("down", room_down)
-                var area_down: Area2D = room.get_node("Map/Down")
-                if area_down != null:
-                    area_down.collision_mask = AREA_COLLISION_MASK
-                    area_down.ready.connect(area_connect.bind(area_down, "down"))
             "up":
                 set_connection("up", room_up)               
-                var area_up: Area2D = room.get_node("Map/Up")
-                if area_up != null:
-                    area_up.collision_mask = AREA_COLLISION_MASK
-                    area_up.ready.connect(area_connect.bind(area_up, "up"))
             "left":
                 set_connection("left", room_left)
-                var area_left: Area2D = room.get_node("Map/Left")
-                if area_left != null:
-                    area_left.collision_mask = AREA_COLLISION_MASK
-                    area_left.ready.connect(area_connect.bind(area_left, "left"))
             "right":
                 set_connection("right", room_right)
-                var area_right: Area2D = room.get_node("Map/Right")
-                if area_right != null:
-                    area_right.collision_mask = AREA_COLLISION_MASK
-                    area_right.ready.connect(area_connect.bind(area_right, "right"))
+    
+    # setup area listeners
+    set_area_listeners.call_deferred()
     
     return true
+
+func set_area_listeners() -> void:
+    var area: Area2D = null
+    if get_connection("down") != null:
+        if room.has_node("Map/Down"):
+            area = room.get_node("Map/Down")
+            area.collision_mask = AREA_COLLISION_MASK
+            area.body_entered.connect(area_entered.bind("down"))
+    if get_connection("left") != null:
+        if room.has_node("Map/Left"):
+            area = room.get_node("Map/Left")
+            area.collision_mask = AREA_COLLISION_MASK
+            area.body_entered.connect(area_entered.bind("left"))
+    if get_connection("right") != null:
+        if room.has_node("Map/Right"):
+            area = room.get_node("Map/Right")
+            area.collision_mask = AREA_COLLISION_MASK
+            area.body_entered.connect(area_entered.bind("right"))
+    if get_connection("up") != null:
+        if room.has_node("Map/Up"):
+            area = room.get_node("Map/Up")
+            area.collision_mask = AREA_COLLISION_MASK
+            area.body_entered.connect(area_entered.bind("up"))
+    
 
 func area_connect(area: Area2D, direction: String) -> void:
     area.body_entered.connect(area_entered.bind(direction))

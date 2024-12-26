@@ -34,7 +34,7 @@ signal parameters_changed
 func _init() -> void:
     
     # first, we look into the config file, and look for the amount of save
-    # if amount > 0, get(saveN) for teh name, and load the saveN.save
+    # if amount > 0, get(saveN) for the name, and load the saveN.save
     
     # Load data from a file.
     var err = general_config.load(CONFIG_PATH)
@@ -168,13 +168,15 @@ func get_save_name(save_display_name: String) -> String:
 
 # TODO edit argument as needed
 func create_new_save(save_name: String, _content: String = "") -> bool:
-    if is_save_name(save_name):
+    if !is_save_name(save_name):
         return false
 
     # edit variable to find the save file
     general_config.set_value("Save_names", save_name, save_name)
     general_config.set_value("General", "save_amount", len(save_names)+1)
     save_names.append(save_name)
+    save_display_names.append(save_name)
+    
     
     # create the save file
     general_save_file = FileAccess.open(SAVE_PATH + save_name + ".save", FileAccess.WRITE_READ)
@@ -233,23 +235,44 @@ func get_save_raw(save_name: String) -> String:
     general_save_file.close()
     
     return save_content
-    
-func update_save(save_name: String, _content: String = "") -> bool:
-    if is_save_name(save_name):
+
+
+enum UpdateActions {
+    CHANGE_DISPLAY_NAME = 0,
+    CHANGE_SAVE_CONTENT = 1
+}
+func update_save(save_name: String, args: Dictionary = {}) -> bool:
+    if !is_save_name(save_name):
         return false
-   
-    # open the save file
-    general_save_file = FileAccess.open(SAVE_PATH + save_name + ".save", FileAccess.READ_WRITE)
-    if general_save_file == null:
-        printerr("Error while opening save file '",save_name,"' for update")
-        return false
     
-    # saving our data
-    general_save_file.store_string(_content)
+    if args.has(UpdateActions.CHANGE_DISPLAY_NAME):
+        var arg_data = args.get(UpdateActions.CHANGE_DISPLAY_NAME)
+        if !(arg_data is String):
+            push_error("Expected String from CHANGE_SAVE_CONTENT")
+            return false
+        general_config.set_value("Save_names", save_name, arg_data)
+        save_display_names[save_names.find(save_name)] = arg_data
+        general_config.save(CONFIG_PATH)
     
-    # we saved our data, close
-    general_save_file.close()
-    print("Successfully updated ", save_name)
+    if args.has(UpdateActions.CHANGE_SAVE_CONTENT):
+        if !(args.get(UpdateActions.CHANGE_SAVE_CONTENT) is String):
+            push_error("Expected string from CHANGE_SAVE_CONTENT")
+            return false
+        
+        # open the save file
+        general_save_file = FileAccess.open(SAVE_PATH + save_name + ".save", FileAccess.READ_WRITE)
+        if general_save_file == null:
+            printerr("Error while opening save file '",save_name,"' for update")
+            return false
+        
+        # saving our data
+        general_save_file.store_string(args.get(UpdateActions.CHANGE_SAVE_CONTENT))
+        
+        # we saved our data, close
+        general_save_file.close()
+        print("Successfully updated ", save_name)
+        
+    saves_changed.emit()
     return true
     
 func save_game(save_name: String) -> bool:

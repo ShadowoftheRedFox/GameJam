@@ -23,7 +23,7 @@ func _on_new_pressed() -> void:
 func _on_continue_pressed() -> void:
     $Main.hide()
     $Continue.show()
-    $Continue/MarginContainer/VBoxContainer/Back.grab_focus()
+    $Continue/Main/MarginContainer/VBoxContainer/Back.grab_focus()
     buff.particle_color = Color.DARK_ORANGE
     
 

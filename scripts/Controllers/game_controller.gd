@@ -1,5 +1,27 @@
 extends Node
 
+enum GameModes {
+    Classic = 0,
+}
+const GameModesNames = ["Classique"]
+
+enum Difficulties {
+    Easy = 0,
+    Medium = 1,
+    Hard = 2,
+    Impossible = 3
+}
+const DifficultiesNames = ["Facile", "Normal", "Difficile", "Impossible"]
+
+enum MapSizes {
+    Small = 0,
+    Medium = 1,
+    Large = 2,
+    Huge = 3
+}
+const MapSizesNames = ["Petite", "Grande", "Large", "Immense"]
+
+
 var GeneratorController = GeneratorControllerScript.new()
 const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
 
@@ -15,17 +37,18 @@ var current_room: MapRoom = null
 # we need to keep track of player in solo between rooms
 # so here we put the node
 # TODO think of something similar for multiplayer
-var player_node: BasePlayer = null
+var main_player_instance: BasePlayer = null
 
 func _init() -> void:
     process_mode = PROCESS_MODE_ALWAYS
     self.add_child(GeneratorController)
 
-func new_game(save_name: String, difficulty: int, map_size: int) -> void:
+func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
     # create save
     current_map = GeneratorController.generate_map(map_size)
     SaveController.create_new_save(save_name, JSON.stringify({
         "difficulty": difficulty,
+        "gamemode": gamemode,
         "map_size": map_size,
         "map": GeneratorController.get_map_room_types(current_map),
         "seed": GeneratorController.save_seed,
@@ -61,10 +84,10 @@ func launch_solo(save_name: String) -> void:
     current_room = current_map[0][0]
     get_tree().root.add_child(current_room)
     # TODO spawn player at spawn location on solo
-    player_node = PlayerScene.instantiate()
+    main_player_instance = PlayerScene.instantiate()
     var anchor = current_room.room.get_node("Spawn")
-    get_tree().root.add_child(player_node)
-    player_node.global_position = anchor.global_position
+    get_tree().root.add_child(main_player_instance)
+    main_player_instance.global_position = anchor.global_position
 
 func launch_multiplayer(save_name: String) -> void:
     var res: bool = Server.create_host()
@@ -92,14 +115,14 @@ func show_menu() -> void:
 func pause() -> void:
     print("Called pause")
     GameController.game_paused = true
-    player_node.get_node("Camera2D/Pause").show()
+    main_player_instance.get_node("Camera2D/Pause").show()
     if Server.solo_active == true:
         get_tree().paused = true
     
 func unpause() -> void: 
     print("Called unpause")
     GameController.game_paused = false
-    player_node.get_node("Camera2D/Pause").hide()
+    main_player_instance.get_node("Camera2D/Pause").hide()
     if Server.solo_active == true:
         get_tree().paused = false
 
@@ -107,8 +130,8 @@ func stop_game() -> void:
     if game_started == true and multiplayer.is_server():
         SaveController.save_game(save_name_hosted)
     GeneratorController.free_map(current_map)
-    if player_node != null:
-        player_node.queue_free()
+    if main_player_instance != null:
+        main_player_instance.queue_free()
     if current_room != null:
         current_room.queue_free()
     
@@ -122,5 +145,5 @@ func stop_game() -> void:
     game_started = false
     current_map = []
     current_room = null
-    player_node = null
+    main_player_instance = null
     show_menu()

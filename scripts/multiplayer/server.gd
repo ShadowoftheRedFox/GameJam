@@ -19,21 +19,6 @@ var peer: ENetMultiplayerPeer = null
 signal player_connected(id:int)
 signal player_disconnected(id:int)
 
-func _ready() -> void:
-    # add listener for connection and deconnection of others
-    pass
-    # SOMEHOW, putting it here makes them go TWICE
-    # YET SOMEHOW PUTTING THIS CODE TWICE INTO HOST AND JOIN SOLVES IT
-    # WTF
-    ## host and clients
-    #multiplayer.peer_connected.connect(peer_connected)
-    #multiplayer.peer_disconnected.connect(peer_disconnected)
-    #
-    ## only clients
-    #multiplayer.connection_failed.connect(connection_failed)
-    #multiplayer.connected_to_server.connect(connected_to_server)
-    #multiplayer.server_disconnected.connect(disconnect_server)
-
 # just a handy function, print message preceded by the peer id
 enum MessageType {
     PRINT = 0,

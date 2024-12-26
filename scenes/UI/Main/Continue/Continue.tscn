@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b8ushcso2djve"]
+[gd_scene load_steps=3 format=3 uid="uid://b8ushcso2djve"]
 
 [ext_resource type="Script" path="res://scripts/UI/Main/Continue/continue.gd" id="1_46lem"]
+[ext_resource type="PackedScene" uid="uid://l2kxkjmkle6q" path="res://scenes/UI/Main/Continue/Edit.tscn" id="2_nelrp"]
 
 [node name="Continue" type="Control"]
 layout_mode = 3
@@ -11,73 +12,72 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_46lem")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Main" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -19.5
-offset_bottom = 19.5
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Continuer une partie"
+
+[node name="MarginContainer" type="MarginContainer" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
 theme_override_constants/margin_left = 100
 theme_override_constants/margin_right = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main/MarginContainer"]
 layout_mode = 2
 
-[node name="SaveName" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="SaveName" type="HBoxContainer" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SaveName"]
+[node name="Label" type="Label" parent="Main/MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Nom de la sauvegarde :"
 
-[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/SaveName"]
+[node name="OptionButton" type="OptionButton" parent="Main/MarginContainer/VBoxContainer/SaveName"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_neighbor_top = NodePath("../../Back")
 focus_neighbor_bottom = NodePath("../../Resume")
 
-[node name="Resume" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Resume" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../SaveName/OptionButton")
 disabled = true
 text = "Reprendre la partie"
 
-[node name="Edit" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Edit" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Modifier la sauvegarde"
 
-[node name="Delete" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Delete" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Effacer la sauvegarde"
 
-[node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Back" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../SaveName/OptionButton")
 text = "Retour"
 
-[node name="Error" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Error" type="Label" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="Edit" parent="." instance=ExtResource("2_nelrp")]
+visible = false
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
-grow_horizontal = 2
-text = "Continuer une partie"
 
 [node name="AcceptDialog" type="AcceptDialog" parent="."]
 title = "Confirmation"
@@ -86,10 +86,11 @@ size = Vector2i(378, 100)
 ok_button_text = "Oui, supprimer"
 dialog_text = "Êtes-vous sur de vouloir effacer la sauvegarde?"
 
-[connection signal="item_selected" from="MarginContainer/VBoxContainer/SaveName/OptionButton" to="." method="_on_option_button_item_selected"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Edit" to="." method="_on_edit_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Delete" to="." method="_on_delete_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="item_selected" from="Main/MarginContainer/VBoxContainer/SaveName/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Edit" to="." method="_on_edit_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Delete" to="." method="_on_delete_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="back_pressed" from="Edit" to="." method="_on_edit_back_pressed"]
 [connection signal="canceled" from="AcceptDialog" to="." method="_on_accept_dialog_canceled"]
 [connection signal="confirmed" from="AcceptDialog" to="." method="_on_accept_dialog_confirmed"]
