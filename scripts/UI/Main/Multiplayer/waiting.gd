@@ -2,9 +2,11 @@ extends Control
 
 signal back_pressed
 var players_waiting: Array[int] = []
+var just_pressed = true
 
 func _ready() -> void:
     Server.player_disconnected.connect(remove_player)
+    Server.server_connection_failed.connect(connection_failed)
     MultiplayerController.player_infos.connect(display_player)
     MultiplayerController.game_starting.connect(reset_menu)
 
@@ -13,9 +15,11 @@ func _on_back_pressed() -> void:
     # remove waiting player
     remove_all_players()
     # disconnect from server
-    GameController.stop_game()
+    GameController.stop_game(true)
 
 func reset_menu() -> void: 
+    $VBoxContainer/Actions/Start.text = "Connection en cours..."
+    just_pressed = true
     back_pressed.emit()
     # remove waiting player
     remove_all_players()
@@ -61,7 +65,6 @@ func _on_visibility_changed() -> void:
         update_buttons()
         
 func update_buttons() -> void:
-    
     if multiplayer.multiplayer_peer != null and multiplayer.is_server():
         if GameController.Players.size() < 2:
             $VBoxContainer/Actions/Start.disabled = true
@@ -70,5 +73,13 @@ func update_buttons() -> void:
             $VBoxContainer/Actions/Start.disabled = false
             $VBoxContainer/Actions/Start.text = "Commencer la partie"
     else:
+        # there is a bug, where if you try to connect to server less host
+        # it takes the timeout (30s) before sending connection failed
+        # with this, it wait for the first update before saying anything else
         $VBoxContainer/Actions/Start.disabled = true
-        $VBoxContainer/Actions/Start.text = "Seul l'hôte peut commencer la partie"
+        if !just_pressed:
+            $VBoxContainer/Actions/Start.text = "Seul l'hôte peut commencer la partie"
+    just_pressed = false
+
+func connection_failed() -> void:
+    $VBoxContainer/Actions/Start.text = "Connection impossible, veuillez réessayer"

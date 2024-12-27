@@ -4,6 +4,7 @@ extends Node
 # https://docs.godotengine.org/en/stable/tutorials/io/background_loading.html#doc-background-loading
 
 signal scene_changed
+signal thread_finished
 
 # current loaded scene
 var current_scene = null
@@ -11,8 +12,8 @@ var current_scene = null
 var loading_scene = preload("res://scenes/UI/Loading.tscn")
 # the loading script
 var loading: LoadingScreen = null
-var transition_start:String
-var transition_end:String
+var transition_start: String = "fade_to_black"
+var transition_end: String = "fade_from_black"
 var transition_timer: Timer = null
 
 # Called when the node enters the scene tree for the first time.
@@ -113,3 +114,32 @@ func _check_load_status(path:String = "res://scenes/UI/MainMenu.tscn")->void:
             loading.finish_transition(transition_end)
             # emit our scene change end
             scene_changed.emit()
+
+func start_transition(message: String = "Chargement en cours...", thread: Thread = null, call_signal: Signal = thread_finished) -> void:
+    if thread == null:
+        return
+    # for solo games
+    if Server.solo_active:
+        # load and display our transition scene
+        loading = loading_scene.instantiate() as LoadingScreen
+        get_tree().root.add_child(loading)
+        loading.message.text = message
+        # launch the transition effect
+        loading.start_transition(transition_start)
+    
+    # launch a timer if we want loading bar
+    transition_timer = Timer.new()
+    transition_timer.wait_time = 0.1
+    # check status (so update loading bar) every 0.1s
+    transition_timer.timeout.connect(_check_thread_status.bind(thread, call_signal))
+    get_tree().root.add_child(transition_timer)
+    transition_timer.start()
+    
+func _check_thread_status(thread: Thread, call_signal: Signal) -> void:
+    if thread.is_alive() == false:
+        if !call_signal.is_null():
+            call_signal.emit(thread.wait_to_finish())
+        transition_timer.stop()
+        transition_timer.queue_free()
+        if Server.solo_active:
+            loading.finish_transition(transition_end)

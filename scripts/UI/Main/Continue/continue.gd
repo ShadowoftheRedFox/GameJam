@@ -12,8 +12,6 @@ func _ready() -> void:
     $Main/MarginContainer/VBoxContainer/Resume.grab_focus()
     
 func check_save() -> void:
-    # FIXME does not show new save when creating a new game then continuing game
-    printerr("checking saves")
     # TODO gamemode 
     # remove everything
     Options.clear()

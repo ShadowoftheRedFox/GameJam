@@ -91,7 +91,6 @@ func area_entered(body: Node2D, direction: String) -> void:
     MultiplayerController.player_change_room.rpc(multiplayer.get_unique_id(), next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.main_player_instance.global_position = area.global_position
-    # BUG lmao wtf is going with this line in multiplayer
     get_tree().root.remove_child.call_deferred(self)
     # to "force" the player to be in front of the layer on its same level
     GameController.main_player_instance.move_to_front()
@@ -132,8 +131,8 @@ func generate_room() -> bool:
     if path.ends_with("_"):
         path = path.erase(len(path)-1)
 
-    #print("Room ", room_id, " can choose between ", GameController.GeneratorController.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
-    var amount_room_available = GameController.GeneratorController.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn")
+    #print("Room ", room_id, " can choose between ", GameController.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
+    var amount_room_available = GameController.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn")
     if amount_room_available == 0:
         printerr("No room available for ", path)
         return false
@@ -153,7 +152,7 @@ func generate_room() -> bool:
         return false
         
     # setup area listeners
-    set_area_listeners.call_deferred()
+    set_area_listeners()
     
     return true
 
@@ -185,7 +184,7 @@ func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, ro
                 set_connection("right", room_right)
     
     # setup area listeners
-    set_area_listeners.call_deferred()
+    set_area_listeners()
     
     return true
 

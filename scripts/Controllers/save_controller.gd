@@ -167,10 +167,7 @@ func get_save_name(save_display_name: String) -> String:
     return save_names[save_display_names.find(save_display_name)] 
 
 # TODO edit argument as needed
-func create_new_save(save_name: String, _content: String = "") -> bool:
-    if !is_save_name(save_name):
-        return false
-
+func create_new_save(save_name: String, content: String = "") -> bool:
     # edit variable to find the save file
     general_config.set_value("Save_names", save_name, save_name)
     general_config.set_value("General", "save_amount", len(save_names)+1)
@@ -182,7 +179,7 @@ func create_new_save(save_name: String, _content: String = "") -> bool:
     general_save_file = FileAccess.open(SAVE_PATH + save_name + ".save", FileAccess.WRITE_READ)
     
     # saving our data
-    general_save_file.store_string(_content)
+    general_save_file.store_string(content)
     
     # we saved our data, close
     general_save_file.close()
@@ -197,6 +194,7 @@ func get_saves() -> Array[String]:
     
 func get_save(save_name: String) -> Array[Dictionary]:
     if !is_save_name(save_name):
+        printerr("not a save game")
         return []
     
     var file_data: Array[Dictionary] = []

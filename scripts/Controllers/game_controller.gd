@@ -23,13 +23,16 @@ const MapSizesNames = ["Petite", "Grande", "Large", "Immense"]
 
 
 var GeneratorController = GeneratorControllerScript.new()
+var ThreadController = ThreadControllerScript.new()
+var Utils = UtilsScript.new()
+
 const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
+const PlayerScene = preload("res://scenes/entities/Player.tscn")
+
+signal game_loaded(result_map: Array)
 
 var save_name_hosted: String = ""
 var Players = {}
-const MultiplayerScene = preload("res://tests/multiplayer/roomtestmulti.tscn")
-const MultiPlayerNodeName = "MultiplayerScene"
-const PlayerScene = preload("res://scenes/entities/Player.tscn")
 var game_started: bool = false
 var game_paused: bool = false
 var current_map: Array = []
@@ -42,18 +45,22 @@ var main_player_instance: BasePlayer = null
 func _init() -> void:
     process_mode = PROCESS_MODE_ALWAYS
     self.add_child(GeneratorController)
+    self.add_child(ThreadController)
+    self.add_child(Utils)
 
 func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
     # create save
     current_map = GeneratorController.generate_map(map_size)
-    SaveController.create_new_save(save_name, JSON.stringify({
+    if SaveController.create_new_save(save_name, JSON.stringify({
         "difficulty": difficulty,
         "gamemode": gamemode,
         "map_size": map_size,
         "map": GeneratorController.get_map_room_types(current_map),
         "seed": GeneratorController.save_seed,
-    }))
-    launch_solo(save_name)
+    })):
+        launch_solo(save_name)
+    else:
+        push_error("couldn't create new game")
 
 func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     print("loading map...")
@@ -66,8 +73,12 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
         save = SaveController.get_save(save_name)
         save_data = save[0]
     # TODO threading
-    current_map = GeneratorController.load_map(save_data.get("map"), save_data.get("map_size"), save_data.get("seed"))
-    print("map loaded")
+    var thread := Thread.new()
+    var err = thread.start(GeneratorController.load_map.bind(save_data.get("map"), save_data.get("map_size"), save_data.get("seed")))
+    if err != OK:
+        push_warning("Error while creating thread to load map: ", err)
+        return
+    TransitionController.start_transition("Chargement de la carte...", thread, GameController.game_loaded)
 
 func launch_solo(save_name: String) -> void:
     var res: bool = Server.create_host(true)
@@ -77,7 +88,15 @@ func launch_solo(save_name: String) -> void:
     
     # TODO transition while loading
     save_name_hosted = save_name 
-    load_game(save_name)
+    # if current map is loaded, means new game, so don't need to load save
+    if current_map.size() == 0:
+        load_game(save_name)
+        game_loaded.connect(launch_solo_after_load)
+    else:
+        launch_solo_after_load(current_map)
+
+func launch_solo_after_load(load_result: Array):
+    current_map = load_result
     hide_menu()
     game_started = true
     # display first room
@@ -126,7 +145,7 @@ func unpause() -> void:
     if Server.solo_active == true:
         get_tree().paused = false
 
-func stop_game() -> void:
+func stop_game(no_new_menu: bool = false) -> void:
     if game_started == true and multiplayer.is_server():
         SaveController.save_game(save_name_hosted)
     GeneratorController.free_map(current_map)
@@ -141,9 +160,11 @@ func stop_game() -> void:
     
     Server.stop_server()
     
+    Utils.remove_signal_listener(game_loaded)
     GameController.Players = {}
     game_started = false
     current_map = []
     current_room = null
     main_player_instance = null
-    show_menu()
+    if !no_new_menu:
+        show_menu()
