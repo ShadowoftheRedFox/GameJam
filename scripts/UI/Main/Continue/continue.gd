@@ -2,13 +2,14 @@ extends Control
 
 signal back_pressed
 
-@onready var Options: OptionButton = $MarginContainer/VBoxContainer/SaveName/OptionButton
-@onready var Error: Label = $MarginContainer/VBoxContainer/Error
+@onready var Options: OptionButton = $Main/MarginContainer/VBoxContainer/SaveName/OptionButton
+@onready var Error: Label = $Main/MarginContainer/VBoxContainer/Error
+@onready var Edit: EditMenu = $Edit
 
 func _ready() -> void:
     check_save()
     SaveController.saves_changed.connect(check_save)
-    $MarginContainer/VBoxContainer/Resume.grab_focus()
+    $Main/MarginContainer/VBoxContainer/Resume.grab_focus()
     
 func check_save() -> void:
     # TODO gamemode 
@@ -20,16 +21,16 @@ func check_save() -> void:
             Options.add_item(save_name, i)
             i += 1
         # enable other buttons
-        $MarginContainer/VBoxContainer/Resume.disabled = false
-        $MarginContainer/VBoxContainer/Edit.disabled = false
-        $MarginContainer/VBoxContainer/Delete.disabled = false
+        $Main/MarginContainer/VBoxContainer/Resume.disabled = false
+        $Main/MarginContainer/VBoxContainer/Edit.disabled = false
+        $Main/MarginContainer/VBoxContainer/Delete.disabled = false
     else :
         Options.add_item("LabHyrinTical", 0)
         Options.set_item_disabled(0, true)
         # disable other buttons
-        $MarginContainer/VBoxContainer/Resume.disabled = true
-        $MarginContainer/VBoxContainer/Edit.disabled = true
-        $MarginContainer/VBoxContainer/Delete.disabled = true
+        $Main/MarginContainer/VBoxContainer/Resume.disabled = true
+        $Main/MarginContainer/VBoxContainer/Edit.disabled = true
+        $Main/MarginContainer/VBoxContainer/Delete.disabled = true
 
 func _on_back_pressed() -> void:
     back_pressed.emit()
@@ -43,9 +44,19 @@ func _on_resume_pressed() -> void:
 
 
 func _on_edit_pressed() -> void:
-    # TODO show edit menu
-    pass
-
+    $Main.hide()
+    $Edit.show()
+    $Edit/MarginContainer/VBoxContainer/Back.grab_focus()
+    var save_display_name = Options.get_item_text(Options.selected)
+    Edit.get_save.emit(
+        save_display_name,
+        SaveController.get_save(SaveController.get_save_name(save_display_name))[0]
+    )
+    
+func _on_edit_back_pressed() -> void:
+    $Main.show()
+    $Edit.hide()
+    $Main/MarginContainer/VBoxContainer/Resume.grab_focus()
 
 func _on_delete_pressed() -> void:
     $AcceptDialog.show()
@@ -58,8 +69,6 @@ func _on_accept_dialog_confirmed() -> void:
         Error.text = "Une erreur est survenue en essayant d'effacer la sauvegarde"
         await get_tree().create_timer(5.0).timeout
         Error.text = ""
-    else:
-        check_save()
 
 
 func _on_accept_dialog_canceled() -> void:

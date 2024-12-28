@@ -11,8 +11,8 @@ var current_scene = null
 var loading_scene = preload("res://scenes/UI/Loading.tscn")
 # the loading script
 var loading: LoadingScreen = null
-var transition_start:String
-var transition_end:String
+var transition_start: String = "fade_to_black"
+var transition_end: String = "fade_from_black"
 var transition_timer: Timer = null
 
 # Called when the node enters the scene tree for the first time.

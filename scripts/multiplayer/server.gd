@@ -18,21 +18,7 @@ var peer: ENetMultiplayerPeer = null
 
 signal player_connected(id:int)
 signal player_disconnected(id:int)
-
-func _ready() -> void:
-    # add listener for connection and deconnection of others
-    pass
-    # SOMEHOW, putting it here makes them go TWICE
-    # YET SOMEHOW PUTTING THIS CODE TWICE INTO HOST AND JOIN SOLVES IT
-    # WTF
-    ## host and clients
-    #multiplayer.peer_connected.connect(peer_connected)
-    #multiplayer.peer_disconnected.connect(peer_disconnected)
-    #
-    ## only clients
-    #multiplayer.connection_failed.connect(connection_failed)
-    #multiplayer.connected_to_server.connect(connected_to_server)
-    #multiplayer.server_disconnected.connect(disconnect_server)
+signal server_connection_failed
 
 # just a handy function, print message preceded by the peer id
 enum MessageType {
@@ -80,8 +66,9 @@ func peer_disconnected(id: int) -> void:
         GameController.stop_game()
     
 func connection_failed() -> void:
-    peer_print(MessageType.PRINT, "connection failed")
+    push_error("Connection failed")
     multiplayer_active = false
+    server_connection_failed.emit()
 
 
 func connected_to_server() -> void:
@@ -151,16 +138,19 @@ func create_host(is_solo: bool = false) -> bool:
     multiplayer.peer_disconnected.connect(peer_disconnected)
         
     # server ready at that point
-    print("Server ready, awaiting for players")
-    
-    # send info for our own peer
-    MultiplayerController.send_player_infos({
-        "id": multiplayer.get_unique_id(),
-        "name": SaveController.parameters.Multiplayer.name,
-        #"name": str(multiplayer.get_unique_id()),
-        "color": SaveController.parameters.Multiplayer.color,
-        "score": 0
-    })
+    if is_solo:
+        print("Server ready")
+    else:
+        print("Server ready, awaiting for players")
+        
+        # send info for our own peer
+        MultiplayerController.send_player_infos({
+            "id": multiplayer.get_unique_id(),
+            "name": SaveController.parameters.Multiplayer.name,
+            #"name": str(multiplayer.get_unique_id()),
+            "color": SaveController.parameters.Multiplayer.color,
+            "score": 0
+        })
     
     return true
     
@@ -188,8 +178,6 @@ func join_server() -> bool:
     multiplayer.connected_to_server.connect(connected_to_server)
     multiplayer.server_disconnected.connect(GameController.stop_game)
     
-    #connected_to_host.emit()
-    #GameController.start_game()
     peer_print(MessageType.PRINT, "Peer connected to host")
     return true
     
@@ -201,11 +189,11 @@ func stop_server() -> void:
     
     # since they're being sent twice with ready with the same callable
     # but when set once with host and join, generate errors after relaunch :/
-    remove_signal_listener(multiplayer.peer_connected)
-    remove_signal_listener(multiplayer.peer_disconnected)
-    remove_signal_listener(multiplayer.connection_failed)
-    remove_signal_listener(multiplayer.connected_to_server)
-    remove_signal_listener(multiplayer.server_disconnected)
+    GameController.Utils.remove_signal_listener(multiplayer.peer_connected)
+    GameController.Utils.remove_signal_listener(multiplayer.peer_disconnected)
+    GameController.Utils.remove_signal_listener(multiplayer.connection_failed)
+    GameController.Utils.remove_signal_listener(multiplayer.connected_to_server)
+    GameController.Utils.remove_signal_listener(multiplayer.server_disconnected)
     
     if multiplayer.is_server():
         for connected_peer in multiplayer.get_peers():
@@ -214,7 +202,3 @@ func stop_server() -> void:
         multiplayer.multiplayer_peer.close()
     else:
         multiplayer.multiplayer_peer.close()
-        
-func remove_signal_listener(sig: Signal) -> void:
-    for dict in sig.get_connections():
-        sig.disconnect(dict.callable)

@@ -33,7 +33,7 @@ size_flags_vertical = 10
 [node name="Start" type="Button" parent="VBoxContainer/Actions"]
 layout_mode = 2
 size_flags_vertical = 8
-text = "Commencer la partie"
+text = "Connection en cours..."
 
 [node name="Back" type="Button" parent="VBoxContainer/Actions"]
 layout_mode = 2

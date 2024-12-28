@@ -11,7 +11,7 @@ func _ready() -> void:
     Server.player_connected.connect(send_map_data)
     
 func handle_player_disconnection(id: int) -> void:
-    # TODO maybe handle at the end of the frame to let other listeners the time to do their things
+    # handle at the end of the frame to let other listeners the time to do their things
     remove_player.call_deferred(id)
 
 @rpc("any_peer")
@@ -94,7 +94,7 @@ func remove_player(id: int) -> void:
 
 func send_map_data(id: int) -> void:
     if multiplayer.is_server():
-        var save = SaveController.get_save(GameController.save_name_hosted)
+        var save = SaveController.get_save(GameController.hosted_save_name)
         # FIXME do not pass whole save if something sensitive is added 
         receive_map_data.rpc_id(id, save[0])
 
