@@ -383,6 +383,14 @@ font_size = 11
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_6hxiq")
+SPEED_CAP_GROUND = null
+SPEED_CAP_AIR = null
+DASH_MULT = null
+DASH_DURATION = null
+MAX_DASH_COUNT = null
+DRAG_GROUND = null
+DRAG_AIR = null
+JUMP_IMPULSE = null
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
