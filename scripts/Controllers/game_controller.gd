@@ -31,7 +31,12 @@ const PlayerScene = preload("res://scenes/entities/Player.tscn")
 
 signal game_loaded(result_map: Array)
 
-var save_name_hosted: String = ""
+# current save data
+var hosted_save_name: String = ""
+var hosted_difficulty: Difficulties = Difficulties.Easy
+var hosted_map_size: MapSizes = MapSizes.Small
+var hosted_gamemode: GameModes = GameModes.Classic
+
 var Players = {}
 var game_started: bool = false
 var game_paused: bool = false
@@ -49,16 +54,31 @@ func _init() -> void:
     self.add_child(Utils)
 
 func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
-    # create save
-    current_map = GeneratorController.generate_map(map_size)
-    if SaveController.create_new_save(save_name, JSON.stringify({
-        "difficulty": difficulty,
-        "gamemode": gamemode,
-        "map_size": map_size,
+    # load game
+    hosted_save_name = save_name
+    hosted_difficulty = difficulty
+    hosted_gamemode = gamemode
+    hosted_map_size = map_size
+    
+    ThreadController.thread_transition(
+        GeneratorController.generate_map.bind(map_size),
+        game_loaded,
+        true,
+        "Création du monde en cours..."
+    )
+    game_loaded.connect(new_game_after_load)
+    
+
+func new_game_after_load(load_result: Array) -> void:
+    current_map = load_result
+    if SaveController.create_new_save(hosted_save_name, JSON.stringify({
+        "difficulty": hosted_difficulty,
+        "gamemode": hosted_gamemode,
+        "map_size": hosted_map_size,
         "map": GeneratorController.get_map_room_types(current_map),
         "seed": GeneratorController.save_seed,
     })):
-        launch_solo(save_name)
+        launch_solo(hosted_save_name)
     else:
         push_error("couldn't create new game")
 
@@ -72,10 +92,16 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     else:
         save = SaveController.get_save(save_name)
         save_data = save[0]
+    
+    # store data
+    hosted_save_name = save_name 
+    hosted_difficulty = save_data.get("difficulty")
+    hosted_gamemode = save_data.get("gamemode")
+    hosted_map_size = save_data.get("map_size")
     # tansition with thread
-    GameController.ThreadController.thread_transition(
+    ThreadController.thread_transition(
         GeneratorController.load_map.bind(save_data.get("map"), save_data.get("map_size"), save_data.get("seed")),
-        GameController.game_loaded,
+        game_loaded,
         multiplayer_data.is_empty(), # don't show loading screen for players joining host
         "Chargement de la carte...",
     )
@@ -86,8 +112,6 @@ func launch_solo(save_name: String) -> void:
         push_warning("Server couldn't create host")
         return
     
-    # TODO transition while loading
-    save_name_hosted = save_name 
     # if current map is loaded, means new game, so don't need to load save
     if current_map.size() == 0:
         load_game(save_name)
@@ -114,7 +138,7 @@ func launch_multiplayer(save_name: String) -> void:
         push_warning("Server couldn't create host")
         return
     
-    save_name_hosted = save_name
+    hosted_save_name = save_name
     load_game(save_name)
     
 func join_multiplayer() -> bool:
@@ -147,7 +171,7 @@ func unpause() -> void:
 
 func stop_game(no_new_menu: bool = false) -> void:
     if game_started == true and multiplayer.is_server():
-        SaveController.save_game(save_name_hosted)
+        SaveController.save_game(hosted_save_name)
     GeneratorController.free_map(current_map)
     if main_player_instance != null:
         main_player_instance.queue_free()
@@ -166,5 +190,11 @@ func stop_game(no_new_menu: bool = false) -> void:
     current_map = []
     current_room = null
     main_player_instance = null
+    
+    hosted_save_name = ""
+    hosted_difficulty = Difficulties.Easy
+    hosted_map_size = MapSizes.Small
+    hosted_gamemode = GameModes.Classic
+    
     if !no_new_menu:
         show_menu()

@@ -54,7 +54,7 @@ func _on_control_pressed() -> void:
 
 
 func _on_save_pressed() -> void:
-    SaveController.save_game(GameController.save_name_hosted)
+    SaveController.save_game(GameController.hosted_save_name)
 
 
 func _on_quit_pressed() -> void:

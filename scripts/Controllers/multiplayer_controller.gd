@@ -94,7 +94,7 @@ func remove_player(id: int) -> void:
 
 func send_map_data(id: int) -> void:
     if multiplayer.is_server():
-        var save = SaveController.get_save(GameController.save_name_hosted)
+        var save = SaveController.get_save(GameController.hosted_save_name)
         # FIXME do not pass whole save if something sensitive is added 
         receive_map_data.rpc_id(id, save[0])
 
