@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://efmww27vpwv3"]
+[gd_scene load_steps=7 format=3 uid="uid://dnw8i0o6wxwo5"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/door.gd" id="1_1bwiw"]
 [ext_resource type="Texture2D" uid="uid://um2sdjcg0s81" path="res://assets/tilemaps/tilesheet.webp" id="2_2wxi0"]
@@ -45,6 +45,7 @@ size = Vector2(64, 192)
 size = Vector2(64, 192)
 
 [node name="Door" type="Area2D"]
+collision_mask = 14
 script = ExtResource("1_1bwiw")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -63,6 +64,7 @@ offset_bottom = 96.0
 color = Color(0.164062, 0.164062, 0.164062, 1)
 
 [node name="StaticBody" type="StaticBody2D" parent="."]
+collision_layer = 0
 
 [node name="Collider" type="CollisionShape2D" parent="StaticBody"]
 shape = SubResource("RectangleShape2D_bg42g")

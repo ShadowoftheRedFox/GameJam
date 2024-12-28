@@ -59,7 +59,7 @@ func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, g
     hosted_difficulty = difficulty
     hosted_gamemode = gamemode
     hosted_map_size = map_size
-    
+
     ThreadController.thread_transition(
         GeneratorController.generate_map.bind(map_size),
         game_loaded,
@@ -67,7 +67,7 @@ func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, g
         "Création du monde en cours..."
     )
     game_loaded.connect(new_game_after_load)
-    
+
 
 func new_game_after_load(load_result: Array) -> void:
     current_map = load_result
@@ -92,9 +92,9 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     else:
         save = SaveController.get_save(save_name)
         save_data = save[0]
-    
+
     # store data
-    hosted_save_name = save_name 
+    hosted_save_name = save_name
     hosted_difficulty = save_data.get("difficulty")
     hosted_gamemode = save_data.get("gamemode")
     hosted_map_size = save_data.get("map_size")
@@ -111,7 +111,7 @@ func launch_solo(save_name: String) -> void:
     if res == false:
         push_warning("Server couldn't create host")
         return
-    
+
     # if current map is loaded, means new game, so don't need to load save
     if current_map.size() == 0:
         load_game(save_name)
@@ -137,10 +137,10 @@ func launch_multiplayer(save_name: String) -> void:
     if res == false:
         push_warning("Server couldn't create host")
         return
-    
+
     hosted_save_name = save_name
     load_game(save_name)
-    
+
 func join_multiplayer() -> bool:
     return Server.join_server()
 
@@ -161,8 +161,8 @@ func pause() -> void:
     main_player_instance.get_node("Camera2D/Pause").show()
     if Server.solo_active == true:
         get_tree().paused = true
-    
-func unpause() -> void: 
+
+func unpause() -> void:
     print("Called unpause")
     GameController.game_paused = false
     main_player_instance.get_node("Camera2D/Pause").hide()
@@ -177,24 +177,24 @@ func stop_game(no_new_menu: bool = false) -> void:
         main_player_instance.queue_free()
     if current_room != null:
         current_room.queue_free()
-    
+
     for children in get_tree().root.get_children():
         if children is BasePlayer or children is MapRoom:
             children.queue_free()
-    
+
     Server.stop_server()
-    
+
     Utils.remove_signal_listener(game_loaded)
     GameController.Players = {}
     game_started = false
     current_map = []
     current_room = null
     main_player_instance = null
-    
+
     hosted_save_name = ""
     hosted_difficulty = Difficulties.Easy
     hosted_map_size = MapSizes.Small
     hosted_gamemode = GameModes.Classic
-    
+
     if !no_new_menu:
         show_menu()

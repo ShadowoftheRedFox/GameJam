@@ -71,13 +71,13 @@ physics_layer_0/collision_mask = 2
 sources/0 = SubResource("TileSetAtlasSource_ugjek")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gcnc5"]
-size = Vector2(181, 30)
+size = Vector2(181, 179)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1hr4x"]
-size = Vector2(56, 356)
+size = Vector2(159, 356)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q67qv"]
-size = Vector2(38.5, 292)
+size = Vector2(169.25, 292)
 
 [node name="Room" type="Node2D"]
 
@@ -89,18 +89,21 @@ tile_set = SubResource("TileSet_6u1k2")
 position = Vector2(-2, 314)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Down"]
+position = Vector2(0, 74.5)
 shape = SubResource("RectangleShape2D_gcnc5")
 
 [node name="Left" type="Area2D" parent="Map"]
 position = Vector2(-820, -93)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Left"]
+position = Vector2(-51.5, 0)
 shape = SubResource("RectangleShape2D_1hr4x")
 
 [node name="Right" type="Area2D" parent="Map"]
 position = Vector2(1144, -320)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Right"]
+position = Vector2(65.375, 0)
 shape = SubResource("RectangleShape2D_q67qv")
 
 [node name="1x1" parent="Map" instance=ExtResource("3_vsdwo")]

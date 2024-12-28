@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=4 uid="uid://b7ygmcgon7api"]
+[gd_scene load_steps=6 format=4 uid="uid://cxtem3xkapxmy"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_bi34w"]
 [ext_resource type="Texture2D" uid="uid://um2sdjcg0s81" path="res://assets/tilemaps/tilesheet.webp" id="2_bbklf"]

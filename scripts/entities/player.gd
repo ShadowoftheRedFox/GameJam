@@ -117,7 +117,11 @@ func _physics_process(delta: float) -> void:
             PlayerState.AIRBORNE:
                 handle_airborne_state(delta, hor_direction, vel_direction, input_vector)
 
+       # Calculate the snap vector for slopes
+        var snap_vector = Vector2(0, 32)  # Adjust the snap length based on your needs
+
         # Move the player and handle collisions
+        set_floor_snap_length(10)
         move_and_slide()
 
 func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):

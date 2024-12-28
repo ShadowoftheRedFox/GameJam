@@ -71,16 +71,16 @@ physics_layer_0/collision_mask = 2
 sources/0 = SubResource("TileSetAtlasSource_ugjek")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gcnc5"]
-size = Vector2(181, 30)
+size = Vector2(181, 139)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1hr4x"]
-size = Vector2(56, 356)
+size = Vector2(174, 356)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nckwh"]
-size = Vector2(1087.5, 81)
+size = Vector2(1087.5, 267.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q67qv"]
-size = Vector2(38.5, 292)
+size = Vector2(147.25, 292)
 
 [node name="Room" type="Node2D"]
 
@@ -93,6 +93,7 @@ position = Vector2(-2, 314)
 collision_mask = 14
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Down"]
+position = Vector2(0, 54.5)
 shape = SubResource("RectangleShape2D_gcnc5")
 
 [node name="Left" type="Area2D" parent="Map"]
@@ -100,6 +101,7 @@ position = Vector2(-820, -93)
 collision_mask = 14
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Left"]
+position = Vector2(-59, 0)
 shape = SubResource("RectangleShape2D_1hr4x")
 
 [node name="Up" type="Area2D" parent="Map"]
@@ -107,6 +109,7 @@ position = Vector2(95, -564)
 collision_mask = 14
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Up"]
+position = Vector2(0, -93.25)
 shape = SubResource("RectangleShape2D_nckwh")
 
 [node name="Right" type="Area2D" parent="Map"]
@@ -114,6 +117,7 @@ position = Vector2(1144, -320)
 collision_mask = 14
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Right"]
+position = Vector2(54.375, 0)
 shape = SubResource("RectangleShape2D_q67qv")
 
 [node name="1x1" parent="Map" instance=ExtResource("3_qhg7p")]

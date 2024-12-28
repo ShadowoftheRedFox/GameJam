@@ -71,7 +71,7 @@ physics_layer_0/collision_mask = 2
 sources/0 = SubResource("TileSetAtlasSource_ugjek")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q67qv"]
-size = Vector2(38.5, 292)
+size = Vector2(147.25, 292)
 
 [node name="Room" type="Node2D"]
 
@@ -83,6 +83,7 @@ tile_set = SubResource("TileSet_6u1k2")
 position = Vector2(1144, -320)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Right"]
+position = Vector2(54.375, 0)
 shape = SubResource("RectangleShape2D_q67qv")
 
 [node name="1x1" parent="Map" instance=ExtResource("3_qhg7p")]

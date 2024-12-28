@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cx0ibmg12cpt6" path="res://scenes/platforms/2x1.tscn" id="4_8kq6o"]
 [ext_resource type="PackedScene" uid="uid://dgawu328wsjbu" path="res://scenes/platforms/3x1.tscn" id="5_j80ds"]
 [ext_resource type="PackedScene" uid="uid://b67nelkrljk4f" path="res://scenes/platforms/4x1.tscn" id="6_d1o4c"]
-[ext_resource type="PackedScene" uid="uid://efmww27vpwv3" path="res://scenes/mapgen/door.tscn" id="6_xoyhy"]
+[ext_resource type="PackedScene" path="res://scenes/mapgen/door.tscn" id="6_xoyhy"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ugjek"]
 texture = ExtResource("2_srunq")
@@ -93,7 +93,7 @@ position = Vector2(-166, -48)
 position = Vector2(580, -169)
 
 [node name="Down" parent="Map" node_paths=PackedStringArray("tile_map_layer") instance=ExtResource("6_xoyhy")]
-position = Vector2(0, 352)
+position = Vector2(7, 340)
 rotation = 4.71239
 collision_mask = 14
 tile_map_layer = NodePath("..")
