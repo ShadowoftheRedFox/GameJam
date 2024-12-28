@@ -1,20 +1,29 @@
 class_name BasePlayer
 extends CharacterBody2D
 
+#### STATE MACHINE
+enum PlayerState {GROUNDED, AIRBORNE}
+var current_state = PlayerState.GROUNDED
+
 #### Schmovements ####
 var input_vector: Vector2 = Vector2.ZERO
 
 @export var SPEED_CAP_GROUND: float = 200.0
 @export var SPEED_CAP_AIR: float = 300.0
 
-@export var DASH_MULT: float = 4.0
+@export var DASH_MULT: float = 8.0
 @export var DASH_DURATION: float = 0.2
 var dash_direction = 0
 var dash_timer: float = 0.0
+@export var DASH_COUNT_MAX: int = 1
+var dash_count: int = DASH_COUNT_MAX
 
 @export var DRAG_GROUND: float = 0.1
 @export var DRAG_AIR: float = 0.1
 
+@export var JUMP_IMPULSE: float = 1000
+@export var JUMP_COUNT_MAX: int = 2
+var jump_count: int = JUMP_COUNT_MAX
 
 #### Graphic ####
 @onready var sprite_2d: Sprite2D = $Sprite2D
@@ -73,20 +82,21 @@ func enable_player() -> void:
     self.show()
     collider.set_deferred("disabled", false)
 
+func _ready():
+    dash_count = DASH_COUNT_MAX
+    jump_count = JUMP_COUNT_MAX
+
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
     if self.is_queued_for_deletion() or player_disabled:
         return
 
     # Handle animations
-    # TODO: Make this a more flexible system
     if velocity.x == 0:
         anim_sprite_2d.play("idle")
     else:
         anim_sprite_2d.play("walk")
 
-    # Physics updates go here.
-    # Check if this instance has multiplayer authority
     if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active:
         # Handle pause functionality
         if Input.is_action_just_pressed("Pause"):
@@ -95,60 +105,129 @@ func _physics_process(delta: float) -> void:
 
         # Get player input for movement
         input_vector = Input.get_vector("Left", "Right", "Up", "Down")
-        var hor_direction = 0
-
-        if input_vector.x > 0:
-            hor_direction = 1
-        elif input_vector.x < 0:
-            hor_direction = -1
-        else:
-            hor_direction = 0
+        var hor_direction = sign(input_vector.x)
 
         # Determine the horizontal direction of the velocity
-        # There HAS to be a better way to do this, so...
-        # HACK
-        var vel_direction = 0
-        if velocity.x != 0:
-            vel_direction = velocity.x / abs(velocity.x)
+        var vel_direction = sign(velocity.x)
 
-        # Grounded movement
-        if is_on_floor():
-            if dash_timer > 0:
-                dash_timer -= delta
-                velocity.x = dash_direction * SPEED_CAP_GROUND * DASH_MULT
-            else:
-                # First, set vertical velocity to 0
-                velocity.y = 0.0
-
-                # If moving above a bit more than the cap, or if holding a direction
-                # different from the current movement, set speed to the speed cap.
-                # Otherwise, apply exponential slowdown depending on the current speed.
-                # Merde.
-                if abs(velocity.x) <= SPEED_CAP_GROUND * 1.3 or \
-                (hor_direction != vel_direction and hor_direction != 0 and vel_direction != 0):
-                    velocity.x = hor_direction * SPEED_CAP_GROUND
-                else:
-                    var speed_diff = abs(velocity.x) - SPEED_CAP_GROUND
-                    var drag_force = speed_diff * DRAG_GROUND
-                    velocity.x -= vel_direction * drag_force
-
-                # Handle le ebin dashes
-                if Input.is_action_just_pressed("Dash") and hor_direction != 0:
-                    dash_timer = DASH_DURATION
-                    dash_direction = hor_direction
-
-                # Flip the sprite based on movement direction
-                if hor_direction == 1:
-                    sprite_2d.flip_h = false
-                    anim_sprite_2d.flip_h = false
-                elif hor_direction == -1:
-                    sprite_2d.flip_h = true
-                    anim_sprite_2d.flip_h = true
-
-        # Air movement
-        else:
-            # Apply gravity
-            velocity.y = 100.0
+        # State machine handling
+        match current_state:
+            PlayerState.GROUNDED:
+                handle_grounded_state(delta, hor_direction, vel_direction, input_vector)
+            PlayerState.AIRBORNE:
+                handle_airborne_state(delta, hor_direction, vel_direction, input_vector)
 
         # Move the player and handle collisions
         move_and_slide()
+
+func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):
+    if is_on_floor() == false:
+        change_state(PlayerState.AIRBORNE)
+        return
+
+    if dash_timer < DASH_DURATION * 0.7:
+        dash_count = DASH_COUNT_MAX
+
+    if Input.is_action_just_pressed("Jump") and jump_count > 0:
+        velocity.y = -JUMP_IMPULSE
+        dash_timer = -100
+        jump_count -= 1
+        change_state(PlayerState.AIRBORNE)
+        return
+
+    if dash_timer > 0:
+        dash_timer -= delta
+        velocity = dash_direction * SPEED_CAP_GROUND * DASH_MULT
+    else:
+        if abs(velocity.x) <= SPEED_CAP_GROUND * 1.3 or hor_direction != vel_direction:
+            velocity.x = hor_direction * SPEED_CAP_GROUND
+        else:
+            var speed_diff = abs(velocity.x) - SPEED_CAP_GROUND
+            var drag_force = speed_diff * DRAG_GROUND
+            velocity.x -= vel_direction * drag_force
+
+        if Input.is_action_just_pressed("Dash") and sign(input_vector.y) >= 0 and dash_count > 0:
+            dash_timer = DASH_DURATION
+            dash_direction = input_vector
+            dash_count -= 1
+
+        if hor_direction == 1:
+            sprite_2d.flip_h = false
+            anim_sprite_2d.flip_h = false
+        elif hor_direction == -1:
+            sprite_2d.flip_h = true
+            anim_sprite_2d.flip_h = true
+
+func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
+    if is_on_floor():
+        change_state(PlayerState.GROUNDED)
+        return
+
+    velocity.y += 60.0
+
+    if Input.is_action_just_pressed("Jump") and jump_count > 0:
+        velocity.y = -JUMP_IMPULSE
+        dash_timer = -100
+        jump_count -= 1
+        return
+
+    if dash_timer > 0:
+        dash_timer -= delta
+        velocity = dash_direction * SPEED_CAP_GROUND * DASH_MULT
+
+    else:
+        if abs(velocity.x) <= SPEED_CAP_GROUND * 1.3 or hor_direction != vel_direction:
+            velocity.x = hor_direction * SPEED_CAP_GROUND
+        else:
+            var speed_diff = abs(velocity.x) - SPEED_CAP_AIR
+            var drag_force = speed_diff * DRAG_AIR
+            velocity.x -= vel_direction * drag_force
+
+        if Input.is_action_just_pressed("Dash") and sign(input_vector.y) >= 0 and dash_count > 0:
+            dash_timer = DASH_DURATION
+            dash_direction = input_vector
+            dash_count -= 1
+
+        if hor_direction == 1:
+            sprite_2d.flip_h = false
+            anim_sprite_2d.flip_h = false
+        elif hor_direction == -1:
+            sprite_2d.flip_h = true
+            anim_sprite_2d.flip_h = true
+
+func change_state(new_state):
+    if current_state == new_state:
+        return
+
+    # Handle state exit actions
+    match current_state:
+        PlayerState.GROUNDED:
+            on_exit_grounded()
+        PlayerState.AIRBORNE:
+            on_exit_airborne()
+
+    current_state = new_state
+
+    # Handle state enter actions
+    match new_state:
+        PlayerState.GROUNDED:
+            on_enter_grounded()
+        PlayerState.AIRBORNE:
+            on_enter_airborne()
+
+func on_enter_grounded():
+    # Actions to be executed when entering the grounded state
+    dash_count = DASH_COUNT_MAX
+    jump_count = JUMP_COUNT_MAX
+
+func on_exit_grounded():
+    # Actions to be executed when exiting the grounded state
+    pass
+
+func on_enter_airborne():
+    # Actions to be executed when entering the airborne state
+    pass
+
+func on_exit_airborne():
+    # Actions to be executed when exiting the airborne state
+    pass
