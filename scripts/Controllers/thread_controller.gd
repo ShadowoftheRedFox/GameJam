@@ -1,67 +1,61 @@
 class_name ThreadControllerScript
 extends Node
 
-var unique_id: int = 0
+signal thread_finished
 
-func load_scene(path: String, type_hint: String) -> Variant:
-    var loaded_signal = "loaded_"+str(unique_id)
-    self.add_user_signal(loaded_signal, [{
-        "name": "scene", "type": PROPERTY_HINT_RESOURCE_TYPE
-    }])
-    unique_id+=1
+# current loaded scene
+var current_scene = null
+# the loading scene
+var loading_scene = preload("res://scenes/UI/Loading.tscn")
+# the loading script
+var loading: LoadingScreen = null
+var transition_start: String = "fade_to_black"
+var transition_end: String = "fade_from_black"
+var transition_timer: Timer = null
+
+func thread_transition(
+    workload: Callable, 
+    call_signal: Signal = thread_finished,
+    show_loading: bool = false,
+    message: String = "Chargement en cours...", 
+    start_transition: String = "fade_to_black",
+    end_transition: String = "fade_from_black"
+) -> Timer:
     
-    if not ResourceLoader.exists(path):
-        printerr("Invalid path provided: ", path)
+    if workload == null:
         return null
-    # load our scene
-    var loader = ResourceLoader.load_threaded_request(path, type_hint)
-    if loader == null:
-        printerr("Something went wrong when loading ", path)
+    
+    var thread := Thread.new()
+    var err := thread.start(workload)
+    if err != OK:
+        push_warning("Error while creating thread: ", err)
         return null
+    
+    # for solo games
+    if show_loading:
+        transition_start = start_transition
+        transition_end = end_transition
+        # load and display our transition scene
+        loading = loading_scene.instantiate() as LoadingScreen
+        get_tree().root.add_child(loading)
+        loading.message.text = message
+        # launch the transition effect
+        loading.start_transition(transition_start)
     
     # launch a timer if we want loading bar
-    var transition_timer := Timer.new()
+    transition_timer = Timer.new()
     transition_timer.wait_time = 0.1
     # check status (so update loading bar) every 0.1s
-    transition_timer.timeout.connect(_check_load_status.bind(path, transition_timer, loaded_signal))
+    transition_timer.timeout.connect(_check_thread_status.bind(thread, call_signal, show_loading))
     get_tree().root.add_child(transition_timer)
     transition_timer.start()
+    return transition_timer
     
-    return loaded_signal
-    
-func load_scene_array(path: Array[String], type_hint: String) -> Array[Signal]:
-    var update_signal = Signal()
-    var loaded_signal = Signal()
-    var all_loaded_signal = Signal()
-    
-    return [update_signal, loaded_signal, all_loaded_signal]
-    
-func _check_load_status(path:String, transition_timer: Timer, loaded_signal: String)->void:
-    # get our loading status
-    var load_status = ResourceLoader.load_threaded_get_status(path)
-
-    match load_status:
-        ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
-            printerr("Invalid resource: ", path)
-            if transition_timer != null:
-                transition_timer.stop()
-                transition_timer.queue_free()
-            return
-        ResourceLoader.THREAD_LOAD_FAILED:
-            printerr("Failed to load: ", path)
-            if transition_timer != null:
-                transition_timer.stop()
-                transition_timer.queue_free()
-            return
-        ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-            #print("Loading: ", path)
-            return
-        ResourceLoader.THREAD_LOAD_LOADED:
-            # loading is finished, destroy the timer
-            transition_timer.stop()
-            transition_timer.queue_free()
-            # get our loaded scene
-            var new_scene: PackedScene = ResourceLoader.load_threaded_get(path)
-            # emit our scene
-            self.emit_signal(loaded_signal, new_scene)
-            print("stopping ", path)
+func _check_thread_status(thread: Thread, call_signal: Signal, show_loading: bool) -> void:
+    if thread.is_alive() == false:
+        if !call_signal.is_null():
+            call_signal.emit(thread.wait_to_finish())
+        transition_timer.stop()
+        transition_timer.queue_free()
+        if show_loading:
+            loading.finish_transition(transition_end)

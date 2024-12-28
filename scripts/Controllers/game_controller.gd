@@ -72,13 +72,13 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     else:
         save = SaveController.get_save(save_name)
         save_data = save[0]
-    # TODO threading
-    var thread := Thread.new()
-    var err = thread.start(GeneratorController.load_map.bind(save_data.get("map"), save_data.get("map_size"), save_data.get("seed")))
-    if err != OK:
-        push_warning("Error while creating thread to load map: ", err)
-        return
-    TransitionController.start_transition("Chargement de la carte...", thread, GameController.game_loaded)
+    # tansition with thread
+    GameController.ThreadController.thread_transition(
+        GeneratorController.load_map.bind(save_data.get("map"), save_data.get("map_size"), save_data.get("seed")),
+        GameController.game_loaded,
+        multiplayer_data.is_empty(), # don't show loading screen for players joining host
+        "Chargement de la carte...",
+    )
 
 func launch_solo(save_name: String) -> void:
     var res: bool = Server.create_host(true)
