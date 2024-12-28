@@ -152,7 +152,7 @@ func generate_room() -> bool:
         return false
         
     # setup area listeners
-    set_area_listeners()
+    set_area_listeners.call_deferred()
     
     return true
 
@@ -184,38 +184,33 @@ func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, ro
                 set_connection("right", room_right)
     
     # setup area listeners
-    set_area_listeners()
+    set_area_listeners.call_deferred()
     
     return true
 
 func set_area_listeners() -> void:
     var area: Area2D = null
-    if get_connection("down") != null:
-        if room.has_node("Map/Down"):
-            area = room.get_node("Map/Down")
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("down"))
-    if get_connection("left") != null:
-        if room.has_node("Map/Left"):
-            area = room.get_node("Map/Left")
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("left"))
-    if get_connection("right") != null:
-        if room.has_node("Map/Right"):
-            area = room.get_node("Map/Right")
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("right"))
-    if get_connection("up") != null:
-        if room.has_node("Map/Up"):
-            area = room.get_node("Map/Up")
-            area.collision_mask = AREA_COLLISION_MASK
-            area.body_entered.connect(area_entered.bind("up"))
+    if get_connection("down") != null and room.has_node("Map/Down"):
+        area = room.get_node("Map/Down")
+        area.collision_mask = AREA_COLLISION_MASK
+        area_connect(area, "down")
+    if get_connection("left") != null and room.has_node("Map/Left"):
+        area = room.get_node("Map/Left")
+        area.collision_mask = AREA_COLLISION_MASK
+        area_connect(area, "left")
+    if get_connection("right") != null and room.has_node("Map/Right"):
+        area = room.get_node("Map/Right")
+        area.collision_mask = AREA_COLLISION_MASK
+        area_connect(area, "right")
+    if get_connection("up") != null and room.has_node("Map/Up"):
+        area = room.get_node("Map/Up")
+        area.collision_mask = AREA_COLLISION_MASK
+        area_connect(area, "up")
     
-
+    
 func area_connect(area: Area2D, direction: String) -> void:
     area.body_entered.connect(area_entered.bind(direction))
     area.body_exited.connect(area_leave)
     
 func area_leave(_body: Node2D) -> void:
-    #print("cleared door")
     player_door_origin = ""
