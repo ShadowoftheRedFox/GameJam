@@ -44,7 +44,7 @@ var current_map: Array = []
 var current_room: MapRoom = null
 # we need to keep track of player in solo between rooms
 # so here we put the node
-# TODO think of something similar for multiplayer
+# other player node are in root, and just need to be checked against their type
 var main_player_instance: BasePlayer = null
 
 func _init() -> void:
