@@ -94,6 +94,10 @@ text = "Multijoueur"
 layout_mode = 2
 text = "Options"
 
+[node name="Credits" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Crédits"
+
 [node name="Quit" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../New")
@@ -119,6 +123,7 @@ layout_mode = 1
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Multiplayer" to="." method="_on_multiplayer_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
 [connection signal="back_pressed" from="Multiplayer" to="." method="_on_multiplayer_back_pressed"]
 [connection signal="back_pressed" from="Options" to="." method="_on_options_back_pressed"]

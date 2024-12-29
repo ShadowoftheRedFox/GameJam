@@ -104,7 +104,8 @@ func _check_load_status(path:String = "res://scenes/UI/MainMenu.tscn")->void:
             # get our loaded scene
             var new_scene = ResourceLoader.load_threaded_get(path).instantiate()
             # It is now safe to remove the current scene.
-            get_tree().current_scene.call_deferred("free")
+            if current_scene != null:
+                current_scene.call_deferred("free")
             # add scene to root
             get_tree().root.call_deferred("add_child",new_scene)
             # equivalent to current_scene = new_scene

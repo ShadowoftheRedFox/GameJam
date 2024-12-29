@@ -6,6 +6,9 @@ signal transition_completed
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var message: Label = $MarginContainer/Text
 
+func _ready() -> void:
+    process_mode = ProcessMode.PROCESS_MODE_ALWAYS
+
 func start_transition(anim_name: String) -> void:
     # check if we got our node
     if !animation_player:
@@ -27,6 +30,7 @@ func finish_transition(anim_name: String) -> void:
     animation_player.play(anim_name)
     
     await animation_player.animation_finished
+    complete_transition()
     queue_free()
 
 # send the signal for the transition completion (the screen is now fully hidden behind the loading scene)

@@ -1,5 +1,6 @@
 extends Control
 @onready var buff: Buff = $CenterContainer/Buff
+var credits = preload("res://scenes/UI/Main/credits.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -68,3 +69,9 @@ func _on_new_game_back_pressed() -> void:
 func _on_continue_back_pressed() -> void:
     $Continue.hide()
     generic_back_pressed()
+
+
+func _on_credits_pressed() -> void:
+    # sometimes, main is deleted, tell transition that it's himself we want to remove
+    TransitionController.current_scene = self
+    TransitionController._deferred_change_scene("res://scenes/UI/Main/credits.tscn")

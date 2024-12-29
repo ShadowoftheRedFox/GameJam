@@ -34,6 +34,8 @@ func thread_transition(
         transition_start = start_transition
         transition_end = end_transition
         # load and display our transition scene
+        if loading != null:
+            await loading.transition_completed
         loading = loading_scene.instantiate() as LoadingScreen
         get_tree().root.add_child(loading)
         loading.message.text = message
