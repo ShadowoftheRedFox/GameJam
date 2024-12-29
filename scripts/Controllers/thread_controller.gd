@@ -1,6 +1,13 @@
 class_name ThreadControllerScript
 extends Node
 
+const THREAD_THRESHOLD = 16
+var active_thread = 0:
+    set(value):
+        active_thread = value
+        if value >= THREAD_THRESHOLD:
+            push_warning("Threshold reached, ", THREAD_THRESHOLD, " threads active simultaneously")
+
 signal thread_finished
 
 # the loading scene
@@ -10,6 +17,26 @@ var loading: LoadingScreen = null
 var transition_start: String = "fade_to_black"
 var transition_end: String = "fade_from_black"
 var transition_timer: Timer = null
+# synchronizing multiple threads
+var mutex: Mutex = Mutex.new()
+#var semaphore: Semaphore = Semaphore.new()
+
+func multiple_thread_transition(
+    workloads: Array[Callable],
+    _show_loading: bool = false,
+    _message: String = "Chargement en cours...", 
+    _start_transition: String = "fade_to_black",
+    _end_transition: String = "fade_from_black"
+):
+    if workloads.size() == 0:
+        return
+        
+    if null in workloads:
+        push_error("One of the workload is null")
+        return
+    # TODO using semaphore and mutex, handle in a new fnuction if more than X callables
+    # if needed, create it implementing WorkerThreadPool
+    
 
 func thread_transition(
     workload: Callable, 
@@ -28,6 +55,10 @@ func thread_transition(
     if err != OK:
         push_warning("Error while creating thread: ", err)
         return null
+    
+    mutex.lock()
+    active_thread += 1
+    mutex.unlock()
     
     # for solo games
     if show_loading:
@@ -53,8 +84,16 @@ func thread_transition(
     
 func _check_thread_status(thread: Thread, callback: Signal, show_loading: bool) -> void:
     if thread.is_alive() == false:
+        # callback if there is one, else finish it anyway
         if !callback.is_null():
             callback.emit(thread.wait_to_finish())
+        else:
+            thread_finished.emit(thread.wait_to_finish())   
+        
+        mutex.lock()
+        active_thread -= 1
+        mutex.unlock()
+        
         transition_timer.stop()
         transition_timer.queue_free()
         if show_loading:
