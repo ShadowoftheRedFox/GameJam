@@ -157,6 +157,7 @@ func show_menu() -> void:
 
 func pause() -> void:
     print("Called pause")
+    main_player_instance.move_to_front()
     GameController.game_paused = true
     main_player_instance.get_node("Camera2D/Pause").show()
     if Server.solo_active == true:
