@@ -6,6 +6,9 @@ enum PlayerState {GROUNDED, AIRBORNE}
 var current_state = PlayerState.GROUNDED
 
 #### Schmovements ####
+
+## To make the player move in debug scenes
+@export var DEBUG: bool = false
 var input_vector: Vector2 = Vector2.ZERO
 
 @export var SPEED_CAP_GROUND: float = 200.0
@@ -29,8 +32,8 @@ var jump_count: int = JUMP_COUNT_MAX
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var display_name: Label = $DisplayName
-# TODO bind camera to scene
-@onready var camera: Camera2D = $Camera2D
+@onready var camera: CameraController = $Camera
+@onready var pause: Control = $Camera/Pause
 
 #### Physic ####
 @onready var collider: CollisionShape2D = $CollisionShape2D
@@ -63,7 +66,7 @@ func set_authority(id: int) -> void:
 func disable_others_camera(id: int) -> void:
     # disable camera of player instance if it's not our player
     if id != multiplayer.get_unique_id():
-        $Camera2D.enabled = false
+        camera.disable_camera()
 
 func disable_player() -> void:
     if player_disabled:
@@ -97,7 +100,7 @@ func _physics_process(delta: float) -> void:
     else:
         anim_sprite_2d.play("walk")
 
-    if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active:
+    if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active or DEBUG:
         # Handle pause functionality
         if Input.is_action_just_pressed("Pause"):
             GameController.pause()

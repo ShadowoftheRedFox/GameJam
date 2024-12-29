@@ -131,6 +131,7 @@ func launch_solo_after_load(load_result: Array):
     var anchor = current_room.room.get_node("Spawn")
     get_tree().root.add_child(main_player_instance)
     main_player_instance.global_position = anchor.global_position
+    main_player_instance.camera.set_limits(current_room.room.get_node("Map"))
 
 func launch_multiplayer(save_name: String) -> void:
     var res: bool = Server.create_host()
@@ -159,14 +160,14 @@ func pause() -> void:
     print("Called pause")
     main_player_instance.move_to_front()
     GameController.game_paused = true
-    main_player_instance.get_node("Camera2D/Pause").show()
+    main_player_instance.pause.show()
     if Server.solo_active == true:
         get_tree().paused = true
 
 func unpause() -> void:
     print("Called unpause")
     GameController.game_paused = false
-    main_player_instance.get_node("Camera2D/Pause").hide()
+    main_player_instance.pause.hide()
     if Server.solo_active == true:
         get_tree().paused = false
 

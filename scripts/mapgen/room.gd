@@ -88,6 +88,9 @@ func area_entered(body: Node2D, direction: String) -> void:
     get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
     GameController.main_player_instance.player_room = next_room.room_position
+    # snap camera
+    GameController.main_player_instance.camera.snap()
+    GameController.main_player_instance.camera.set_limits(next_room.room.get_node("Map"))
     MultiplayerController.player_change_room.rpc(multiplayer.get_unique_id(), next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.main_player_instance.global_position = area.global_position

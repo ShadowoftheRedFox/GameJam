@@ -1,8 +1,9 @@
-[gd_scene load_steps=53 format=3 uid="uid://cdqa1c43nocou"]
+[gd_scene load_steps=54 format=3 uid="uid://cdqa1c43nocou"]
 
 [ext_resource type="Script" path="res://scripts/entities/player.gd" id="1_6hxiq"]
 [ext_resource type="PackedScene" uid="uid://d25ombvkr34fi" path="res://scenes/UI/Pause/Pause.tscn" id="2_g4qv6"]
 [ext_resource type="Texture2D" uid="uid://teija122mjlo" path="res://assets/spritesheets/Soldier/Soldier.png" id="2_nbr5n"]
+[ext_resource type="Script" path="res://scripts/entities/camera.gd" id="3_786l5"]
 
 [sub_resource type="Gradient" id="Gradient_lj3yv"]
 offsets = PackedFloat32Array(0, 0.0103627, 0.222798)
@@ -383,13 +384,6 @@ font_size = 11
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_6hxiq")
-SPEED_CAP_GROUND = null
-SPEED_CAP_AIR = null
-DASH_MULT = null
-DASH_DURATION = null
-DRAG_GROUND = null
-DRAG_AIR = null
-JUMP_IMPULSE = null
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
@@ -428,10 +422,12 @@ label_settings = SubResource("LabelSettings_prnli")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera" type="Camera2D" parent="."]
 position = Vector2(0, -7)
+position_smoothing_enabled = true
+script = ExtResource("3_786l5")
 
-[node name="Pause" parent="Camera2D" instance=ExtResource("2_g4qv6")]
+[node name="Pause" parent="Camera" instance=ExtResource("2_g4qv6")]
 visible = false
 anchors_preset = 0
 anchor_right = 0.0
