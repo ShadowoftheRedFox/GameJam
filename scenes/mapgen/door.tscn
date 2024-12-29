@@ -1,42 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://dpnth2crmupb"]
+[gd_scene load_steps=5 format=3 uid="uid://dpnth2crmupb"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/door.gd" id="1_1bwiw"]
-[ext_resource type="Texture2D" uid="uid://um2sdjcg0s81" path="res://assets/tilemaps/tilesheet.webp" id="2_2wxi0"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xdonp"]
-texture = ExtResource("2_2wxi0")
-texture_region_size = Vector2i(64, 64)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-6:0/0 = 0
-7:0/0 = 0
-8:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-6:1/0 = 0
-7:1/0 = 0
-8:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-5:2/0 = 0
-6:2/0 = 0
-7:2/0 = 0
-8:2/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_4w0fm"]
-tile_size = Vector2i(64, 64)
-sources/0 = SubResource("TileSetAtlasSource_xdonp")
+[ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="2_05pwa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bg42g"]
 size = Vector2(64, 192)
@@ -54,7 +19,7 @@ script = ExtResource("1_1bwiw")
 visible = false
 position = Vector2(32, 32)
 tile_map_data = PackedByteArray(0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 254, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 253, 255, 0, 0, 0, 0, 0, 0, 0, 0)
-tile_set = SubResource("TileSet_4w0fm")
+tile_set = ExtResource("2_05pwa")
 
 [node name="Door" type="ColorRect" parent="."]
 visible = false

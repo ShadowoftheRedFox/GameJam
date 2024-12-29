@@ -387,7 +387,6 @@ SPEED_CAP_GROUND = null
 SPEED_CAP_AIR = null
 DASH_MULT = null
 DASH_DURATION = null
-MAX_DASH_COUNT = null
 DRAG_GROUND = null
 DRAG_AIR = null
 JUMP_IMPULSE = null
