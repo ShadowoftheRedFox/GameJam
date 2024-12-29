@@ -157,7 +157,6 @@ func show_menu() -> void:
     get_tree().root.add_child(MainMenuScene.instantiate())
 
 func pause() -> void:
-    print("Called pause")
     main_player_instance.move_to_front()
     GameController.game_paused = true
     main_player_instance.pause.show()
@@ -165,7 +164,6 @@ func pause() -> void:
         get_tree().paused = true
 
 func unpause() -> void:
-    print("Called unpause")
     GameController.game_paused = false
     main_player_instance.pause.hide()
     if Server.solo_active == true:

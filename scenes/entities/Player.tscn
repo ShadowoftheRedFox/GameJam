@@ -427,17 +427,7 @@ position = Vector2(0, -7)
 position_smoothing_enabled = true
 script = ExtResource("3_786l5")
 
-[node name="Pause" parent="Camera" instance=ExtResource("2_g4qv6")]
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera"]
+
+[node name="Pause" parent="Camera/CanvasLayer" instance=ExtResource("2_g4qv6")]
 visible = false
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = -576.0
-offset_top = -324.0
-offset_right = 576.0
-offset_bottom = 324.0
-grow_horizontal = 1
-grow_vertical = 1
-size_flags_horizontal = 0
-size_flags_vertical = 0
-metadata/_edit_use_anchors_ = true

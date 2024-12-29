@@ -1,25 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpnth2crmupb"]
+[gd_scene load_steps=5 format=4 uid="uid://dpnth2crmupb"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/door.gd" id="1_1bwiw"]
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="2_05pwa"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bg42g"]
-size = Vector2(64, 192)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nxfrx"]
-size = Vector2(64, 192)
+size = Vector2(32, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bg42g"]
+size = Vector2(64, 128)
 
 [node name="Door" type="Area2D"]
 collision_mask = 14
 script = ExtResource("1_1bwiw")
+layer_block = null
+layer_trigger = null
+up_impulse = 200.0
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+position = Vector2(-16, 0)
+shape = SubResource("RectangleShape2D_nxfrx")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
 [node name="Wall" type="TileMapLayer" parent="."]
 visible = false
-position = Vector2(32, 32)
-tile_map_data = PackedByteArray(0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 254, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 253, 255, 0, 0, 0, 0, 0, 0, 0, 0)
+position = Vector2(32, 96)
+tile_map_data = PackedByteArray("AAD//wAAAAAAAAAAAAD/////AAAAAAAAAAD///7/AAAAAAAAAAD//wEAAAAAAAAAAAD///3/AAAAAAAAAAD///j/AAAAAAAAAAD///n/AAAAAAAAAAD///r/AAAAAAAAAAD///v/AAAAAAAAAAD///z/AAAAAAAAAAD//wIAAAAAAAAAAAD//wMAAAAAAAAAAAD//wQAAAAAAAAAAAD//wUAAAAAAAAAAAD//wYAAAAAAAAAAAA=")
 tile_set = ExtResource("2_05pwa")
+collision_enabled = false
 
 [node name="Door" type="ColorRect" parent="."]
 visible = false
@@ -29,10 +37,7 @@ offset_bottom = 96.0
 color = Color(0.164062, 0.164062, 0.164062, 1)
 
 [node name="StaticBody" type="StaticBody2D" parent="."]
-collision_layer = 0
+collision_mask = 14
 
 [node name="Collider" type="CollisionShape2D" parent="StaticBody"]
 shape = SubResource("RectangleShape2D_bg42g")
-
-[node name="Collider" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_nxfrx")

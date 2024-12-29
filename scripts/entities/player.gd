@@ -33,7 +33,7 @@ var jump_count: int = JUMP_COUNT_MAX
 @onready var anim_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var display_name: Label = $DisplayName
 @onready var camera: CameraController = $Camera
-@onready var pause: Control = $Camera/Pause
+@onready var pause: Control = $Camera/CanvasLayer/Pause
 
 #### Physic ####
 @onready var collider: CollisionShape2D = $CollisionShape2D
