@@ -19,7 +19,6 @@ rotation = 4.71239
 scale = Vector2(1, 2)
 door_size = Vector2(1, 2)
 door_facing = 3
-connection_less = null
 
 [node name="1x1" parent="Map" instance=ExtResource("3_qhg7p")]
 position = Vector2(-184, -272)

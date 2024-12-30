@@ -117,21 +117,11 @@ func launch_solo(save_name: String) -> void:
         load_game(save_name)
         game_loaded.connect(launch_solo_after_load)
     else:
-        launch_solo_after_load(current_map)
+        MultiplayerController.start_game()
 
-func launch_solo_after_load(load_result: Array):
+func launch_solo_after_load(load_result: Array) -> void:
     current_map = load_result
-    hide_menu()
-    game_started = true
-    # display first room
-    current_room = current_map[0][0]
-    get_tree().root.add_child(current_room)
-    # TODO spawn player at spawn location on solo
-    main_player_instance = PlayerScene.instantiate()
-    var anchor = current_room.room.get_node("Spawn")
-    get_tree().root.add_child(main_player_instance)
-    main_player_instance.global_position = anchor.global_position
-    main_player_instance.camera.set_limits(current_room.room.get_node("Map"))
+    MultiplayerController.start_game()
 
 func launch_multiplayer(save_name: String) -> void:
     var res: bool = Server.create_host()

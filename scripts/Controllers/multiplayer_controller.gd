@@ -15,11 +15,8 @@ func handle_player_disconnection(id: int) -> void:
     remove_player.call_deferred(id)
 
 @rpc("any_peer")
-func send_player_infos(data: Dictionary) -> void:
-    if Server.solo_active:
-        return
-        
-    if !Server.multiplayer_active:
+func send_player_infos(data: Dictionary) -> void:        
+    if !Server.multiplayer_active and !Server.solo_active:
         push_warning("Trying to send player info when no server active")
         return
     
@@ -41,16 +38,16 @@ func send_player_infos(data: Dictionary) -> void:
 
 @rpc("any_peer", "call_local")
 func start_game() -> void:
-    if Server.solo_active == true or Server.multiplayer_active == false:
-        push_warning("Server is not multiplayer, can not use 'start_game'")
+    if Server.solo_active == false and Server.multiplayer_active == false:
+        push_warning("Server is not active, can not use 'start_game'")
         return
     # tell our client listeners that the game is starting
     game_starting.emit()
     # TODO maybe host is spectator?
     GameController.hide_menu()
     GameController.game_started = true
-    var map: Node = GameController.MultiplayerScene.instantiate()
-    map.name = "MultiplayerScene"
+    #var map: Node = GameController.MultiplayerScene.instantiate()
+    #map.name = "MultiplayerScene"
     #get_tree().root.add_child(map)
     #GameController.current_room = map
     GameController.current_room = GameController.current_map[0][0]
@@ -78,7 +75,7 @@ func spawn_player(player_data: Dictionary) -> void:
         index+=1
     # remember our own player
     if player_data.id == multiplayer.get_unique_id():
-        GameController.player_node = currentPlayer
+        GameController.main_player_instance = currentPlayer
 
 @rpc("any_peer", "call_local")
 func remove_player(id: int) -> void:
@@ -106,7 +103,7 @@ func receive_map_data(data: Dictionary) -> void:
 func player_change_room(id: int, room: Vector2) -> void:
     if !GameController.game_started or Server.solo_active:
         return
-    if GameController.player_node == null or !get_tree().root.has_node(str(id)):
+    if GameController.main_player_instance == null or !get_tree().root.has_node(str(id)):
         return
     
     var player: BasePlayer = get_tree().root.get_node(str(id))
@@ -127,7 +124,7 @@ func player_change_room(id: int, room: Vector2) -> void:
                     children.enable_player()
     else:
         # if called from outside, just change the player who changed room
-        if GameController.player_node.player_room == player.player_room:
+        if GameController.main_player_instance.player_room == player.player_room:
             player.enable_player()
         else:
             player.disable_player()

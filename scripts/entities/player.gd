@@ -50,6 +50,9 @@ var player_room: Vector2 = Vector2(0, 0)
 # to know if we must render the player
 var player_disabled: bool = false
 
+#### Upgrades ####
+var speed_upgrades: int = 0
+
 #func _ready() -> void:
     ## set ratio for pause menu and label
     #$DisplayName.scale = Vector2(1 / self.scale.x, 1 / self.scale.y)
@@ -89,6 +92,10 @@ func _ready():
     dash_count = DASH_COUNT_MAX
     jump_count = JUMP_COUNT_MAX
     camera.snap()
+    
+    # disable name tag when solo
+    if Server.solo_active:
+        display_name.hide()
 
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled

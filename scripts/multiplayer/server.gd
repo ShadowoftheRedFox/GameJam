@@ -143,14 +143,14 @@ func create_host(is_solo: bool = false) -> bool:
     else:
         print("Server ready, awaiting for players")
         
-        # send info for our own peer
-        MultiplayerController.send_player_infos({
-            "id": multiplayer.get_unique_id(),
-            "name": SaveController.parameters.Multiplayer.name,
-            #"name": str(multiplayer.get_unique_id()),
-            "color": SaveController.parameters.Multiplayer.color,
-            "score": 0
-        })
+    # send info for our own peer
+    MultiplayerController.send_player_infos({
+        "id": multiplayer.get_unique_id(),
+        "name": SaveController.parameters.Multiplayer.name,
+        #"name": str(multiplayer.get_unique_id()),
+        "color": SaveController.parameters.Multiplayer.color,
+        "score": 0
+    })
     
     return true
     
