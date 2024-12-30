@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dsruaadrjm8oe"]
+[gd_scene load_steps=6 format=3 uid="uid://dsruaadrjm8oe"]
 
 [ext_resource type="Script" path="res://scripts/UI/Main/credits.gd" id="1_wshw3"]
+[ext_resource type="Texture2D" uid="uid://b4yrm36w52sxp" path="res://assets/credits/CY_Tech.png" id="2_81new"]
+[ext_resource type="Texture2D" uid="uid://ctp8fwaocntr3" path="res://assets/credits/atilla.webp" id="2_wawwc"]
+[ext_resource type="Texture2D" uid="uid://dkke5ovqy1c75" path="res://assets/credits/logo_sans_bg.png" id="4_2vrbm"]
+[ext_resource type="Texture2D" uid="uid://wypyls80ntqe" path="res://assets/credits/pixel_perfect.webp" id="5_l65fx"]
 
 [node name="Credits" type="Control"]
 layout_mode = 3
@@ -30,10 +34,11 @@ text = "Jeu pour la Game Jam de CY Tech 2024/2025"
 horizontal_alignment = 1
 
 [node name="CyTech" type="TextureRect" parent="Main"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+texture = ExtResource("2_81new")
 expand_mode = 3
 
 [node name="Logos" type="HBoxContainer" parent="Main"]
@@ -45,18 +50,21 @@ custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
+texture = ExtResource("2_wawwc")
 expand_mode = 3
 
 [node name="GJ" type="TextureRect" parent="Main/Logos"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 6
+texture = ExtResource("4_2vrbm")
 expand_mode = 3
 
 [node name="PixelPerfect" type="TextureRect" parent="Main/Logos"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 6
+texture = ExtResource("5_l65fx")
 expand_mode = 3
 
 [node name="Developers" type="Label" parent="Main"]
@@ -68,6 +76,14 @@ Fleefy
 [Farmer] Badrion
 Korée
 ShadowOfTheRedFox"
+horizontal_alignment = 1
+
+[node name="Developers2" type="Label" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Script de base pour la transition:
+
+Clément"
 horizontal_alignment = 1
 
 [node name="Bottom" type="MarginContainer" parent="Main"]

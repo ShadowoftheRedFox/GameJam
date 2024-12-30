@@ -1,14 +1,5 @@
 extends Control
 
-@onready var cytech_rect: TextureRect = $Main/CyTech
-var cytech_logo = load("res://assets/credits/CY_Tech.png")
-@onready var game_jam_rect: TextureRect = $Main/Logos/GJ
-var game_jam_logo = load("res://assets/credits/logo_sans_bg.png")
-@onready var atilla_rect: TextureRect = $Main/Logos/Atilla
-var atilla_logo = load("res://assets/credits/atilla.webp")
-@onready var pixel_perfect_rect: TextureRect = $Main/Logos/PixelPerfect
-var pixel_perfect_logo = load("res://assets/credits/pixel_perfect.webp")
-
 @onready var margin_top: MarginContainer = $Main/Top
 @onready var margin_bottom: MarginContainer = $Main/Bottom
 @onready var main: VBoxContainer = $Main
@@ -25,12 +16,6 @@ func end() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-    # setup texture
-    cytech_rect.texture = cytech_logo
-    game_jam_rect.texture = game_jam_logo
-    atilla_rect.texture = atilla_logo
-    pixel_perfect_rect.texture = pixel_perfect_logo
-    
     # resize margin is needed
     old_screen_size = get_tree().root.size.y
     get_tree().root.size_changed.connect(resize_margin)
