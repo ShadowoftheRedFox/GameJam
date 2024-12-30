@@ -4,33 +4,50 @@ extends Node2D
 
 enum BuffPreset {
     CUSTOM = 0,
-    SPEED_1 = 1,
-    SPEED_2 = 2,
-    SPEED_3 = 3,
-    HEALTH_1 = 4,
-    HEALTH_2 = 5,
-    HEALTH_3 = 6,
+    SPEED_BOOSTER = 1,
+    SPEED_UPGRADER = 2,
+    HEALTH_BOOSTER = 3,
+    HEALTH_UPGRADER = 4,
+    JUMP_UPGRADER = 5,
+    DASH_UPGRADER = 6,
 }
+const buff_title: Array[String] = [
+    "Mystère",
+    "Boost de vitesse",
+    "Amélioration de vitesse",
+    "Boost de vie",
+    "Amélioration de vie",
+    "Plus de saut",
+    "Plus de dash"
+]
+const buff_description: Array[String] = [
+    "Tentez votre chance!",
+    "Augmente votre vitesse de déplacement",
+    "Augmente votre vitesse actuelle de 5%",
+    "Augmente vos points de vie",
+    "Augmente vos points de vie actuels de 5%",
+    "Octroie un saut supplémentaire",
+    "Octroie un élan supplémentaire"
+]
 
-@onready var particle_gen := $GPUParticles2D as GPUParticles2D
-@onready var particle_material := particle_gen.get("process_material") as ParticleProcessMaterial
-@onready var light := $PointLight2D as PointLight2D
-@onready var sprite := $Sprite2D as Sprite2D
+@onready var particle_gen: GPUParticles2D = $GPUParticles2D
+@onready var particle_material: ParticleProcessMaterial = particle_gen.get("process_material")
+@onready var light: PointLight2D = $PointLight2D 
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var mouse_area: Area2D = $MouseTracker
+@onready var popup: MarginContainer = $Popup
+@onready var popup_message: MessageBox = $Popup/MessageBox
 
+#region Exported variables
 @export_group("Presets")
+## Boosters add a property, Upgraders increase the boosters strength 
 @export var buff_preset: BuffPreset = BuffPreset.CUSTOM:
     get:
         return buff_preset
     set(value):
         buff_preset = value
         apply_to_children()
-@export var buff_name: String = "":
-    get:
-        return buff_name
-    set(value):
-        buff_name = value
-        if self.is_node_ready():
-            self.name = buff_name
+@export var popup_disabled: bool = false
 @export_group("Particle")
 @export var particle_amount: int = 8:
     get:
@@ -176,17 +193,18 @@ enum BuffPreset {
         texture = value
         if self.is_node_ready():
             sprite.texture = texture
-
+#endregion
 
 func _ready() -> void:
     # if preset is other than custom, it will override params
      # TODO check buff_preset, and set params to their value
+    
     match buff_preset:
         BuffPreset.CUSTOM:
             apply_to_children()
             return
         _:
-            printerr("Preset no", buff_preset, " is not available")
+            push_error("Buff preset n°", buff_preset, " is not available")
 
     # apply preset to childrens
     apply_to_children()
@@ -241,8 +259,24 @@ func apply_to_children() -> void:
     light.scale = Vector2(size, size)
 
     sprite.texture = texture
-
+    
+    if popup_disabled:
+        mouse_area.input_pickable = false
+    
+    popup_message.title = buff_title[buff_preset]
+    popup_message.content = buff_description[buff_preset]
+    
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
     if body == BasePlayer:
         pass # TODO make controller
+
+
+func _on_mouse_entered(_shape_idx: int) -> void:
+    if !popup_disabled:
+        popup.show()
+
+
+func _on_mouse_exited(_shape_idx: int) -> void:
+    if !popup_disabled:
+        popup.hide()

@@ -30,6 +30,7 @@ size_flags_vertical = 4
 size_flags_stretch_ratio = 2.0
 
 [node name="Buff" parent="CenterContainer" instance=ExtResource("2_s43ht")]
+popup_disabled = true
 particle_amount = 100
 particle_scale_max = 5.0
 particle_color = Color(0.679518, 0.0882298, 0.368955, 1)
