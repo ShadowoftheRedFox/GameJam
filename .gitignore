@@ -2,6 +2,9 @@
 .godot/
 .fuse_*
 
+# build files
+build/
+
 # Godot-specific ignores
 .import/
 export.cfg
