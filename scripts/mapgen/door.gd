@@ -26,24 +26,16 @@ enum DoorFacing {
         return door_size
     set(value):
         door_size = value
-        resize_door()
-        change_door_state()
-        rotate_door()
-
-## To get the size of tile and resize to 1x3 tile size
-@export var tile_map_layer: TileMapLayer = null:
-    get: 
-        return tile_map_layer
-    set(value):
-        tile_map_layer = value
-        resize_door()
+        _resize_door()
+        _change_door_state()
+        _rotate_door()
 
 @export var door_state: DoorState = DoorState.OPENED:
     get:
         return door_state
     set(value):
         door_state = value 
-        change_door_state()
+        _change_door_state()
 ## Show door on this side.
 ## Each 90° rotation switch to next facing
 @export var door_facing: DoorFacing = DoorFacing.RIGHT:
@@ -51,16 +43,23 @@ enum DoorFacing {
         return door_facing
     set(value):
         door_facing = value
-        rotate_door()
+        _rotate_door()
 
 ## Impule given to players only wehn exiting from a upward facing door
-@export var up_impulse: float = 2000.0
+@export var up_impulse: float = 20000.0
+## If the door does not connect to a new room
+@export var connection_less: bool = false
 
 @onready var collider: CollisionShape2D = $Collider
 @onready var door: ColorRect = $Door
 @onready var wall: TileMapLayer = $Wall
 @onready var static_body: StaticBody2D = $StaticBody
 @onready var static_body_collider: CollisionShape2D = $StaticBody/Collider
+
+## The room that this door connects to
+## If null, does not trigger _change_room
+## Also note that the connected door will be infered on the door orientation
+var door_cleared: bool = true
 
 signal player_entered(player: BasePlayer)
 signal player_exited(player: BasePlayer)
@@ -72,48 +71,39 @@ signal other_exited(player: Node2D)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-    # upward impulse
-    body_entered.connect(handle_entered)
-    body_exited.connect(handle_exited)
+    body_entered.connect(_handle_entered)
+    body_exited.connect(_handle_exited)
     
+    # upward impulse
+    player_exited.connect(_clearing)
+    player_entered.connect(_upward_impulse)
+        
     # setup collision mask
     collision_mask = layer_trigger
     
     # get tile size to resize area collider
-    resize_door()
+    _resize_door()
     
     # rotate the door correctly
-    rotate_door()
+    _rotate_door()
     
     # change the door state
-    change_door_state()
+    _change_door_state()
 
-func resize_door() -> void:
+
+func _resize_door() -> void:
     if !is_node_ready():
         return
     
-    var tile_size := Vector2(64, 64)
-    if tile_map_layer != null:
-        tile_size = tile_map_layer.tile_set.tile_size
-    
-    collider.shape.size = Vector2(tile_size.x * door_size.x / 2, door_size.y * tile_size.y)
-    collider.position.x = -door.size.y / 2
-    
-    static_body_collider.shape.size = Vector2(tile_size.x * door_size.x, door_size.y * tile_size.y)
-    
-    door.size = Vector2(tile_size.x * door_size.x / 2, door_size.y * tile_size.y)
-    door.position.y = -door.size.y / 2
-    
-    wall.tile_set.tile_size = tile_size
-    wall.position = Vector2(tile_size.x * door_size.x / 2, tile_size.y * door_size.y / 2)
+    self.scale = door_size
 
-func rotate_door() -> void:
+func _rotate_door() -> void:
     if !is_node_ready():
         return
 
     rotation = deg_to_rad(float(door_facing * 90))
 
-func change_door_state() -> void:
+func _change_door_state() -> void:
     if !is_node_ready():
         return
 
@@ -133,20 +123,25 @@ func change_door_state() -> void:
         _:
             push_error("unknown door state")
 
-func handle_entered(body: Node2D) -> void:
+func _handle_entered(body: Node2D) -> void:
     if body is BasePlayer:
         player_entered.emit(body)
     else:
         other_entered.emit(body)
 
-func handle_exited(body: Node2D) -> void:
+func _handle_exited(body: Node2D) -> void:
     if body is BasePlayer:
         player_exited.emit(body)
     else:
         other_exited.emit(body)
 
-#func upward_impulse(body: Node2D) -> void:
-    #if body is BasePlayer and door_facing == DoorFacing.UP:
-        #var player: BasePlayer = body
-        #player.velocity.y -= up_impulse
-        #player.move_and_slide()
+func _clearing(_body: Node2D) -> void:
+    if door_cleared == false:
+        door_cleared = true
+
+func _upward_impulse(body: Node2D) -> void:
+    # when leaving door, impulse upward 
+    if door_facing == DoorFacing.UP and !door_cleared:
+        print("push!")
+        var player: BasePlayer = body
+        player.velocity.y -= up_impulse

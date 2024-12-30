@@ -78,7 +78,17 @@ Korée
 ShadowOfTheRedFox"
 horizontal_alignment = 1
 
-[node name="Developers2" type="Label" parent="Main"]
+[node name="TransitionCredits" type="Label" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Organisateurs:
+
+Clément
+Thomas
+Émilien"
+horizontal_alignment = 1
+
+[node name="TransitionCredits2" type="Label" parent="Main"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Script de base pour la transition:

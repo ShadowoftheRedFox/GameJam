@@ -88,6 +88,7 @@ func enable_player() -> void:
 func _ready():
     dash_count = DASH_COUNT_MAX
     jump_count = JUMP_COUNT_MAX
+    camera.snap()
 
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled

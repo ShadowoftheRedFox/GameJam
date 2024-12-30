@@ -66,25 +66,26 @@ func area_entered(body: Node2D, direction: String) -> void:
         return
     # get the area from where the player will be coming from
     # and tell the next room where the player enter to prevent back and forth
-    var area: Area2D = null
+    var door: Door = null
     if direction == "up":
         next_room.player_door_origin = "down"
-        area = next_room.room.get_node("Map/Down")
+        door = next_room.room.get_node("Map/Down")
     if direction == "down":
         next_room.player_door_origin = "up"
-        area = next_room.room.get_node("Map/Up")
+        door = next_room.room.get_node("Map/Up")
     if direction == "left":
         next_room.player_door_origin = "left"
-        area = next_room.room.get_node("Map/Right")
+        door = next_room.room.get_node("Map/Right")
     if direction == "right":
         next_room.player_door_origin = "right"
-        area = next_room.room.get_node("Map/Left")
-    if area == null:
+        door = next_room.room.get_node("Map/Left")
+    if door == null:
         printerr("Can't find area of next room despite having connection")
         return
+    
+    door.door_cleared = false
     # TODO transition
     # change player pos and display next room
-    #get_tree().root.print_tree_pretty()
     get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
     GameController.main_player_instance.player_room = next_room.room_position
@@ -93,7 +94,7 @@ func area_entered(body: Node2D, direction: String) -> void:
     GameController.main_player_instance.camera.set_limits(next_room.room.get_node("Map"))
     MultiplayerController.player_change_room.rpc(multiplayer.get_unique_id(), next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
-    GameController.main_player_instance.global_position = area.global_position
+    GameController.main_player_instance.global_position = door.global_position
     get_tree().root.remove_child.call_deferred(self)
     # to "force" the player to be in front of the layer on its same level
     GameController.main_player_instance.move_to_front()
@@ -192,28 +193,28 @@ func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, ro
     return true
 
 func set_area_listeners() -> void:
-    var area: Area2D = null
+    var door: Door = null
     if get_connection("down") != null and room.has_node("Map/Down"):
-        area = room.get_node("Map/Down")
-        area.collision_mask = AREA_COLLISION_MASK
-        area_connect(area, "down")
+        door = room.get_node("Map/Down")
+        door.collision_mask = AREA_COLLISION_MASK
+        area_connect(door, "down")
     if get_connection("left") != null and room.has_node("Map/Left"):
-        area = room.get_node("Map/Left")
-        area.collision_mask = AREA_COLLISION_MASK
-        area_connect(area, "left")
+        door = room.get_node("Map/Left")
+        door.collision_mask = AREA_COLLISION_MASK
+        area_connect(door, "left")
     if get_connection("right") != null and room.has_node("Map/Right"):
-        area = room.get_node("Map/Right")
-        area.collision_mask = AREA_COLLISION_MASK
-        area_connect(area, "right")
+        door = room.get_node("Map/Right")
+        door.collision_mask = AREA_COLLISION_MASK
+        area_connect(door, "right")
     if get_connection("up") != null and room.has_node("Map/Up"):
-        area = room.get_node("Map/Up")
-        area.collision_mask = AREA_COLLISION_MASK
-        area_connect(area, "up")
+        door = room.get_node("Map/Up")
+        door.collision_mask = AREA_COLLISION_MASK
+        area_connect(door, "up")
     
     
-func area_connect(area: Area2D, direction: String) -> void:
-    area.body_entered.connect(area_entered.bind(direction))
-    area.body_exited.connect(area_leave)
+func area_connect(door: Door, direction: String) -> void:
+    door.player_entered.connect(area_entered.bind(direction))
+    door.player_exited.connect(area_leave)
     
 func area_leave(_body: Node2D) -> void:
     player_door_origin = ""
