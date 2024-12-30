@@ -8,7 +8,11 @@ var active_thread = 0:
         if value >= THREAD_THRESHOLD:
             push_warning("Threshold reached, ", THREAD_THRESHOLD, " threads active simultaneously")
 
-signal thread_finished
+signal thread_finished(result: Variant)
+
+#signal multiple_thread_finished(id: int, result: Variant)
+#signal multiple_thread_progress
+#signal multiple_thread_complete
 
 # the loading scene
 var loading_scene = preload("res://scenes/UI/Loading.tscn")
@@ -20,23 +24,9 @@ var transition_timer: Timer = null
 # synchronizing multiple threads
 var mutex: Mutex = Mutex.new()
 #var semaphore: Semaphore = Semaphore.new()
-
-func multiple_thread_transition(
-    workloads: Array[Callable],
-    _show_loading: bool = false,
-    _message: String = "Chargement en cours...", 
-    _start_transition: String = "fade_to_black",
-    _end_transition: String = "fade_from_black"
-):
-    if workloads.size() == 0:
-        return
-        
-    if null in workloads:
-        push_error("One of the workload is null")
-        return
-    # TODO using semaphore and mutex, handle in a new fnuction if more than X callables
-    # if needed, create it implementing WorkerThreadPool
-    
+# because it is slow to create thread on windows
+# TODO check if it is, function will behave diferently
+var is_windows: bool = OS.get_name() == "Windows"
 
 func thread_transition(
     workload: Callable, 
@@ -45,22 +35,21 @@ func thread_transition(
     message: String = "Chargement en cours...", 
     start_transition: String = "fade_to_black",
     end_transition: String = "fade_from_black"
-) -> Timer:
+) -> bool:
     
     if workload == null:
-        return null
+        return false
     
     var thread := Thread.new()
     var err := thread.start(workload)
     if err != OK:
         push_warning("Error while creating thread: ", err)
-        return null
+        return false
     
     mutex.lock()
     active_thread += 1
     mutex.unlock()
     
-    # for solo games
     if show_loading:
         transition_start = start_transition
         transition_end = end_transition
@@ -80,8 +69,8 @@ func thread_transition(
     transition_timer.timeout.connect(_check_thread_status.bind(thread, callback, show_loading))
     get_tree().root.add_child(transition_timer)
     transition_timer.start()
-    return transition_timer
-    
+    return true
+
 func _check_thread_status(thread: Thread, callback: Signal, show_loading: bool) -> void:
     if thread.is_alive() == false:
         # callback if there is one, else finish it anyway
