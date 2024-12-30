@@ -14,6 +14,7 @@ var loading: LoadingScreen = null
 var transition_start: String = "fade_to_black"
 var transition_end: String = "fade_from_black"
 var transition_timer: Timer = null
+var message = "Chargement en cours..."
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -58,6 +59,8 @@ func _deferred_change_scene(path:String = "res://scenes/UI/MainMenu.tscn"):
     loading = loading_scene.instantiate() as LoadingScreen
     get_tree().root.add_child(loading)
     # launch the transition effect
+    loading.message.text = message
+    message = "Chargement en cours..."
     loading.start_transition(transition_start)
     # Load the new scene.
     _load_new_scene(path)

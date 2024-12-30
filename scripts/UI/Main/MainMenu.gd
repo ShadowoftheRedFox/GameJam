@@ -74,4 +74,5 @@ func _on_continue_back_pressed() -> void:
 func _on_credits_pressed() -> void:
     # sometimes, main is deleted, tell transition that it's himself we want to remove
     TransitionController.current_scene = self
+    TransitionController.message = ""
     TransitionController._deferred_change_scene("res://scenes/UI/Main/credits.tscn")
