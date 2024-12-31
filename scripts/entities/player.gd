@@ -74,7 +74,7 @@ func disable_others_camera(id: int) -> void:
 func disable_player() -> void:
     if player_disabled:
         return
-    if self == GameController.player_node:
+    if self == GameController.main_player_instance:
         printerr("trying to disable our own player!")
         return
     player_disabled = true
@@ -91,11 +91,18 @@ func enable_player() -> void:
 func _ready():
     dash_count = DASH_COUNT_MAX
     jump_count = JUMP_COUNT_MAX
+    
     camera.snap()
+    camera.set_limits(GameController.current_room.room.get_node("Map"))
     
     # disable name tag when solo
     if Server.solo_active:
         display_name.hide()
+
+func update_buff(buff_data: Dictionary) -> void:
+    # TODO handle buff update
+    Server.peer_print(Server.MessageType.PRINT, str(buff_data))
+    pass
 
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
