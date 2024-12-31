@@ -131,9 +131,14 @@ func launch_multiplayer(save_name: String) -> void:
 
     hosted_save_name = save_name
     load_game(save_name)
+    game_loaded.connect(multiplayer_after_load)
 
 func join_multiplayer() -> bool:
+    game_loaded.connect(multiplayer_after_load)
     return Server.join_server()
+
+func multiplayer_after_load(result: Array) -> void: 
+    current_map =result
 
 func hide_menu() -> void:
     # hide main menu
