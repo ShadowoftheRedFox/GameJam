@@ -101,7 +101,7 @@ func receive_map_data(data: Dictionary) -> void:
 
 @rpc("any_peer", "call_local")
 func player_change_room(id: int, room: Vector2) -> void:
-    if !GameController.game_started or Server.solo_active:
+    if !GameController.game_started:
         return
     if GameController.main_player_instance == null or !get_tree().root.has_node(str(id)):
         return
@@ -115,6 +115,13 @@ func player_change_room(id: int, room: Vector2) -> void:
         return
     
     if id == multiplayer.get_unique_id():
+        # update our player
+        # to "force" the player to be in front of the layer on its same level
+        player.move_to_front()
+        # snap camera
+        player.camera.snap()
+        player.camera.set_limits(GameController.current_room.room.get_node("Map"))
+        
         # if called from inside, change all other player nodes
         for children in get_tree().root.get_children():
             if children is BasePlayer:
@@ -128,3 +135,19 @@ func player_change_room(id: int, room: Vector2) -> void:
             player.enable_player()
         else:
             player.disable_player()
+
+@rpc("any_peer")
+func player_buff_update(id: int, buff_data: Dictionary) -> void:
+    # TODO tell which buff to remove globally
+    if !GameController.game_started:
+        return
+    if !GameController.Players.has(id):
+        push_warning("Updating buff on unknown player")
+        return
+    
+    var player_data: Dictionary = GameController.Players.get(id, {})
+    player_data.get_or_add("buff", {})
+    player_data.buff = buff_data
+    
+    var player: BasePlayer = get_tree().root.get_node(str(id))
+    player.update_buff(buff_data)
