@@ -60,6 +60,7 @@ enum DoorFacing {
 ## If null, does not trigger _change_room
 ## Also note that the connected door will be infered on the door orientation
 var door_cleared: bool = true
+var body_in_door: Dictionary = {}
 
 signal player_entered(player: BasePlayer)
 signal player_exited(player: BasePlayer)
@@ -123,13 +124,34 @@ func _change_door_state() -> void:
         _:
             push_error("unknown door state")
 
-func _handle_entered(body: Node2D) -> void:
+func _handle_entered(body: Node2D, _dont_remember: bool = false) -> void:
+    #if !dont_remember:
+        #body_in_door.get_or_add(str(body.get_path()), body.position)
     if body is BasePlayer:
         player_entered.emit(body)
     else:
         other_entered.emit(body)
 
 func _handle_exited(body: Node2D) -> void:
+    # check if body has moved outside the map, if yes, change room
+    #var current_pos: Vector2 = body.position
+    #var old_pos: Vector2 = body_in_door.get_or_add(str(body.get_path()), body.position)
+    #body_in_door.erase(str(body.get_path()))
+    
+    #match door_facing:
+        #DoorFacing.UP:
+            #if current_pos.y < old_pos.y:
+                #_handle_entered(body, true)
+        #DoorFacing.DOWN:
+            #if current_pos.y > old_pos.y:
+                #_handle_entered(body, true)
+        #DoorFacing.RIGHT:
+            #if current_pos.x < old_pos.x:
+                #_handle_entered(body, true)
+        #DoorFacing.LEFT:
+            #if current_pos.x > old_pos.x:
+                #_handle_entered(body, true)
+    
     if body is BasePlayer:
         player_exited.emit(body)
     else:

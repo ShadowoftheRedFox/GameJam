@@ -117,7 +117,7 @@ func player_change_room(id: int, room: Vector2) -> void:
     if id == multiplayer.get_unique_id():
         # update our player
         # to "force" the player to be in front of the layer on its same level
-        player.move_to_front()
+        player.move_to_front.call_deferred()
         # snap camera
         player.camera.snap()
         player.camera.set_limits(GameController.current_room.room.get_node("Map"))

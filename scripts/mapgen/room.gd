@@ -70,13 +70,13 @@ func area_entered(body: Node2D, direction: String) -> void:
     if direction == "up":
         next_room.player_door_origin = "down"
         door = next_room.room.get_node("Map/Down")
-    if direction == "down":
+    elif direction == "down":
         next_room.player_door_origin = "up"
         door = next_room.room.get_node("Map/Up")
-    if direction == "left":
+    elif direction == "left":
         next_room.player_door_origin = "left"
         door = next_room.room.get_node("Map/Right")
-    if direction == "right":
+    elif direction == "right":
         next_room.player_door_origin = "right"
         door = next_room.room.get_node("Map/Left")
     if door == null:
@@ -92,9 +92,6 @@ func area_entered(body: Node2D, direction: String) -> void:
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.main_player_instance.global_position = door.global_position
     get_tree().root.remove_child.call_deferred(self)
-    # to "force" the player to be in front of the layer on its same level
-    GameController.main_player_instance.move_to_front()
-    
 
 # Called when the node is added to the scene tree for the first time
 func _ready():

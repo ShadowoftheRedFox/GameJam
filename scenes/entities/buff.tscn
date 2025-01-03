@@ -105,6 +105,7 @@ libraries = {
 }
 
 [node name="Popup" type="MarginContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(200, 150)
 anchors_preset = 7
 anchor_left = 0.5

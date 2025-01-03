@@ -144,10 +144,11 @@ func hide_menu() -> void:
     # hide main menu
     for child in get_tree().root.get_children():
         if child.name == "MainMenu":
-            # queue free?
             child.queue_free()
 
 func show_menu() -> void:
+    # make sure main menu is deleted
+    hide_menu()
     # show main menu
     get_tree().root.add_child(MainMenuScene.instantiate())
 

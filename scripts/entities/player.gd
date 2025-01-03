@@ -102,8 +102,11 @@ func _ready():
 func update_buff(buff_data: Dictionary) -> void:
     # TODO handle buff update
     Server.peer_print(Server.MessageType.PRINT, str(buff_data))
-    pass
-
+    if buff_data.has("JUMP_UPGRADER"):
+        JUMP_COUNT_MAX = 2 + buff_data.get("JUMP_UPGRADER", 0) 
+    if buff_data.has("DASH_UPGRADER"):
+        DASH_COUNT_MAX = 1 + buff_data.get("DASH_UPGRADER", 0)
+    
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
     if self.is_queued_for_deletion() or player_disabled:
