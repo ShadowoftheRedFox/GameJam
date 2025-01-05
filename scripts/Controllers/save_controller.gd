@@ -18,7 +18,10 @@ var parameters := {
         "name": "Player0",
         "color": "0000ff"
     },
-    "Controls": [],
+    "Controls": {
+        "key": [],
+        "controller": []   
+    },
     "Sounds": {
         "music": 100,
         "sfx": 100,
@@ -31,8 +34,8 @@ signal parameters_changed
 
 
 #### Load game data ####
-func _init() -> void:
-    
+#func _init() -> void:
+func _ready() -> void:
     # first, we look into the config file, and look for the amount of save
     # if amount > 0, get(saveN) for the name, and load the saveN.save
     
@@ -50,26 +53,27 @@ func _init() -> void:
     
     # get the amount of saved game
     var save_amount = general_config.get_value("General", "save_amount", 0)
-    if save_amount == 0:
-        return
-    
-    # get the save names
-    for key_name in general_config.get_section_keys("Save_names"):
-        save_display_names.append(general_config.get_value("Save_names", key_name, key_name))
-        save_names.append(key_name)
+    if save_amount > 0:
+        # get the save names
+        for key_name in general_config.get_section_keys("Save_names"):
+            save_display_names.append(general_config.get_value("Save_names", key_name, key_name))
+            save_names.append(key_name)
+        saves_changed.emit()
     
     #print("Found ", len(save_names), " saves")
-    saves_changed.emit()
-    parameters_changed.emit()
     
-func _ready() -> void:
+    
+#func _ready() -> void:
     #if !create_new_save("ploof"):
         #printerr("Error while saving")
     #if !delete_save("ploof"):
         #printerr("Error while deleting")
     #print("Ploof exists: ", is_save_name("Ploof"))
-    pass
-
+    
+    #parameters_changed.connect(p)
+    #pass
+func p(): 
+    printerr("param change")
 #### Parameters save ####
 
 func setup_parameters() -> void:
@@ -77,53 +81,99 @@ func setup_parameters() -> void:
     general_config.set_value("Multiplayer", "color", Color.BLUE.to_html(false))
     
     # save each action and it's default key
-    var input_map = InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
+    var input_map = get_own_event()
     for input_name in input_map:
-        var event_key: InputEvent = InputMap.action_get_events(input_name)[0]
-        general_config.set_value("Controls", input_name, event_key.as_text())
+        var event_actions = InputMap.action_get_events(input_name)
+        var event_key: InputEvent = event_actions[0] if event_actions.size() >= 1 else null
+        var event_controller: InputEvent = event_actions[1] if event_actions.size() >= 2 else null
+        general_config.set_value("Controls_key", input_name, str(event_key))
+        general_config.set_value("Controls_controller", input_name, str(event_controller))
     
     general_config.set_value("Sounds", "music", 100)
     general_config.set_value("Sounds", "sfx", 100)
     general_config.set_value("Sounds", "entities", 100)
+    
+    parameters_changed.emit()
 
 func get_parameters() -> void:
     parameters.Multiplayer.name = general_config.get_value("Multiplayer", "name", "Player0")
     parameters.Multiplayer.name = general_config.get_value("Multiplayer", "name", "Player0")
     
     # get the controls overrides
-    for key_name in general_config.get_section_keys("Controls"):
-        parameters.Controls.append([key_name, general_config.get_value("Controls", key_name, "z")])
-    
+    for key_name in general_config.get_section_keys("Controls_key"):
+        parameters.Controls.key.append([key_name, general_config.get_value("Controls_key", key_name, "")])
+    for key_name in general_config.get_section_keys("Controls_controller"):
+        parameters.Controls.controller.append([key_name, general_config.get_value("Controls_controller", key_name, "")])
+
     parameters.Sounds.music = int(general_config.get_value("Sounds", "music", 100))
     parameters.Sounds.sfx = int(general_config.get_value("Sounds", "sfx", 100))
     parameters.Sounds.entities = int(general_config.get_value("Sounds", "entities", 100))
-    override_input_map()
-
-func save_control(label_name: String, key: String) -> void:
-    var index = 0
-    for pair in parameters.Controls:
-        if pair[0] == label_name:
-            parameters.Controls[index][1] = key
-            save_parameters()
-            override_input_map()
-            return
-        index += 1
     
-    parameters.Controls.append([label_name, key])
-    save_parameters()
     override_input_map()
+    parameters_changed.emit()
+    
+func reset_controls() -> void:
+    InputMap.load_from_project_settings()
+    parameters.Controls.key = []
+    parameters.Controls.controller = []
+    
+    var input_map = InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
+
+    # for each of these, add a button and get the key
+    for input_name in input_map:
+        var event_actions = InputMap.action_get_events(input_name)
+        var event_key: String = str(event_actions[0]) if event_actions.size() >= 1 else "(Aucun)"
+        var event_controller: String = str(event_actions[1]) if event_actions.size() >= 2 else "(Aucun)"
+        parameters.Controls.key.append([input_name, event_key])
+        parameters.Controls.controller.append([input_name, event_controller])
+    
+    override_input_map()
+    parameters_changed.emit()
+
+func save_control(label_name: String, key: String, is_joypad: bool) -> void:
+    if is_joypad:
+        for index in parameters.Controls.controller.size():
+            if parameters.Controls.controller[index][0] == label_name:
+                parameters.Controls.controller[index][1] = key
+                override_input_map()
+                save_parameters()
+                return
+        
+        parameters.Controls.controller.append([label_name, key])
+    else:
+        for index in parameters.Controls.key.size():
+            if parameters.Controls.key[index][0] == label_name:
+                parameters.Controls.key[index][1] = key
+                override_input_map()
+                save_parameters()
+                return
+        
+        parameters.Controls.key.append([label_name, key])
+        
+    override_input_map()
+    save_parameters()
 
 func override_input_map() -> void:
-    for pair in parameters.Controls:
-        var event := InputEventKey.new()
-        event.set_keycode(OS.find_keycode_from_string(pair[1]))
+    # parse key input and put it in input map correctly
+    for pair in parameters.Controls.key:
+        var event_key := parse_input_event_key(pair[1])
         
         if InputMap.has_action(pair[0]):
             InputMap.action_erase_events(pair[0])
-            InputMap.action_add_event(pair[0], event)
+            InputMap.action_add_event(pair[0], event_key)
         else:
             InputMap.add_action(pair[0])
-            InputMap.action_add_event(pair[0], event)
+            InputMap.action_add_event(pair[0], event_key)
+            
+    # parse joypad input and put it in input map correctly
+    for pair in parameters.Controls.controller:
+        if parse_get_input_type(pair[1]) == InputEventJoypadButton:
+            var event_controller: InputEventJoypadButton = parse_input_event_joypad_button(pair[1])
+            InputMap.action_add_event(pair[0], event_controller)
+        elif parse_get_input_type(pair[1]) == InputEventJoypadMotion:
+            var event_motion: InputEventJoypadMotion = parse_input_event_joypad_motion(pair[1])
+            InputMap.action_add_event(pair[0], event_motion)
+            
     parameters_changed.emit()
 
 func save_parameters() -> void:
@@ -131,23 +181,103 @@ func save_parameters() -> void:
     general_config.set_value("Multiplayer", "color", parameters.Multiplayer.color)
 
     # if array empty, load from InputMap
-    if len(parameters.Controls) == 0:
-        var input_map = InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
+    if parameters.Controls.key.size() == 0:
+        var input_map = get_own_event()
         for input_name in input_map:
-            var event_key: InputEvent = InputMap.action_get_events(input_name)[0]
-            general_config.set_value("Controls", input_name, event_key.as_text())
+            var event_key = InputMap.action_get_events(input_name)[0]
+            general_config.set_value("Controls_key", input_name, str(event_key))
     else:
-        for pair in parameters.Controls:
-            general_config.set_value("Controls", pair[0], pair[1])
+        for pair in parameters.Controls.key:
+            general_config.set_value("Controls_key", pair[0], pair[1])
+    
+    if parameters.Controls.controller.size() == 0:
+        var input_map = get_own_event()
+        for input_name in input_map:
+            var event_key = InputMap.action_get_events(input_name)[1] if InputMap.action_get_events(input_name).size() >= 2 else null 
+            general_config.set_value("Controls_controller", input_name, str(event_key))
+    else:
+        for pair in parameters.Controls.controller:
+            general_config.set_value("Controls_controller", pair[0], pair[1])
 
     general_config.set_value("Sounds", "music", parameters.Sounds.music)
     general_config.set_value("Sounds", "sfx", parameters.Sounds.sfx)
     general_config.set_value("Sounds", "entities", parameters.Sounds.entities)
     
-    for pair in parameters.Controls:
-        general_config.set_value("Controls", pair[0], pair[1])
-    
     general_config.save(CONFIG_PATH)
+
+func parse_get_input_type(data: String) -> Variant:
+    if data.begins_with("InputEventKey: "):
+        return InputEventKey
+    elif data.begins_with("InputEventJoypadButton: "):
+        return InputEventJoypadButton
+    elif data.begins_with("InputEventJoypadMotion: "):
+        return InputEventJoypadMotion
+    else:
+        return null
+
+func parse_input_event_key(data: String) -> InputEventKey:
+    if !data.begins_with("InputEventKey: "):
+        push_error("given data string is not input event key: ", data)
+        return null
+    
+    var event := InputEventKey.new()
+    # a base string looks like this: 
+    ## InputEventKey: keycode=74 (J), mods=none, physical=true, location=unspecified, pressed=false, echo=false
+    # we will erase the input event key and parse each member
+    var members : PackedStringArray = data.erase(0, len("InputEventKey: ")).split(", ", false, 6)
+    
+    # parse physical with contains
+    # then parse keycode, using the int() property, then trhough OS to prevent warning "cast to enum"
+    if members[2].contains("true"):
+        @warning_ignore("int_as_enum_without_cast")
+        event.physical_keycode = int(members[0])
+    else:
+        @warning_ignore("int_as_enum_without_cast")
+        event.keycode = int(members[0])
+    
+    # TODO parse mods, location
+    return event
+
+func parse_input_event_joypad_button(data: String) -> InputEventJoypadButton:
+    if !data.begins_with("InputEventJoypadButton: "):
+        push_error("given data string is not input event joypad button: ", data)
+        return null
+    
+    var event := InputEventJoypadButton.new()
+    # a base string looks like this: 
+    ## InputEventJoypadButton: button_index=1, pressed=true, pressure=0.00
+    # we will erase the input event key and parse each member
+    var members : PackedStringArray = data.erase(0, len("InputEventJoypadButton: ")).split(", ", false, 3)
+    # parse button_index using int property
+    @warning_ignore("int_as_enum_without_cast")
+    event.button_index = int(members[0]) 
+    # parse pressed
+    event.pressed = members[1].contains("true")
+    # parse pressure using float property
+    event.pressure = float(members[2])
+    
+    return event
+
+func parse_input_event_joypad_motion(data: String) -> InputEventJoypadMotion:
+    if !data.begins_with("InputEventJoypadMotion: "):
+        push_error("given data string is not input event key: ", data)
+        return null
+    
+    var event := InputEventJoypadMotion.new()
+    # a base string looks like this: 
+    ## InputEventJoypadMotion: axis=1, axis_value=-1.00
+    # we will erase the input event key and parse each member
+    var members : PackedStringArray = data.erase(0, len("InputEventJoypadMotion: ")).split(", ", false, 2)
+    # parse axis 
+    @warning_ignore("int_as_enum_without_cast")
+    event.axis = int(members[0])
+    # parse axis value, spliting on equal because it seems to break the to_float
+    event.axis_value = members[1].split("=")[1].to_float()
+        
+    return event
+    
+func get_own_event() -> Array[StringName]:
+    return InputMap.get_actions().filter(func(s: String): return !s.begins_with("ui_"))
 
 #### Game save ####
 func is_save_name(save_name: String) -> bool:
