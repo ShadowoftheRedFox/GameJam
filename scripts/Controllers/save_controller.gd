@@ -128,7 +128,6 @@ func reset_controls() -> void:
         parameters.Controls.controller.append([input_name, event_controller])
     
     override_input_map()
-    parameters_changed.emit()
 
 func save_control(label_name: String, key: String, is_joypad: bool) -> void:
     if is_joypad:

@@ -11,28 +11,44 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_pqbqu")
 
-[node name="ControlsContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 4
+
+[node name="ControlsContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Reset" type="MarginContainer" parent="ControlsContainer"]
+[node name="Reset" type="Button" parent="MarginContainer/ControlsContainer"]
 layout_mode = 2
-theme_override_constants/margin_right = 100
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ControlsContainer/Reset"]
-layout_mode = 2
-size_flags_stretch_ratio = 4.0
-theme_override_constants/separation = 20
-
-[node name="Button" type="Button" parent="ControlsContainer/Reset/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
 text = "Réinitialiser"
 
-[connection signal="pressed" from="ControlsContainer/Reset/HBoxContainer/Button" to="." method="_on_reset_pressed"]
+[node name="ColumnName" type="HBoxContainer" parent="MarginContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="Aligner" type="Label" parent="MarginContainer/ControlsContainer/ColumnName"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="Keyboard" type="Label" parent="MarginContainer/ControlsContainer/ColumnName"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Clavier"
+horizontal_alignment = 1
+
+[node name="Joypad" type="Label" parent="MarginContainer/ControlsContainer/ColumnName"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Manette"
+horizontal_alignment = 1
+
+[node name="Main" type="VBoxContainer" parent="MarginContainer/ControlsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="MarginContainer/ControlsContainer/Reset" to="." method="_on_reset_pressed"]

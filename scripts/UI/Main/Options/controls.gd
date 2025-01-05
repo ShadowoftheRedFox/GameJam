@@ -1,6 +1,6 @@
 extends Control
 
-@onready var CC = $ControlsContainer
+@onready var Main = $MarginContainer/ControlsContainer/Main
 
 var waiting_button: Button = null
 var old_key_label: String = ""
@@ -24,6 +24,10 @@ func _input(event: InputEvent) -> void:
         is_waiting_key = false
     
     if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and is_waiting_controller:
+        # force value at -+1.0
+        if event is InputEventJoypadMotion:
+            event.axis_value = ceil(event.axis_value)
+        
         waiting_button.text = event.as_text()
         # save change
         SaveController.save_control(waiting_label_name, str(event), true)
@@ -45,14 +49,10 @@ func setup() -> void:
         create_input_button(input_name, event_key, event_controller)
 
 func create_input_button(label_name: String, key: InputEvent, controller: InputEvent) -> void:
-    var node := MarginContainer.new()
-    node.name = label_name
-    node.add_theme_constant_override("margin_right", 100)
-
     var hbox = HBoxContainer.new()
     hbox.add_theme_constant_override("separation", 20)
     hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-    node.grow_horizontal = Control.GROW_DIRECTION_BOTH
+    hbox.grow_horizontal = Control.GROW_DIRECTION_BOTH
 
     var label = Label.new()
     # node name
@@ -65,12 +65,12 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
         "Jump":     french_label_name = "Saut"
         "Pause":    french_label_name = "Pause"
         "Dash":     french_label_name = "Dash"
-        _:          french_label_name = key.as_text() if key != null else "(Aucun)"
+        _:          french_label_name = label_name
 
     label.text = french_label_name
     # text align
     label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
     # node alignement
     label.grow_horizontal = Control.GROW_DIRECTION_BOTH
     label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -81,7 +81,7 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
     var button_controller: Button = Button.new()
     # node name
     button_key.text = key.as_text() if key != null else "(Aucun)"
-    button_controller.text = controller.as_text() if controller != null else "(Aucun)"
+    button_controller.text = controller_button_name(controller)
     # text align
     button_key.alignment = HORIZONTAL_ALIGNMENT_CENTER
     button_controller.alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -92,13 +92,43 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
     hbox.add_child(label)
     hbox.add_child(button_key)
     hbox.add_child(button_controller)
-    node.add_child(hbox)
-    CC.add_child(node)
+    Main.add_child(hbox)
 
     # listen to event
     button_key.pressed.connect(update_input.bind(label_name, button_key, key, false))
     button_controller.pressed.connect(update_input.bind(label_name, button_controller, controller, true))
     # TODO to finish: save the controller with save manager, and load, then check if input if listened with player
+
+func controller_button_name(event: InputEvent) -> String:
+    if event == null:
+        return "(Aucun)"
+    var base_name = event.as_text()
+    
+    if event is InputEventJoypadButton:
+        # button name looks like this: Joypad Button 1 (Right Action, Sony Circle, Xbox B, Nintendo A)
+        # we will keep just "Button X"
+        var format := base_name.erase(0, len("Joypad "))
+        # find first occurence of ( and erase everything after
+        var start_parenthesis = format.find("(")
+        return format.erase(start_parenthesis-1, len(format))
+    
+    if event is InputEventJoypadMotion:
+        # button name looks like this: Joypad Motion on Axis 1 (Left Stick Y-Axis, Joystick 0 Y-Axis) with Value -1.00
+        # we want "Left/Right joystick UP/DOWN/LEFT/RIGHT
+        match event.axis:
+            # Game controller left joystick x-axis.
+            JOY_AXIS_LEFT_X:
+                return "Left joystick " + ("right" if event.axis_value > 0 else "left")
+            # Game controller left joystick y-axis.
+            JOY_AXIS_LEFT_Y:
+                return "Left joystick " + ("down" if event.axis_value > 0 else "up")
+            # Game controller right joystick x-axis.
+            JOY_AXIS_RIGHT_X:
+                return "Right joystick " + ("right" if event.axis_value > 0 else "left")
+            # Game controller right joystick y-axis.
+            JOY_AXIS_RIGHT_Y:
+                return "Right joystick " + ("down" if event.axis_value > 0 else "up")
+    return base_name
 
 func update_input(label_name: String, button: Button, input: InputEvent, is_joypad: bool):
     # a new key want to be edited, cancel previous
@@ -114,9 +144,8 @@ func update_input(label_name: String, button: Button, input: InputEvent, is_joyp
     is_waiting_controller = is_joypad
 
 func clear_buttons() -> void:
-    for child in CC.get_children():
-        if child.name != "Reset":
-            child.queue_free()
+    for child in Main.get_children():
+        child.queue_free()
 
 func _on_parameters_changed() -> void:
     clear_buttons()
