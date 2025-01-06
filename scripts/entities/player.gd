@@ -50,6 +50,8 @@ var player_room: Vector2 = Vector2(0, 0)
 # to know if we must render the player
 var player_disabled: bool = false
 
+var buffs: Dictionary = {}
+
 #### Upgrades ####
 var speed_upgrades: int = 0
 
@@ -93,13 +95,18 @@ func _ready():
     jump_count = JUMP_COUNT_MAX
     
     camera.snap()
-    camera.set_limits(GameController.current_room.room.get_node("Map"))
+    if DEBUG:
+        if get_parent() != null and get_parent().has_node("Map"):
+            camera.set_limits(get_parent().get_node("Map"))
+    else:
+        camera.set_limits(GameController.current_room.room.get_node("Map"))
     
     # disable name tag when solo
     if Server.solo_active:
         display_name.hide()
 
 func update_buff(buff_data: Dictionary) -> void:
+    buffs = buff_data
     # TODO handle buff update
     Server.peer_print(Server.MessageType.PRINT, str(buff_data))
     if buff_data.has("JUMP_UPGRADER"):

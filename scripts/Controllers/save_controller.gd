@@ -295,7 +295,6 @@ func get_save_name(save_display_name: String) -> String:
         return save_display_name
     return save_names[save_display_names.find(save_display_name)] 
 
-# TODO edit argument as needed
 func create_new_save(save_name: String, content: String = "") -> bool:
     # edit variable to find the save file
     general_config.set_value("Save_names", save_name, save_name)
@@ -317,9 +316,17 @@ func create_new_save(save_name: String, content: String = "") -> bool:
     saves_changed.emit()
     return true
 
-# TODO useless rn, return more data about the save (difficulty, map size, ...)
-func get_saves() -> Array[String]:
-    return save_names
+func get_save_info(save_name: String) -> Dictionary:
+    if !is_save_name(save_name):
+        return {}
+    
+    var data := get_save(save_name)[0]
+    
+    return {
+        "map_size": GameController.MapSizesNames[data.get("map_size", 0)],
+        "difficulty": GameController.DifficultiesNames[data.get("difficulty", 0)],
+        "gamemode": GameController.GameModesNames[data.get("gamemode", 0)]
+    }
     
 func get_save(save_name: String) -> Array[Dictionary]:
     if !is_save_name(save_name):

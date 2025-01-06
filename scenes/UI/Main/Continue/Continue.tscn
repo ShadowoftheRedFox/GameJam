@@ -50,6 +50,27 @@ size_flags_horizontal = 3
 focus_neighbor_top = NodePath("../../Back")
 focus_neighbor_bottom = NodePath("../../Resume")
 
+[node name="Infos" type="HBoxContainer" parent="Main/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Difficulty" type="Label" parent="Main/MarginContainer/VBoxContainer/Infos"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Difficulté : Unknown"
+horizontal_alignment = 1
+
+[node name="Size" type="Label" parent="Main/MarginContainer/VBoxContainer/Infos"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Taille : Unknown"
+horizontal_alignment = 1
+
+[node name="Gamemode" type="Label" parent="Main/MarginContainer/VBoxContainer/Infos"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mode de jeu: Unknown"
+horizontal_alignment = 1
+
 [node name="Resume" type="Button" parent="Main/MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../SaveName/OptionButton")

@@ -14,6 +14,7 @@ tile_set = ExtResource("1_3xor8")
 [node name="Right" parent="Map" instance=ExtResource("2_2bs4f")]
 position = Vector2(1248, -288)
 rotation = 3.14159
+door_state = 1
 door_facing = 2
 
 [node name="Down" parent="Map" instance=ExtResource("2_2bs4f")]
@@ -21,10 +22,12 @@ position = Vector2(0, 352)
 rotation = 4.71239
 scale = Vector2(1, 2)
 door_size = Vector2(1, 2)
+door_state = 1
 door_facing = 3
 
 [node name="Left" parent="Map" instance=ExtResource("2_2bs4f")]
 position = Vector2(-928, -32)
+door_state = 1
 
 [node name="Spawn" type="Marker2D" parent="."]
 position = Vector2(362, 36)
@@ -40,12 +43,17 @@ DEBUG = true
 
 [node name="Buff" parent="." instance=ExtResource("4_mbtq6")]
 position = Vector2(78, -438)
-buff_preset = 3
-particle_amount = 80
+buff_preset = 6
+particle_amount = 50
 particle_scale_max = 5.0
-particle_color = Color(1, 0, 0, 1)
-particle_lifetime = 2.0
-particle_gravity = Vector2(0, 3)
+particle_color = Color(0.00784314, 0, 0.266667, 1)
+particle_lifetime = 3.0
+particle_speed = Vector2(0, 0)
+particle_direction = Vector3(0, 0, 0)
+particle_gravity = Vector2(0, -2)
 particle_emission_shape = 6
+ring_axis = Vector3(1, 10, 1)
 ring_radius = 20.0
 ring_inner_radius = 10.0
+orb_color = Color(0.615686, 0.658824, 1, 1)
+size = 0.3

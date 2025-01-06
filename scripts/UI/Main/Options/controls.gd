@@ -97,7 +97,6 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
     # listen to event
     button_key.pressed.connect(update_input.bind(label_name, button_key, key, false))
     button_controller.pressed.connect(update_input.bind(label_name, button_controller, controller, true))
-    # TODO to finish: save the controller with save manager, and load, then check if input if listened with player
 
 func controller_button_name(event: InputEvent) -> String:
     if event == null:

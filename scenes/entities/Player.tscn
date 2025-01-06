@@ -16,7 +16,7 @@ height = 20
 fill_from = Vector2(0.226496, 0.42735)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qpfcv"]
-size = Vector2(12, 20)
+size = Vector2(12, 19)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uk5hm"]
 atlas = ExtResource("2_nbr5n")
@@ -392,16 +392,17 @@ scale = Vector2(2, 2)
 texture = SubResource("GradientTexture2D_1q152")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -20)
+position = Vector2(0, -19)
 scale = Vector2(2, 2)
 shape = SubResource("RectangleShape2D_qpfcv")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-position = Vector2(0, -17)
+position = Vector2(0, -14)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_cjfn4")
 animation = &"walk"
+frame_progress = 0.502355
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_truud")

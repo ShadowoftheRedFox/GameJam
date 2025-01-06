@@ -84,14 +84,21 @@ var collected: bool = false
         particle_spread = value
         if self.is_node_ready():
             particle_material.spread = particle_spread
-@export var particle_speed: float = 1.0:
+## X is velocity min, Y is velocity max
+@export var particle_speed: Vector2 = Vector2.ZERO:
     set(value):
         particle_speed = value
-        # TODO apply_to_children()
-@export var particle_direction: Vector2 = Vector2.ZERO:
+        if is_node_ready():
+            particle_material.initial_velocity_min = particle_speed.x
+            particle_material.initial_velocity_max = particle_speed.y
+@export var particle_direction: Vector3 = Vector3.ZERO:
     set(value):
-        particle_direction = value
-        # TODO apply_to_children()
+        if !value.is_normalized():
+            particle_direction = value.normalized()
+        else:
+            particle_direction = value
+        if is_node_ready():
+            particle_material.direction = particle_direction
 @export var particle_gravity: Vector2 = Vector2.ZERO:
     set(value):
         particle_gravity = value
@@ -157,7 +164,7 @@ var collected: bool = false
 
 func _ready() -> void:
     # if preset is other than custom, it will override params
-     # TODO check buff_preset, and set params to their value
+     # check buff_preset, and set params to their value
     
     match buff_preset:
         BuffPreset.CUSTOM:
@@ -230,8 +237,6 @@ func _ready() -> void:
     # apply preset to childrens
     apply_to_children()
 
-    # TODO signal when player in area
-
 func apply_to_children() -> void:
     if not self.is_node_ready():
         return
@@ -245,9 +250,11 @@ func apply_to_children() -> void:
     particle_gen.lifetime = particle_lifetime
     particle_material.spread = particle_spread
 
-    # TODO change many things in velocity, animated velocity, and maybe accelerations, same for directions
     # particle_speed
+    particle_material.initial_velocity_min = particle_speed.x
+    particle_material.initial_velocity_max = particle_speed.y
     # particle_direction
+    particle_material.direction = particle_direction
 
     particle_material.emission_shape = particle_emission_shape
     match particle_emission_shape:
@@ -275,8 +282,7 @@ func apply_to_children() -> void:
 
     light.color = orb_color
 
-    # TODO what change size? particle? sprite? or scale everything?
-    # size is scale the orb
+    # size is scale the orb to increase size
     light.scale = Vector2(size, size)
 
     sprite.texture = texture
@@ -294,7 +300,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     var player: BasePlayer = body
     var id = player.name.to_int()
     var data: Dictionary = GameController.Players.get(id, {})
-    if data.is_empty():
+    if data.is_empty() and !player.DEBUG:
         push_warning("The player colliding is not in the player list")
         return
     

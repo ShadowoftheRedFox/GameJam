@@ -95,12 +95,12 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
 
     # store data
     hosted_save_name = save_name
-    hosted_difficulty = save_data.get("difficulty")
-    hosted_gamemode = save_data.get("gamemode")
-    hosted_map_size = save_data.get("map_size")
+    hosted_difficulty = save_data.get("difficulty", 0)
+    hosted_gamemode = save_data.get("gamemode", 0)
+    hosted_map_size = save_data.get("map_size", 0)
     # tansition with thread
     ThreadController.thread_transition(
-        GeneratorController.load_map.bind(save_data.get("map"), save_data.get("map_size"), save_data.get("seed")),
+        GeneratorController.load_map.bind(save_data.get("map", []), hosted_map_size, save_data.get("seed", 0)),
         game_loaded,
         multiplayer_data.is_empty(), # don't show loading screen for players joining host
         "Chargement de la carte...",
