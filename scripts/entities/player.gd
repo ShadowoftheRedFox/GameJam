@@ -96,8 +96,22 @@ func _ready():
     
     camera.snap()
     if DEBUG:
+        # handle debug mode of this player instance
+        # try to setup camera limits
         if get_parent() != null and get_parent().has_node("Map"):
             camera.set_limits(get_parent().get_node("Map"))
+            # add room (so parent) as current_room
+            # must have the room script attached
+            GameController.current_room = get_parent()
+        else:
+            push_warning("Couldn't find map, make sure the map is a brother of this node, and that the node called Map is a TileMapLayer")
+        # makes himself the main instance
+        GameController.main_player_instance = self
+        # add himself to the player list
+        var data = PlayerData.new()
+        data.id = 1
+        data.name = "DebugPlayer"
+        GameController.Players.list.append(data)
     else:
         camera.set_limits(GameController.current_room.room.get_node("Map"))
     
@@ -105,14 +119,13 @@ func _ready():
     if Server.solo_active:
         display_name.hide()
 
-func update_buff(buff_data: Dictionary) -> void:
-    buffs = buff_data
+func update_buff(data: PlayerData) -> void:
     # TODO handle buff update
-    Server.peer_print(Server.MessageType.PRINT, str(buff_data))
-    if buff_data.has("JUMP_UPGRADER"):
-        JUMP_COUNT_MAX = 2 + buff_data.get("JUMP_UPGRADER", 0) 
-    if buff_data.has("DASH_UPGRADER"):
-        DASH_COUNT_MAX = 1 + buff_data.get("DASH_UPGRADER", 0)
+    Server.peer_print(Server.MessageType.PRINT, str(data))
+    if data.has_buff(Buff.BuffPreset.JUMP_UPGRADER):
+        JUMP_COUNT_MAX = 2 + data.get_buff(Buff.BuffPreset.JUMP_UPGRADER).buff_amount 
+    if data.has_buff(Buff.BuffPreset.DASH_UPGRADER):
+        DASH_COUNT_MAX = 1 + data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount
     
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
