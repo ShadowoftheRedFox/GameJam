@@ -202,6 +202,3 @@ func stop_server() -> void:
         multiplayer.multiplayer_peer.close()
     else:
         multiplayer.multiplayer_peer.close()
-
-    multiplayer.multiplayer_peer = null
-    peer = null
