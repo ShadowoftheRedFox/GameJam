@@ -32,7 +32,7 @@ const buff_description: Array[String] = [
 
 @onready var particle_gen: GPUParticles2D = $GPUParticles2D
 @onready var particle_material: ParticleProcessMaterial = particle_gen.get("process_material")
-@onready var light: PointLight2D = $PointLight2D 
+@onready var light: PointLight2D = $PointLight2D
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var mouse_area: Area2D = $MouseTracker
 @onready var popup: MarginContainer = $Popup
@@ -103,7 +103,7 @@ var collected: bool = false
     set(value):
         particle_gravity = value
         if self.is_node_ready():
-            particle_material.gravity =  Vector3(particle_gravity.x, particle_gravity.y, 0)
+            particle_material.gravity = Vector3(particle_gravity.x, particle_gravity.y, 0)
 @export var particle_emission_shape: ParticleProcessMaterial.EmissionShape = ParticleProcessMaterial.EmissionShape.EMISSION_SHAPE_POINT:
     set(value):
         particle_emission_shape = value
@@ -166,6 +166,7 @@ func _ready() -> void:
     # if preset is other than custom, it will override params
      # check buff_preset, and set params to their value
     
+#region Buff Presets
     match buff_preset:
         BuffPreset.CUSTOM:
             apply_to_children()
@@ -233,6 +234,7 @@ func _ready() -> void:
             ring_axis = Vector3(1, 10, 1)
         _:
             push_error("Buff preset ", BuffPreset.get(buff_preset), " is not available")
+#endregion
 
     # apply preset to childrens
     apply_to_children()
@@ -242,7 +244,7 @@ func apply_to_children() -> void:
         return
 
     particle_gen.amount = particle_amount
-    particle_material.gravity =  Vector3(particle_gravity.x, particle_gravity.y, 0)
+    particle_material.gravity = Vector3(particle_gravity.x, particle_gravity.y, 0)
     particle_material.scale_max = particle_scale_max
     particle_material.scale_min = particle_scale_min
     particle_material.color = particle_color
@@ -299,17 +301,16 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
         return
     var player: BasePlayer = body
     var id = player.name.to_int()
-    var data: Dictionary = GameController.Players.get(id, {})
-    if data.is_empty() and !player.DEBUG:
+    var data := GameController.Players.get_player(id)
+    if data == null and !player.DEBUG:
         push_warning("The player colliding is not in the player list")
         return
     
-    var buff_data: Dictionary = data.get_or_add("buff", {})
-    buff_data.get_or_add(BuffPreset.find_key(buff_preset), 0)
-    buff_data[BuffPreset.find_key(buff_preset)] += 1
+    data.add_buff(buff_preset)
     
-    player.update_buff(buff_data)
-    MultiplayerController.player_buff_update.rpc(id, buff_data)
+    player.update_buff(data)
+    MultiplayerController.player_buff_update.rpc(id, str(data))
+    MultiplayerController.player_infos_update.emit(data)
     dispawn()
 
 func _on_mouse_entered(_shape_idx: int) -> void:

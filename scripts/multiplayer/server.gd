@@ -74,13 +74,13 @@ func connection_failed() -> void:
 func connected_to_server() -> void:
     peer_print(MessageType.PRINT, "connected to server")
     # send the client data to host, id=1 is host
-    MultiplayerController.send_player_infos.rpc_id(1, {
-        "id": multiplayer.get_unique_id(),
-        #"name": SaveController.parameters.Multiplayer.name,
-        "name": str(multiplayer.get_unique_id()),
-        "color": SaveController.parameters.Multiplayer.color,
-        "score": 0
-    })
+    var data = PlayerData.new()
+    data.id = multiplayer.get_unique_id()
+    #data.name = SaveController.parameters.Multiplayer.name
+    data.name = str(multiplayer.get_unique_id())
+    data.color = SaveController.parameters.Multiplayer.color
+    
+    MultiplayerController.send_player_infos.rpc_id(1, str(data))
 
 
 func change_port(text: String):
@@ -144,13 +144,13 @@ func create_host(is_solo: bool = false) -> bool:
         print("Server ready, awaiting for players")
         
     # send info for our own peer
-    MultiplayerController.send_player_infos({
-        "id": multiplayer.get_unique_id(),
-        "name": SaveController.parameters.Multiplayer.name,
-        #"name": str(multiplayer.get_unique_id()),
-        "color": SaveController.parameters.Multiplayer.color,
-        "score": 0
-    })
+    var data = PlayerData.new()
+    data.id = multiplayer.get_unique_id()
+    data.name = SaveController.parameters.Multiplayer.name
+    #data.name = str(multiplayer.get_unique_id())
+    data.color = SaveController.parameters.Multiplayer.color
+    
+    MultiplayerController.send_player_infos(str(data))
     
     return true
     
@@ -202,3 +202,6 @@ func stop_server() -> void:
         multiplayer.multiplayer_peer.close()
     else:
         multiplayer.multiplayer_peer.close()
+
+    multiplayer.multiplayer_peer = null
+    peer = null
