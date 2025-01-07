@@ -30,6 +30,12 @@ const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
 const PlayerScene = preload("res://scenes/entities/Player.tscn")
 
 signal game_loaded(result_map: Array)
+@warning_ignore("unused_signal")
+signal player_infos_update(data: PlayerData)
+@warning_ignore("unused_signal")
+signal spectator_update(id: int)
+@warning_ignore("unused_signal")
+signal game_starting
 
 # current save data
 var hosted_save_name: String = ""
@@ -37,7 +43,8 @@ var hosted_difficulty: Difficulties = Difficulties.Easy
 var hosted_map_size: MapSizes = MapSizes.Small
 var hosted_gamemode: GameModes = GameModes.Classic
 
-var Players = {}
+# TODO find a way to differentiate players and spectator
+var Players: PlayerDataManager = PlayerDataManager.new()
 var game_started: bool = false
 var game_paused: bool = false
 var current_map: Array = []
@@ -181,7 +188,7 @@ func stop_game(no_new_menu: bool = false) -> void:
     Server.stop_server()
 
     Utils.remove_signal_listener(game_loaded)
-    GameController.Players = {}
+    GameController.Players.reset()
     game_started = false
     current_map = []
     current_room = null

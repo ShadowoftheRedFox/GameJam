@@ -1,0 +1,119 @@
+[gd_scene load_steps=3 format=3 uid="uid://dt5e328tdntk4"]
+
+[ext_resource type="Script" path="res://scripts/UI/Spectator/spectator.gd" id="1_r3ym1"]
+[ext_resource type="PackedScene" uid="uid://b6jid2jit70i" path="res://scenes/UI/Spectator/PlayerScore.tscn" id="2_uvqyr"]
+
+[node name="Spectator" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_r3ym1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Score" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 50
+
+[node name="Panel" type="Panel" parent="MarginContainer/Score"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/Score"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Score/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Container" type="VBoxContainer" parent="MarginContainer/Score/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Header" type="Label" parent="MarginContainer/Score/ScrollContainer/MarginContainer/Container"]
+layout_mode = 2
+text = "Scores"
+horizontal_alignment = 1
+
+[node name="HeaderBar" type="HSeparator" parent="MarginContainer/Score/ScrollContainer/MarginContainer/Container"]
+layout_mode = 2
+
+[node name="PlayerScore" parent="MarginContainer/Score/ScrollContainer/MarginContainer/Container" instance=ExtResource("2_uvqyr")]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/Score/ScrollContainer/MarginContainer/Container"]
+layout_mode = 2
+
+[node name="Spectate" type="HBoxContainer" parent="MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="Before" type="Button" parent="MarginContainer/Spectate"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = " < "
+
+[node name="Players" type="OptionButton" parent="MarginContainer/Spectate"]
+layout_mode = 2
+size_flags_horizontal = 4
+selected = 0
+fit_to_longest_item = false
+allow_reselect = true
+item_count = 3
+popup/item_0/text = "Test1"
+popup/item_1/text = "Test2"
+popup/item_1/id = 1
+popup/item_2/text = "Test3"
+popup/item_2/id = 2
+
+[node name="After" type="Button" parent="MarginContainer/Spectate"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = " > "
+
+[node name="Options" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Spectate" type="Button" parent="MarginContainer/Options"]
+layout_mode = 2
+text = "Visionner"
+
+[node name="Score" type="Button" parent="MarginContainer/Options"]
+layout_mode = 2
+text = "Score"
+
+[node name="Quit" type="Button" parent="MarginContainer/Options"]
+layout_mode = 2
+text = "Quitter"
+
+[connection signal="pressed" from="MarginContainer/Spectate/Before" to="." method="_on_before_pressed"]
+[connection signal="item_selected" from="MarginContainer/Spectate/Players" to="." method="_on_players_item_selected"]
+[connection signal="pressed" from="MarginContainer/Spectate/After" to="." method="_on_after_pressed"]
+[connection signal="pressed" from="MarginContainer/Options/Spectate" to="." method="_on_spectate_pressed"]
+[connection signal="pressed" from="MarginContainer/Options/Score" to="." method="_on_score_pressed"]
+[connection signal="pressed" from="MarginContainer/Options/Quit" to="." method="_on_quit_pressed"]

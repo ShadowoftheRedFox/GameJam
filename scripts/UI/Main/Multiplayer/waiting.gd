@@ -7,17 +7,19 @@ var just_pressed = true
 func _ready() -> void:
     Server.player_disconnected.connect(remove_player)
     Server.server_connection_failed.connect(connection_failed)
-    MultiplayerController.player_infos.connect(display_player)
-    MultiplayerController.game_starting.connect(reset_menu)
+    GameController.player_infos_update.connect(display_player)
+    GameController.game_starting.connect(reset_menu)
+    GameController.spectator_update.connect(update_spectator)
 
 func _on_back_pressed() -> void:
     back_pressed.emit()
+    reset_menu()
     # remove waiting player
     remove_all_players()
     # disconnect from server
     GameController.stop_game(true)
 
-func reset_menu() -> void: 
+func reset_menu() -> void:
     $VBoxContainer/Actions/Start.text = "Connection en cours..."
     just_pressed = true
     back_pressed.emit()
@@ -29,7 +31,7 @@ func _on_start_pressed() -> void:
     if multiplayer.is_server():
         MultiplayerController.start_game.rpc()
     
-func display_player(player_data: Dictionary) -> void:
+func display_player(player_data: PlayerData) -> void:
     if players_waiting.has(player_data.id):
         return
     
@@ -46,9 +48,9 @@ func display_player(player_data: Dictionary) -> void:
 func remove_player(id: int) -> void:
     # host has disconnected
     if id == 1:
-        remove_all_players()
         back_pressed.emit()
-    if $VBoxContainer/PlayerList.has_node(str(id)) == true:
+        reset_menu()
+    if $VBoxContainer/PlayerList.has_node(str(id)):
         $VBoxContainer/PlayerList.get_node(str(id)).queue_free()
         players_waiting.erase(id)
         update_buttons()
@@ -66,7 +68,7 @@ func _on_visibility_changed() -> void:
         
 func update_buttons() -> void:
     if multiplayer.multiplayer_peer != null and multiplayer.is_server():
-        if GameController.Players.size() < 2:
+        if GameController.Players.get_player_count() < 2:
             $VBoxContainer/Actions/Start.disabled = true
             $VBoxContainer/Actions/Start.text = "Il faut au moins 2 joueurs pour commencer"
         else:
@@ -81,5 +83,17 @@ func update_buttons() -> void:
             $VBoxContainer/Actions/Start.text = "Seul l'hôte peut commencer la partie"
     just_pressed = false
 
+func update_spectator(id: int) -> void:
+    if $VBoxContainer/PlayerList.has_node(str(id)) and GameController.Players.has_player(id):
+        var text = GameController.Players.get_player(id).name
+        if GameController.Players.get_player(id).is_spectator:
+            text += " (Spectateur)"
+        $VBoxContainer/PlayerList.get_node(str(id)).text = text
+    update_buttons()
+
 func connection_failed() -> void:
     $VBoxContainer/Actions/Start.text = "Connection impossible, veuillez réessayer"
+
+
+func _on_spectator_toggled(toggled_on: bool) -> void:
+    MultiplayerController.update_spectator.rpc(multiplayer.get_unique_id(), toggled_on)
