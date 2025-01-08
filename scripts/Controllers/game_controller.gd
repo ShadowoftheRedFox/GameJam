@@ -28,6 +28,7 @@ var Utils = UtilsScript.new()
 
 const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
 const PlayerScene = preload("res://scenes/entities/Player.tscn")
+const SpectatorScene = preload("res://scenes/UI/Spectator/Spectator.tscn")
 
 signal game_loaded(result_map: Array)
 @warning_ignore("unused_signal")
@@ -145,12 +146,12 @@ func join_multiplayer() -> bool:
     return Server.join_server()
 
 func multiplayer_after_load(result: Array) -> void: 
-    current_map =result
+    current_map = result
 
 func hide_menu() -> void:
     # hide main menu
     for child in get_tree().root.get_children():
-        if child.name == "MainMenu":
+        if child is MainMenu:
             child.queue_free()
 
 func show_menu() -> void:
@@ -182,7 +183,7 @@ func stop_game(no_new_menu: bool = false) -> void:
         current_room.queue_free()
 
     for children in get_tree().root.get_children():
-        if children is BasePlayer or children is MapRoom:
+        if children is BasePlayer or children is MapRoom or children is SpectatorMenu:
             children.queue_free()
 
     Server.stop_server()

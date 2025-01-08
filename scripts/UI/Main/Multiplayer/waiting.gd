@@ -67,6 +67,7 @@ func _on_visibility_changed() -> void:
         update_buttons()
         
 func update_buttons() -> void:
+    $Spectator.show()
     if multiplayer.multiplayer_peer != null and multiplayer.is_server():
         if GameController.Players.get_player_count() < 2:
             $VBoxContainer/Actions/Start.disabled = true

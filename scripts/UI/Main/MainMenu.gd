@@ -1,3 +1,4 @@
+class_name  MainMenu
 extends Control
 @onready var buff: Buff = $CenterContainer/Buff
 var credits = preload("res://scenes/UI/Main/credits.tscn")
@@ -7,7 +8,7 @@ func _ready() -> void:
     # grab the keyboard focus on specific button
     $Main/MarginContainer/MarginContainer/VBoxContainer/New.grab_focus()
     
-    # enable the button is any save available
+    # enable the button if any save is available
     update_continue_state()
     SaveController.saves_changed.connect(update_continue_state)
 

@@ -45,11 +45,13 @@ func start_game() -> void:
     GameController.current_room = GameController.current_map[0][0]
     get_tree().root.add_child(GameController.current_room)
     # spawn all peer
-    #if multiplayer.is_server():
     for p in GameController.Players.list:
         # TODO spawn player in different room and at coos
         if !p.is_spectator:
             spawn_player.call_deferred(p)
+    # spawn if own is spectator
+    if GameController.Players.get_player(multiplayer.get_unique_id()).is_spectator:
+        get_tree().root.add_child(GameController.SpectatorScene.instantiate())
 
 func spawn_player(player_data: PlayerData) -> void:
     if player_data == null:

@@ -79,6 +79,12 @@ func focus_on_player() -> void:
     # need to: move to the room of the player
     # listen if changing room
     # connect to it's camera, or own camera follows him
+    #var player_data = GameController.Players.get_player(player_spectating_id)
+    var player = get_tree().root.get_node(str(player_spectating_id)) as BasePlayer
+    player.camera.enabled = true
+    # set this player as the main instance
+    GameController.main_player_instance = player
+    GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
 
 func _on_spectate_pressed() -> void:
     if spectate.visible:

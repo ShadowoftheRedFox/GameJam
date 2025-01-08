@@ -36,7 +36,6 @@ particle_scale_max = 5.0
 particle_color = Color(0.679518, 0.0882298, 0.368955, 1)
 particle_lifetime = 3.0
 particle_spread = 20.0
-particle_direction = Vector2(-5, -5)
 particle_gravity = Vector2(5, 5)
 particle_emission_shape = 6
 sphere_radius = 10.0

@@ -3,8 +3,8 @@ class_name PlayerDataManager
 var list: Array[PlayerData] = []
 
 func reset() -> void:
-    for p in list:
-        p.unreference()
+    #for p in list:
+        #p.unreference()
     list = []
 
 ## Returns the amount of non-spectator
@@ -42,9 +42,8 @@ func erase_player(id: int) -> void:
     for i in list.size():
         if list[i].id == id:
             #list[i].free()
-            list[i].unreference()
-            list.erase(i)
-            return 
+            #list[i].unreference()
+            list.remove_at(i)
     
 func as_dictionary() -> Dictionary:
     var res = {}
