@@ -1,6 +1,10 @@
 class_name MapRoom
 extends Node
 
+enum Backgrounds {
+    NORMAL = 0
+}
+
 # WHY
 # WHERE IS MY STD::OPTIONAL OR GO-LIKE ERROR HANDLING OR OPTION<T>
 var room_id: int = -1
