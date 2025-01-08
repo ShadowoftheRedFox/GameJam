@@ -41,12 +41,9 @@ door_facing = 3
 
 [node name="Left" parent="Map" instance=ExtResource("6_whddy")]
 position = Vector2(-864, -32)
-scale = Vector2(1, 3)
 
 [node name="Spawn" type="Marker2D" parent="."]
 position = Vector2(362, 36)
 
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="BuffSpawn" type="Marker2D" parent="."]
+position = Vector2(1053, -220)

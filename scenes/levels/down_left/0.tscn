@@ -26,24 +26,22 @@ position = Vector2(81, -384)
 [node name="4x1" parent="Map" instance=ExtResource("6_d1o4c")]
 position = Vector2(-166, -48)
 
-[node name="Left" parent="Map" node_paths=PackedStringArray("tile_map_layer") instance=ExtResource("6_xgejx")]
+[node name="Left" parent="Map" instance=ExtResource("6_xgejx")]
 position = Vector2(-801, -64)
 rotation = 3.14159
+scale = Vector2(1, 4)
 door_size = Vector2(1, 4)
-tile_map_layer = NodePath("..")
 door_facing = 2
 
-[node name="Down" parent="Map" node_paths=PackedStringArray("tile_map_layer") instance=ExtResource("6_xgejx")]
+[node name="Down" parent="Map" instance=ExtResource("6_xgejx")]
 position = Vector2(0, 352)
 rotation = 4.71239
+scale = Vector2(1, 2)
 door_size = Vector2(1, 2)
-tile_map_layer = NodePath("..")
 door_facing = 3
 
 [node name="Spawn" type="Marker2D" parent="."]
 position = Vector2(362, 36)
 
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="BuffSpawn" type="Marker2D" parent="."]
+position = Vector2(1053, -220)

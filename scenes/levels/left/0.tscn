@@ -19,12 +19,9 @@ position = Vector2(710, -283)
 
 [node name="Left" parent="Map" instance=ExtResource("4_wse5b")]
 position = Vector2(-800, -32)
-scale = Vector2(1, 3)
 
 [node name="Spawn" type="Marker2D" parent="."]
 position = Vector2(362, 36)
 
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="BuffSpawn" type="Marker2D" parent="."]
+position = Vector2(713, -588)

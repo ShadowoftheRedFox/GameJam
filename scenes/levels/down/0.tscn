@@ -46,18 +46,13 @@ position = Vector2(44, -405)
 buff_preset = 5
 particle_amount = 50
 particle_scale_max = 5.0
-particle_color = Color(0.00784314, 0, 0.266667, 1)
+particle_color = Color(0.0313726, 1, 0, 1)
 particle_lifetime = 3.0
-particle_gravity = Vector2(0, -2)
-particle_emission_shape = 6
+particle_gravity = Vector2(0, 2.55046)
+particle_emission_shape = 2
 sphere_radius = 10.0
 ring_axis = Vector3(1, 10, 1)
 ring_radius = 20.0
 ring_inner_radius = 10.0
-orb_color = Color(0.615686, 0.658824, 1, 1)
+orb_color = Color(0.0313726, 1, 0, 1)
 size = 0.3
-
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0

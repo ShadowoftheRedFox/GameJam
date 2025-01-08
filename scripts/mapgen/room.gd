@@ -8,10 +8,10 @@ var room_position: Vector2 = Vector2(-1,-1)
 # Oh yeah and unique IDs too ig
 static var next_id: int = 0
 # Connections to other nodes (up, down, left, right)
-var up: Node = null
-var down: Node = null
-var left: Node = null
-var right: Node = null
+var up: MapRoom = null
+var down: MapRoom = null
+var left: MapRoom = null
+var right: MapRoom = null
 var room: Node = null
 var room_type: String = ""
 
@@ -95,17 +95,39 @@ func area_entered(body: Node2D, direction: String) -> void:
 
 # Called when the node is added to the scene tree for the first time
 func _ready():
+    check_room_valid()
     if room != null:
-        self.add_child.call_deferred(room)
+        add_child.call_deferred(room)
 
-func show_id():
-    $Label.show()
-    $Map.hide()
-
-func hide_id():
-    $Label.hide()
-    $Map.show()
-
+## Check if the room has all elements needed
+func check_room_valid() -> void:
+    if room == null:
+        return
+    
+    # needs to have a Spawn and be a Marker2D
+    assert(room.has_node("Spawn"), "Room " + room.scene_file_path + " has no Spawn Markder2D")
+    assert(room.get_node("Spawn") is Marker2D,"Room " + room.scene_file_path + " Spawn is not a Markder2D")
+    
+    # needs to have a Map and be TileMapLayer
+    assert(room.has_node("Map"), "Room " + room.scene_file_path + " has no Map TileMapLayer")
+    assert(room.get_node("Map") is TileMapLayer, "Room " + room.scene_file_path + " Map is not a TileMapLayer")
+    
+    # needs to have a BuffSpawn and be Marker2D
+    assert(room.has_node("BuffSpawn"), "Room " + room.scene_file_path + " has no BuffSpawn Markder2D")
+    assert(room.get_node("BuffSpawn") is Marker2D, "Room " + room.scene_file_path + " BuffSpawn is not a Markder2D")
+    
+    # needs to have at least one door called either Up/Down/Left/Right and be a Door
+    assert(room.has_node("Map/Up") or room.has_node("Map/Down") or room.has_node("Map/Left") or room.has_node("Map/Right"), "Room " + room.scene_file_path + " Map must at least have a Door")
+    if room.has_node("Map/Up"):
+        assert(room.get_node("Map/Up") is Door, "Room " + room.scene_file_path + " Map/Up is not a Door")
+    if room.has_node("Map/Down"):
+        assert(room.get_node("Map/Down") is Door, "Room " + room.scene_file_path + " Map/Down is not a Door")
+    if room.has_node("Map/Left"):
+        assert(room.get_node("Map/Left") is Door, "Room " + room.scene_file_path + " Map/Left is not a Door")
+    if room.has_node("Map/Right"):
+        assert(room.get_node("Map/Right") is Door, "Room " + room.scene_file_path + " Map/Right is not a Door")
+    
+    
 func generate_room() -> bool:
     if room_id == -1:
         printerr("Room has not been generated yet")
