@@ -52,7 +52,7 @@ func peer_print(message_type: MessageType, message: String) -> void:
         MessageType.DEBUG:
             print_debug(id + ": " + message)
         MessageType.PRINT, _:
-            print(id + ": " + message)
+            push_warning(id + ": " + message)
 
 func peer_connected(id: int) -> void:
     peer_print(MessageType.PRINT, "Player " + str(id) + " connected")

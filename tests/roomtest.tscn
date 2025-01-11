@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=4 uid="uid://cqn6e5ke53yq1"]
+[gd_scene load_steps=7 format=4 uid="uid://cqn6e5ke53yq1"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_3xor8"]
 [ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_dl3m3"]
 [ext_resource type="PackedScene" uid="uid://dpnth2crmupb" path="res://scenes/mapgen/door.tscn" id="2_2bs4f"]
 [ext_resource type="PackedScene" uid="uid://cdqa1c43nocou" path="res://scenes/entities/Player.tscn" id="3_4fmae"]
 [ext_resource type="PackedScene" uid="uid://d1cpj26wd0fqw" path="res://scenes/entities/buff.tscn" id="4_mbtq6"]
+[ext_resource type="PackedScene" uid="uid://crfitp17bi1k7" path="res://scenes/entities/enemies/slime.tscn" id="6_teqtp"]
 
 [node name="Room" type="Node2D"]
 script = ExtResource("1_dl3m3")
@@ -57,3 +58,6 @@ ring_radius = 20.0
 ring_inner_radius = 10.0
 orb_color = Color(0.615686, 0.658824, 1, 1)
 size = 0.3
+
+[node name="Slime" parent="." instance=ExtResource("6_teqtp")]
+position = Vector2(337, -485)

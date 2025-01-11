@@ -109,9 +109,11 @@ func _ready():
         GameController.main_player_instance = self
         # add himself to the player list
         var data = PlayerData.new()
-        data.id = 1
+        data.id = 0
         data.name = "DebugPlayer"
         GameController.Players.list.append(data)
+        reparent.call_deferred(get_tree().root, true)
+        name = "0"
     else:
         camera.set_limits(GameController.current_room.room.get_node("Map"))
     
