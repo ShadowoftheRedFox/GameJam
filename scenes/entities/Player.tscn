@@ -380,9 +380,9 @@ properties/5/replication_mode = 1
 [sub_resource type="LabelSettings" id="LabelSettings_prnli"]
 font_size = 11
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 2
-collision_mask = 13
+collision_mask = 29
 script = ExtResource("1_6hxiq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

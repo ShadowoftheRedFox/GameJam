@@ -18,6 +18,10 @@ fill_to = Vector2(0.85, 0.15)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t2h72"]
 particle_flag_disable_z = true
+direction = Vector3(0, 0, 0)
+spread = 1.0
+gravity = Vector3(0, -10, 0)
+color = Color(0, 1, 1, 1)
 
 [sub_resource type="Animation" id="Animation_8li3y"]
 resource_name = "dispawn"
@@ -75,7 +79,7 @@ _data = {
 [sub_resource type="CircleShape2D" id="CircleShape2D_urub3"]
 radius = 30.0
 
-[node name="Buff" type="Node2D"]
+[node name="Buff" type="Node2D" groups=["Buffs"]]
 script = ExtResource("1_gm7h6")
 particle_gravity = Vector2(0, -10)
 

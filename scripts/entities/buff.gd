@@ -310,7 +310,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     
     player.update_buff(data)
     MultiplayerController.player_buff_update.rpc(id, str(data))
-    MultiplayerController.player_infos_update.emit(data)
+    GameController.player_infos_update.emit(data)
     dispawn()
 
 func _on_mouse_entered(_shape_idx: int) -> void:
