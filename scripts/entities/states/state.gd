@@ -4,7 +4,7 @@ class_name State
 extends Node
 
 # must be filled
-var entity: CharacterBody2D = null
+var entity: GlobalEnemy = null
 
 ## Emitted when the state finishes and wants to transition to another state.
 @warning_ignore("unused_signal")
