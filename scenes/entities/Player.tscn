@@ -401,8 +401,9 @@ texture_filter = 1
 position = Vector2(0, -14)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_cjfn4")
-animation = &"walk"
-frame_progress = 0.502355
+animation = &"attack1"
+frame = 1
+frame_progress = 0.454473
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_truud")

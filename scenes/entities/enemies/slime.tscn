@@ -1,9 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://crfitp17bi1k7"]
+[gd_scene load_steps=14 format=3 uid="uid://crfitp17bi1k7"]
 
 [ext_resource type="Script" path="res://scripts/entities/enemies/slime.gd" id="1_c5c7b"]
 [ext_resource type="Script" path="res://scripts/entities/states/state_machine.gd" id="2_vnipw"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/idle.gd" id="3_mv2u3"]
-[ext_resource type="Script" path="res://scripts/entities/states/global/falling.gd" id="4_5xjgd"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/moving.gd" id="5_sp8id"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/jumping.gd" id="6_r6ha2"]
 
@@ -11,15 +10,33 @@
 size = Vector2(20, 14.6)
 
 [sub_resource type="Gradient" id="Gradient_sy176"]
-offsets = PackedFloat32Array(0, 0.250847, 0.301695, 0.572881)
-colors = PackedColorArray(0.12549, 1, 0, 0.862745, 0.12549, 1, 0, 0.862745, 0.116244, 0.926316, 0, 0.799174, 0, 0, 0, 0)
+offsets = PackedFloat32Array(0.325424, 0.572881)
+colors = PackedColorArray(0.12549, 1, 0, 0.592157, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_awsyg"]
 gradient = SubResource("Gradient_sy176")
-width = 20
-height = 20
+width = 80
+height = 80
 fill = 1
-fill_from = Vector2(0.5, 0.8)
+fill_from = Vector2(0.5, 0.864961)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="Animation" id="Animation_frajn"]
+resource_name = "fall"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture_gradient_center")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16, 0.33, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.864961), Vector2(0.4, 0.865), Vector2(0.6, 0.865), Vector2(0.5, 0.864961)]
+}
 
 [sub_resource type="Animation" id="Animation_6yync"]
 resource_name = "idle"
@@ -38,6 +55,9 @@ tracks/0/keys = {
 "values": [Vector2(0.5, 0.8), Vector2(0.5, 0.95), Vector2(0.5, 0.8)]
 }
 
+[sub_resource type="Animation" id="Animation_wce36"]
+resource_name = "jump"
+
 [sub_resource type="Animation" id="Animation_sqwwy"]
 resource_name = "move"
 length = 2.0
@@ -55,12 +75,6 @@ tracks/0/keys = {
 "values": [Vector2(0.5, 0.8), Vector2(0.5, 0.95), Vector2(0.5, 0.8)]
 }
 
-[sub_resource type="Animation" id="Animation_frajn"]
-resource_name = "fall"
-
-[sub_resource type="Animation" id="Animation_wce36"]
-resource_name = "jump"
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ojj5f"]
 _data = {
 "fall": SubResource("Animation_frajn"),
@@ -73,15 +87,16 @@ _data = {
 collision_layer = 16
 collision_mask = 27
 script = ExtResource("1_c5c7b")
-texture_gradient_center = Vector2(0.5, 0.8)
+texture_gradient_center = Vector2(0.5, 0.864961)
+jump_impulse = 300.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -7.3)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_g7dlo")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -10)
+scale = Vector2(0.25, 0.25)
 texture = SubResource("GradientTexture2D_awsyg")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -95,9 +110,6 @@ initial_state = NodePath("Idle")
 
 [node name="Idle" type="Node" parent="StateMachine"]
 script = ExtResource("3_mv2u3")
-
-[node name="Falling" type="Node" parent="StateMachine"]
-script = ExtResource("4_5xjgd")
 
 [node name="Moving" type="Node" parent="StateMachine"]
 script = ExtResource("5_sp8id")
@@ -113,5 +125,6 @@ offset_left = -20.0
 offset_right = 20.0
 offset_bottom = 23.0
 grow_horizontal = 2
+text = "Idle"
 horizontal_alignment = 1
 vertical_alignment = 1

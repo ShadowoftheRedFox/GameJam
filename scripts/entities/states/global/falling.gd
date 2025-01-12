@@ -3,6 +3,7 @@ extends State
 
 func enter(_previous_state_path: String, _data := {}) -> void:
     entity.animation_player.play("fall")
+    entity.info = "Falling toward target"
 
 func physics_update(_delta: float) -> void:
     entity.velocity.y += entity.gravity * _delta

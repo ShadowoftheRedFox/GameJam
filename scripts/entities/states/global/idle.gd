@@ -30,12 +30,12 @@ func update(_delta: float) -> void:
         if entity.global_position.distance_squared_to(entity.target_player.global_position) > entity.target_range:
             entity.info = "Idle"
             entity.target_player = null
+        else:
+            finished.emit("Moving")
     
 func physics_update(_delta: float) -> void:
     entity.velocity.y += entity.gravity * _delta
     entity.move_and_slide()
     
-    # TODO basic enemy AI
-
     if !entity.is_on_floor():
-        finished.emit("Falling")
+        entity.animation_player.play("fall")

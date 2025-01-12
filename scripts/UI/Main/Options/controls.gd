@@ -58,14 +58,15 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
     # node name
     var french_label_name = ""
     match label_name:
-        "Up":       french_label_name = "Haut"
-        "Down":     french_label_name = "Bas"
-        "Left":     french_label_name = "Gauche"
-        "Right":    french_label_name = "Droite"
-        "Jump":     french_label_name = "Saut"
-        "Pause":    french_label_name = "Pause"
-        "Dash":     french_label_name = "Dash"
-        _:          french_label_name = label_name
+        "Up":           french_label_name = "Haut"
+        "Down":         french_label_name = "Bas"
+        "Left":         french_label_name = "Gauche"
+        "Right":        french_label_name = "Droite"
+        "Jump":         french_label_name = "Saut"
+        "Pause":        french_label_name = "Pause"
+        "Dash":         french_label_name = "Dash"
+        "SmallAttack":  french_label_name = "Attaque"
+        _:              french_label_name = label_name
 
     label.text = french_label_name
     # text align
