@@ -128,23 +128,32 @@ func update_buff(data: PlayerData) -> void:
         JUMP_COUNT_MAX = 2 + data.get_buff(Buff.BuffPreset.JUMP_UPGRADER).buff_amount 
     if data.has_buff(Buff.BuffPreset.DASH_UPGRADER):
         DASH_COUNT_MAX = 1 + data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount
-    
+
+# FIXME handle with a state
+var attacking = false
+
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
     if self.is_queued_for_deletion() or player_disabled:
         return
 
     # Handle animations
-    if velocity.x == 0:
-        anim_sprite_2d.play("idle")
-    else:
-        anim_sprite_2d.play("walk")
+    if !anim_sprite_2d.is_playing() or !attacking:
+        attacking = false
+        if velocity.x == 0:
+            anim_sprite_2d.play("idle")
+        else:
+            anim_sprite_2d.play("walk")
 
     if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active or DEBUG:
         # Handle pause functionality
         if Input.is_action_just_pressed("Pause"):
             GameController.pause()
             return
+            
+        if Input.is_action_just_pressed("SmallAttack"):
+            anim_sprite_2d.play("attack1")
+            attacking = true
 
         # Get player input for movement
         input_vector = Input.get_vector("Left", "Right", "Up", "Down")
