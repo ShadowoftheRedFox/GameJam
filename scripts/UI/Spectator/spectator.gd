@@ -11,7 +11,7 @@ const PlayerScorePanel = preload("res://scenes/UI/Spectator/PlayerScore.tscn")
 var player_spectating_id: int = 0
 
 func _ready() -> void:
-    MultiplayerController.player_infos_update.connect(update_player_list)
+    GameController.player_infos_update.connect(update_player_list)
     update_player_list(null)
     update_score()
     
@@ -79,7 +79,10 @@ func focus_on_player() -> void:
     # need to: move to the room of the player
     # listen if changing room
     # connect to it's camera, or own camera follows him
-    #var player_data = GameController.Players.get_player(player_spectating_id)
+    var player_data = GameController.Players.get_player(player_spectating_id)
+    if player_data == null:
+        return
+    
     var player = get_tree().root.get_node(str(player_spectating_id)) as BasePlayer
     player.camera.enabled = true
     # set this player as the main instance

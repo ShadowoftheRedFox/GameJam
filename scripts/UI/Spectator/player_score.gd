@@ -8,7 +8,7 @@ var player_data: PlayerData = PlayerData.new():
             update()
 
 func _ready() -> void:
-    MultiplayerController.player_infos_update.connect(infos_update)
+    GameController.player_infos_update.connect(infos_update)
     update()
     
 func infos_update(data: PlayerData) -> void:
