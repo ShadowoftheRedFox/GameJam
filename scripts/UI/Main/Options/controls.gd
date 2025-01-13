@@ -1,6 +1,6 @@
 extends Control
 
-@onready var Main = $MarginContainer/ControlsContainer/Main
+@onready var Main = $MarginContainer/ScrollContainer/ControlsContainer/Main
 
 var waiting_button: Button = null
 var old_key_label: String = ""
