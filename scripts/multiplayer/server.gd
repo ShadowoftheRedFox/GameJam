@@ -31,7 +31,7 @@ enum MessageType {
     PUSHWARN = 6,
     DEBUG = 7
 }
-func peer_print(message_type: MessageType, message: String) -> void:
+func peer_print(message_type: MessageType, message: Variant) -> void:
     var id = str(multiplayer.get_unique_id())
     if id == "1":
         id = "Host"
@@ -123,7 +123,7 @@ func create_host(is_solo: bool = false) -> bool:
             return false
     
     # compress packets if we want
-    if compressed_data == true:
+    if compressed_data:
         peer.host.compress(compression_method)
     
     # set own peer as multiplayer host
