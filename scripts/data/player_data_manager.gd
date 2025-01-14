@@ -39,11 +39,13 @@ func get_player(id: int) -> PlayerData:
     return null
     
 func erase_player(id: int) -> void:
+    var temp: Array[PlayerData] = []
     for i in list.size():
-        if list[i].id == id:
-            #list[i].free()
-            #list[i].unreference()
-            list.remove_at(i)
+        if list[i].id != id:
+            temp.append(list[i])
+        else:
+            list[i].unreference()
+    list = temp.duplicate()
     
 func as_dictionary() -> Dictionary:
     var res = {}
