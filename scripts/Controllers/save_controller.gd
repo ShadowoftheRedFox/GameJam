@@ -421,10 +421,17 @@ func delete_save(save_name: String) -> bool:
     if !is_save_name(save_name):
         return false
     
-    var save_path = SAVE_PATH + save_name + ".save"
-    var err := DirAccess.remove_absolute(save_path)
+    var dir = DirAccess.open(SAVE_PATH)
+    var save_path: String = save_name + ".save"
+    print(dir.remove_absolute(save_path))
+    
+    if !dir.file_exists(save_name + ".save"):
+        printerr("File does not exists : ", save_path)
+        return false
+        
+    var err := dir.remove(save_path)
     if err != OK:
-        printerr("Failed to delete save file : ", save_name)
+        printerr("Failed to delete save file : ", save_path, " ", error_string(err))
         return false
     
     save_display_names.erase(get_save_display_name(save_name))
