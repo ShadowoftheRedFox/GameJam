@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://crfitp17bi1k7"]
+[gd_scene load_steps=15 format=3 uid="uid://crfitp17bi1k7"]
 
 [ext_resource type="Script" path="res://scripts/entities/enemies/slime.gd" id="1_c5c7b"]
 [ext_resource type="Script" path="res://scripts/entities/states/state_machine.gd" id="2_vnipw"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/idle.gd" id="3_mv2u3"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/moving.gd" id="5_sp8id"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/jumping.gd" id="6_r6ha2"]
+[ext_resource type="Script" path="res://scripts/entities/states/global/attacking.gd" id="6_tpjv4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g7dlo"]
 size = Vector2(20, 14.6)
@@ -116,6 +117,9 @@ script = ExtResource("5_sp8id")
 
 [node name="Jumping" type="Node" parent="StateMachine"]
 script = ExtResource("6_r6ha2")
+
+[node name="Attacking" type="Node" parent="StateMachine"]
+script = ExtResource("6_tpjv4")
 
 [node name="Info" type="Label" parent="."]
 anchors_preset = 5

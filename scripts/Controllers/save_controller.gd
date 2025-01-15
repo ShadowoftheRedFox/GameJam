@@ -423,7 +423,7 @@ func delete_save(save_name: String) -> bool:
     
     var dir = DirAccess.open(SAVE_PATH)
     var save_path: String = save_name + ".save"
-    print(dir.remove_absolute(save_path))
+    print(DirAccess.remove_absolute(save_path))
     
     if !dir.file_exists(save_name + ".save"):
         printerr("File does not exists : ", save_path)

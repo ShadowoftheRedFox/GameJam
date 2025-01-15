@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://cqn6e5ke53yq1"]
+[gd_scene load_steps=8 format=4 uid="uid://cqn6e5ke53yq1"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_3xor8"]
 [ext_resource type="Script" path="res://scripts/mapgen/room.gd" id="1_dl3m3"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cdqa1c43nocou" path="res://scenes/entities/Player.tscn" id="3_4fmae"]
 [ext_resource type="PackedScene" uid="uid://d1cpj26wd0fqw" path="res://scenes/entities/buff.tscn" id="4_mbtq6"]
 [ext_resource type="PackedScene" uid="uid://crfitp17bi1k7" path="res://scenes/entities/enemies/slime.tscn" id="6_teqtp"]
+[ext_resource type="PackedScene" uid="uid://b1lo57fbvtug5" path="res://scenes/entities/enemies/orc.tscn" id="7_4i3j5"]
 
 [node name="Room" type="Node2D"]
 script = ExtResource("1_dl3m3")
@@ -57,3 +58,6 @@ size = 0.3
 [node name="Slime" parent="." instance=ExtResource("6_teqtp")]
 position = Vector2(514, -471)
 jump_impulse = 100.0
+
+[node name="Orc" parent="." instance=ExtResource("7_4i3j5")]
+position = Vector2(333, -481)

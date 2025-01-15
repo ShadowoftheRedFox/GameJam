@@ -20,3 +20,5 @@ This is the project repository for the group 1 of the 2024 game jam hosted by CY
 - [x] **Priority** can move the player on the map
 - [ ] temporary buff, buff merge?
 - [ ] different characters ?
+- [ ] different UI options? minimalist with nothing, normal (with buff infos), everything (with player HP if it's not a buff)
+- [ ] mouse parameters if we need to use the mouse

@@ -5,7 +5,12 @@ extends CharacterBody2D
 @export var speed: float = 30.0
 @export var gravity: float = 60.0
 @export var target_range: float = 50000.0
+
 var animation_player: AnimationPlayer
+var animation_sprite: AnimatedSprite2D
+
+signal animate(animation: String)
+signal damaged(damage: int)
 
 var info: String = "":
     set(value):

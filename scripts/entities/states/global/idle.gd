@@ -4,7 +4,10 @@ extends State
 @warning_ignore("unused_parameter")
 func enter(_previous_state_path: String, _data := {}) -> void:
     entity.velocity.x = 0.0
-    entity.animation_player.play("idle")
+    if entity.animation_player:
+        entity.animation_player.play("idle")
+    if entity.animation_sprite:
+        entity.animation_sprite.play("idle")
 
 func update(_delta: float) -> void:
     # check if entity target is within range, or find the nearest in range
@@ -38,4 +41,7 @@ func physics_update(_delta: float) -> void:
     entity.move_and_slide()
     
     if !entity.is_on_floor():
-        entity.animation_player.play("fall")
+        if entity.animation_player:
+            entity.animation_player.play("fall")
+        if entity.animation_sprite:
+            entity.animation_sprite.play("fall")
