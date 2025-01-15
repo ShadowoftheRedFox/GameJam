@@ -55,6 +55,7 @@ enum DoorFacing {
 @onready var wall: TileMapLayer = $Wall
 @onready var static_body: StaticBody2D = $StaticBody
 @onready var static_body_collider: CollisionShape2D = $StaticBody/Collider
+#@onready var border: CollisionShape2D = $StaticBody/Border
 
 ## The room that this door connects to
 ## If null, does not trigger _change_room
@@ -96,13 +97,23 @@ func _resize_door() -> void:
     if !is_node_ready():
         return
     
-    self.scale = door_size
+    scale = door_size
 
 func _rotate_door() -> void:
     if !is_node_ready():
         return
 
     rotation = deg_to_rad(float(door_facing * 90))
+    #var world_border = border.shape as WorldBoundaryShape2D
+    #match door_facing:
+        #DoorFacing.UP:
+            #world_border.normal = Vector2(0, -1)
+        #DoorFacing.DOWN:
+            #world_border.normal = Vector2(0, 1)
+        #DoorFacing.LEFT:
+            #world_border.normal = Vector2(-1, 0)
+        #DoorFacing.UP:
+            #world_border.normal = Vector2(1, 0)
 
 func _change_door_state() -> void:
     if !is_node_ready():
