@@ -5,7 +5,8 @@ extends Area2D
 enum DoorState {
     OPENED = 0,
     CLOSED = 1,
-    WALLED = 2
+    WALLED = 2,
+    BREAKABLE = 3
 }
 
 enum DoorFacing {
@@ -49,6 +50,9 @@ enum DoorFacing {
 @export var up_impulse: float = 20000.0
 ## If the door does not connect to a new room
 @export var connection_less: bool = false
+## Amount of hit necessary to break the door open
+@export var door_hit: int = 3
+var door_hp: int = door_hit
 
 @onready var collider: CollisionShape2D = $Collider
 @onready var door: ColorRect = $Door
@@ -104,16 +108,7 @@ func _rotate_door() -> void:
         return
 
     rotation = deg_to_rad(float(door_facing * 90))
-    #var world_border = border.shape as WorldBoundaryShape2D
-    #match door_facing:
-        #DoorFacing.UP:
-            #world_border.normal = Vector2(0, -1)
-        #DoorFacing.DOWN:
-            #world_border.normal = Vector2(0, 1)
-        #DoorFacing.LEFT:
-            #world_border.normal = Vector2(-1, 0)
-        #DoorFacing.UP:
-            #world_border.normal = Vector2(1, 0)
+
 
 func _change_door_state() -> void:
     if !is_node_ready():
