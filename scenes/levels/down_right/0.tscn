@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://1v3eewmw8xhy"]
+[gd_scene load_steps=8 format=4 uid="uid://1v3eewmw8xhy"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_wedvt"]
 [ext_resource type="PackedScene" uid="uid://bw07wguddjt14" path="res://scenes/platforms/1x1.tscn" id="3_qhg7p"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dgawu328wsjbu" path="res://scenes/platforms/3x1.tscn" id="5_j80ds"]
 [ext_resource type="PackedScene" uid="uid://dpnth2crmupb" path="res://scenes/mapgen/door.tscn" id="6_4g58e"]
 [ext_resource type="PackedScene" uid="uid://b67nelkrljk4f" path="res://scenes/platforms/4x1.tscn" id="6_d1o4c"]
+[ext_resource type="PackedScene" uid="uid://d1cpj26wd0fqw" path="res://scenes/entities/buff.tscn" id="7_louto"]
 
 [node name="Room" type="Node2D"]
 
@@ -42,3 +43,17 @@ position = Vector2(362, 36)
 
 [node name="BuffSpawn" type="Marker2D" parent="."]
 position = Vector2(-529, -361)
+
+[node name="Buff" parent="BuffSpawn" instance=ExtResource("7_louto")]
+buff_preset = 5
+particle_amount = 50
+particle_scale_max = 5.0
+particle_color = Color(0.0313726, 1, 0, 1)
+particle_lifetime = 3.0
+particle_emission_shape = 2
+sphere_radius = 10.0
+ring_axis = Vector3(1, 10, 1)
+ring_radius = 20.0
+ring_inner_radius = 10.0
+orb_color = Color(0.0313726, 1, 0, 1)
+size = 0.3

@@ -1,4 +1,3 @@
-@tool
 class_name Buff
 extends Node2D
 
@@ -39,7 +38,12 @@ const buff_description: Array[String] = [
 @onready var popup_message: MessageBox = $Popup/MessageBox
 @onready var animation: AnimationPlayer = $AnimationPlayer
 
-var collected: bool = false
+var collected: bool = false:
+    set(value):
+        collected = value
+        if is_node_ready() and collected:
+            dispawn()
+        
 #region Exported variables
 @export_group("Presets")
 ## Boosters add a property, Upgraders increase the boosters strength 
@@ -311,7 +315,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     player.update_buff(data)
     MultiplayerController.player_buff_update.rpc(id, str(data))
     GameController.player_infos_update.emit(data)
-    dispawn()
+    collected = true
 
 func _on_mouse_entered(_shape_idx: int) -> void:
     if !popup_disabled or !collected:
@@ -323,6 +327,5 @@ func _on_mouse_exited(_shape_idx: int) -> void:
         popup.hide()
 
 func dispawn() -> void:
-    collected = true
     animation.play("dispawn")
     particle_gen.amount_ratio = 0

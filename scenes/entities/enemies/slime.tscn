@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://crfitp17bi1k7"]
+[gd_scene load_steps=21 format=3 uid="uid://crfitp17bi1k7"]
 
 [ext_resource type="Script" path="res://scripts/entities/enemies/slime.gd" id="1_c5c7b"]
 [ext_resource type="Script" path="res://scripts/entities/states/state_machine.gd" id="2_vnipw"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scripts/entities/states/global/moving.gd" id="5_sp8id"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/jumping.gd" id="6_r6ha2"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/attacking.gd" id="6_tpjv4"]
+[ext_resource type="Script" path="res://scripts/entities/states/global/damaged.gd" id="7_7em5s"]
+[ext_resource type="Script" path="res://scripts/entities/states/global/death.gd" id="8_6rjn0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g7dlo"]
 size = Vector2(20, 14.6)
@@ -21,6 +23,26 @@ height = 80
 fill = 1
 fill_from = Vector2(0.5, 0.864961)
 fill_to = Vector2(0.5, 0)
+
+[sub_resource type="Animation" id="Animation_x2m3g"]
+resource_name = "attack1"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture_gradient_center")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.8), Vector2(0.5, 0.95), Vector2(0.5, 0.8)]
+}
+
+[sub_resource type="Animation" id="Animation_738pt"]
+resource_name = "death"
 
 [sub_resource type="Animation" id="Animation_frajn"]
 resource_name = "fall"
@@ -38,6 +60,9 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector2(0.5, 0.864961), Vector2(0.4, 0.865), Vector2(0.6, 0.865), Vector2(0.5, 0.864961)]
 }
+
+[sub_resource type="Animation" id="Animation_to7ke"]
+resource_name = "hurt"
 
 [sub_resource type="Animation" id="Animation_6yync"]
 resource_name = "idle"
@@ -78,17 +103,23 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ojj5f"]
 _data = {
+"attack1": SubResource("Animation_x2m3g"),
+"death": SubResource("Animation_738pt"),
 "fall": SubResource("Animation_frajn"),
+"hurt": SubResource("Animation_to7ke"),
 "idle": SubResource("Animation_6yync"),
 "jump": SubResource("Animation_wce36"),
 "move": SubResource("Animation_sqwwy")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o2vqj"]
+size = Vector2(16, 15)
+
 [node name="Slime" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 16
 collision_mask = 27
 script = ExtResource("1_c5c7b")
-texture_gradient_center = Vector2(0.5, 0.864961)
+texture_gradient_center = Vector2(0.5, 0.8)
 jump_impulse = 300.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -121,6 +152,12 @@ script = ExtResource("6_r6ha2")
 [node name="Attacking" type="Node" parent="StateMachine"]
 script = ExtResource("6_tpjv4")
 
+[node name="Damaged" type="Node" parent="StateMachine"]
+script = ExtResource("7_7em5s")
+
+[node name="Death" type="Node" parent="StateMachine"]
+script = ExtResource("8_6rjn0")
+
 [node name="Info" type="Label" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
@@ -132,3 +169,16 @@ grow_horizontal = 2
 text = "Idle"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AttackBox" type="Area2D" parent="."]
+position = Vector2(0, -7)
+collision_layer = 32
+collision_mask = 58
+collision_priority = 2.0
+priority = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackBox"]
+position = Vector2(18, -0.5)
+shape = SubResource("RectangleShape2D_o2vqj")
+disabled = true
+debug_color = Color(0.7, 0, 0, 0.42)

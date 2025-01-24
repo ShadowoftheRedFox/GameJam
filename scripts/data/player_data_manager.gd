@@ -11,8 +11,17 @@ func reset() -> void:
 func get_player_count() -> int:
     var res = 0
     for p in list:
-        res += int(!p.is_spectator)
+        res += 0 if p.is_spectator else 1
     return res
+
+func get_spectator_count() -> int:
+    var res = 0
+    for p in list:
+        res += 0 if !p.is_spectator else 1
+    return res
+
+func get_all_count() -> int:
+    return list.size()
 
 func get_players_ids() -> Array[int]:
     var res: Array[int] = []

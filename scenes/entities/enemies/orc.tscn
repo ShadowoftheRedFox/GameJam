@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://b1lo57fbvtug5"]
+[gd_scene load_steps=59 format=3 uid="uid://b1lo57fbvtug5"]
 
 [ext_resource type="Script" path="res://scripts/entities/enemies/orc.gd" id="1_qb12o"]
 [ext_resource type="Texture2D" uid="uid://du7y6emcjq1p7" path="res://assets/spritesheets/Orc/Orc.png" id="2_er5rq"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://scripts/entities/states/global/moving.gd" id="4_1xhfw"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/jumping.gd" id="5_2lhcg"]
 [ext_resource type="Script" path="res://scripts/entities/states/global/attacking.gd" id="7_sphdh"]
+[ext_resource type="Script" path="res://scripts/entities/states/global/damaged.gd" id="8_nqvh1"]
+[ext_resource type="Script" path="res://scripts/entities/states/global/death.gd" id="9_a1brm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g7dlo"]
 size = Vector2(12.5, 16)
@@ -376,20 +378,23 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dah8e"]
+size = Vector2(17, 20.5)
+
 [node name="Orc" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 16
 collision_mask = 27
 script = ExtResource("1_qb12o")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.25, -8)
+position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_g7dlo")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 position = Vector2(0, -7)
 sprite_frames = SubResource("SpriteFrames_wjjoo")
-animation = &"jump"
+animation = &"hurt"
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("2_unawk")
@@ -407,6 +412,12 @@ script = ExtResource("5_2lhcg")
 [node name="Attacking" type="Node" parent="StateMachine"]
 script = ExtResource("7_sphdh")
 
+[node name="Damaged" type="Node" parent="StateMachine"]
+script = ExtResource("8_nqvh1")
+
+[node name="Death" type="Node" parent="StateMachine"]
+script = ExtResource("9_a1brm")
+
 [node name="Info" type="Label" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
@@ -418,3 +429,16 @@ grow_horizontal = 2
 text = "Idle"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AttackBox" type="Area2D" parent="."]
+position = Vector2(0, -8)
+collision_layer = 32
+collision_mask = 58
+collision_priority = 2.0
+priority = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackBox"]
+position = Vector2(15, -0.25)
+shape = SubResource("RectangleShape2D_dah8e")
+disabled = true
+debug_color = Color(0.7, 0, 0, 0.42)

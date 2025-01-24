@@ -6,10 +6,11 @@ var index: int = 0
 func _ready() -> void:
     Server.player_disconnected.connect(handle_player_disconnection)
     Server.player_connected.connect(send_map_data)
-    
+
 func handle_player_disconnection(id: int) -> void:
     # handle at the end of the frame to let other listeners the time to do their things
     remove_player.call_deferred(id)
+    # FIXME doesn't work if peer left before he finished loading
 
 @rpc("any_peer")
 func send_player_infos(data_raw: String) -> void:
@@ -104,18 +105,15 @@ func receive_map_data(data: Dictionary) -> void:
 @rpc("any_peer", "call_local")
 func player_change_room(id: int, room: Vector2) -> void:
     if !GameController.game_started:
+        printerr("game not started")
         return
     if GameController.main_player_instance == null or !get_tree().root.has_node(str(id)):
+        printerr("player not found")
         return
     
     var player: BasePlayer = get_tree().root.get_node(str(id))
-        
     player.player_room = room
-    
-    if player.skip_next_player_room:
-        player.skip_next_player_room = false
-        return
-    
+        
     if id == multiplayer.get_unique_id():
         # update our player
         # to "force" the player to be in front of the layer on its same level
@@ -126,17 +124,11 @@ func player_change_room(id: int, room: Vector2) -> void:
         
         # if called from inside, change all other player nodes
         for children in get_tree().root.get_children():
-            if children is BasePlayer:
-                if children.player_room != player.player_room:
-                    children.disable_player()
-                else:
-                    children.enable_player()
+            if children is BasePlayer and children != GameController.main_player_instance:
+                children.disable_player(children.player_room != player.player_room)
     else:
         # if called from outside, just change the player who changed room
-        if GameController.main_player_instance.player_room == player.player_room:
-            player.enable_player()
-        else:
-            player.disable_player()
+        player.disable_player(GameController.main_player_instance.player_room != player.player_room)
 
 @rpc("any_peer", "reliable")
 func player_buff_update(id: int, data_raw: String) -> void:

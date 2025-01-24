@@ -37,6 +37,8 @@ signal player_infos_update(data: PlayerData)
 signal spectator_update(id: int)
 @warning_ignore("unused_signal")
 signal game_starting
+@warning_ignore("unused_signal")
+signal lobby_ready(id: int) # everyone has finished loading the game
 
 # current save data
 var hosted_save_name: String = ""
@@ -147,6 +149,11 @@ func join_multiplayer() -> bool:
 
 func multiplayer_after_load(result: Array) -> void: 
     current_map = result
+    lobby_readying.rpc_id(1, multiplayer.get_unique_id())
+
+@rpc("any_peer", "call_local")
+func lobby_readying(id: int) -> void:
+    lobby_ready.emit(id)
 
 func hide_menu() -> void:
     # hide main menu

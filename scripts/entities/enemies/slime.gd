@@ -17,11 +17,36 @@ const ColorVariations = [
 
 func _ready() -> void:
     animation_player = $AnimationPlayer
+    attack_box = $AttackBox
+    state_machine = $StateMachine
+    body_collider = $CollisionShape2D
+    
     info = "Idle"
     move_texture()
     # change the color of the slime to one in the array
     var texture := sprite.texture as GradientTexture2D
     texture.gradient.set_color(0, Color(ColorVariations[randi_range(0, ColorVariations.size() - 1)]))
+    
+    animate.connect(handle_animation)
+    super()
+
+func handle_animation(animation: String) -> void: 
+    match animation:
+        "jump":
+            $AnimationPlayer.play("jump")
+        "idle":
+            $AnimationPlayer.play("idle")
+        "walk":
+            $AnimationPlayer.play("move")
+        "death":
+            $AnimationPlayer.play("death")
+        "hurt":
+            $AnimationPlayer.play("hurt")
+        "attack1":
+            $AnimationPlayer.play("attack1")
+        _:
+            pass
+
 
 func move_texture() -> void:
     if !is_node_ready():

@@ -39,8 +39,10 @@ position = Vector2(362, 36)
 [node name="Player" parent="." instance=ExtResource("3_4fmae")]
 position = Vector2(-173, -429)
 DEBUG = true
+HP_MAX = 10000
 
 [node name="Buff" parent="." instance=ExtResource("4_mbtq6")]
+visible = false
 position = Vector2(78, -438)
 buff_preset = 6
 particle_amount = 50
@@ -57,6 +59,7 @@ size = 0.3
 
 [node name="Slime" parent="." instance=ExtResource("6_teqtp")]
 position = Vector2(514, -471)
+scale = Vector2(5, 5)
 jump_impulse = 100.0
 
 [node name="Orc" parent="." instance=ExtResource("7_4i3j5")]

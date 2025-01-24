@@ -48,7 +48,6 @@ particle_amount = 50
 particle_scale_max = 5.0
 particle_color = Color(0.0313726, 1, 0, 1)
 particle_lifetime = 3.0
-particle_gravity = Vector2(0, 2.55046)
 particle_emission_shape = 2
 sphere_radius = 10.0
 ring_axis = Vector3(1, 10, 1)

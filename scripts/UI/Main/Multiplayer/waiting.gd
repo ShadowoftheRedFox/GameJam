@@ -2,6 +2,7 @@ extends Control
 
 signal back_pressed
 var players_waiting: Array[int] = []
+var players_ready: Array[int] = []
 var just_pressed = true
 
 func _ready() -> void:
@@ -10,6 +11,11 @@ func _ready() -> void:
     GameController.player_infos_update.connect(display_player)
     GameController.game_starting.connect(reset_menu)
     GameController.spectator_update.connect(update_spectator)
+    GameController.lobby_ready.connect(lobby_readying)
+
+func lobby_readying(id: int) -> void:
+    players_ready.append(id)
+    update_buttons()
 
 func _on_back_pressed() -> void:
     back_pressed.emit()
@@ -53,6 +59,7 @@ func remove_player(id: int) -> void:
     if $VBoxContainer/PlayerList.has_node(str(id)):
         $VBoxContainer/PlayerList.get_node(str(id)).queue_free()
         players_waiting.erase(id)
+        players_ready.erase(id)
         update_buttons()
 
 func remove_all_players() -> void:
@@ -68,10 +75,13 @@ func _on_visibility_changed() -> void:
         
 func update_buttons() -> void:
     $Spectator.show()
-    if multiplayer.multiplayer_peer != null and multiplayer.is_server():
-        if GameController.Players.get_player_count() < 2:
+    if multiplayer.is_server():
+        if players_waiting.size() < 2:
             $VBoxContainer/Actions/Start.disabled = true
             $VBoxContainer/Actions/Start.text = "Il faut au moins 2 joueurs pour commencer"
+        elif players_ready.size() != players_waiting.size():
+            $VBoxContainer/Actions/Start.disabled = true
+            $VBoxContainer/Actions/Start.text = "Tout le monde n'a pas fini de charger"
         else:
             $VBoxContainer/Actions/Start.disabled = false
             $VBoxContainer/Actions/Start.text = "Commencer la partie"

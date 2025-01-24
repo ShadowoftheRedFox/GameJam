@@ -3,10 +3,7 @@ extends State
 
 func enter(_previous_state_path: String, _data := {}) -> void:
     entity.velocity.y = -entity.jump_impulse
-    if entity.animation_player:
-        entity.animation_player.play("jump")
-    if entity.animation_sprite:
-        entity.animation_sprite.play("jump")
+    entity.animate.emit("jump")
     entity.info = "Jumping because of wall"
 
 func update(_delta: float) -> void:

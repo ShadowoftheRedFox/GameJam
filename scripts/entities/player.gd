@@ -11,6 +11,7 @@ var current_state = PlayerState.GROUNDED
 @export var DEBUG: bool = false
 var input_vector: Vector2 = Vector2.ZERO
 
+@export_category("Schmovements")
 @export var SPEED_CAP_GROUND: float = 200.0
 @export var SPEED_CAP_AIR: float = 300.0
 
@@ -38,13 +39,30 @@ var jump_count: int = JUMP_COUNT_MAX
 #### Physic ####
 @onready var collider: CollisionShape2D = $CollisionShape2D
 
+#### Interractions ####
+@export_category("Stats")
+@export var HP_MAX: int = 100
+var hp: int = HP_MAX
+
+@export var atk: int = 3
+@export_range(0, 1) var CRIT_RATE: float = 0.1
+
+@onready var attack_box: Area2D = $AttackBox
+@onready var attack_box_collider: CollisionShape2D = $AttackBox/CollisionShape2D
+
+
+# FIXME handle with a state
+var attacking = false
+var damaging = false
+
+
+signal damaged(dmg: int)
+
 #### Multiplayer ####
 #@onready var synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 # the authority controlling this player (peer id)
 var multiplayer_authority_id: int = 0
 # room where the player is into
-# get set since we want to do change when the synchornizer changes it
-var skip_next_player_room: bool = false
 var player_room: Vector2 = Vector2(0, 0)
 
 # to know if we must render the player
@@ -73,28 +91,30 @@ func disable_others_camera(id: int) -> void:
     if id != multiplayer.get_unique_id():
         camera.disable_camera()
 
-func disable_player() -> void:
-    if player_disabled:
-        return
+func disable_player(disabling: bool) -> void:
     if self == GameController.main_player_instance:
         printerr("trying to disable our own player!")
         return
-    player_disabled = true
-    self.hide()
-    collider.set_deferred("disabled", true)
-
-func enable_player() -> void:
-    if !player_disabled:
-        return
-    player_disabled = false
-    self.show()
-    collider.set_deferred("disabled", false)
+        
+    #Server.peer_print(Server.MessageType.PRINT ,("disabling " if disabling else "enabling ") + name)
+    # FIXME doesn't show when it should (after instance changed room then goes back in)
+    visible = disabling
+    collider.set_deferred("disabled", disabling)
+    player_disabled = disabling
 
 func _ready():
     dash_count = DASH_COUNT_MAX
     jump_count = JUMP_COUNT_MAX
     
     camera.snap()
+    
+    # disable name tag when solo
+    if Server.solo_active:
+        display_name.hide()
+    
+    # connect signals
+    damaged.connect(handle_damaged_state)
+    
     if DEBUG:
         # handle debug mode of this player instance
         # try to setup camera limits
@@ -107,19 +127,18 @@ func _ready():
             push_warning("Couldn't find map, make sure the map is a brother of this node, and that the node called Map is a TileMapLayer")
         # makes himself the main instance
         GameController.main_player_instance = self
+        Server.solo_active = true
         # add himself to the player list
         var data = PlayerData.new()
         data.id = 0
+        name = str(data.id)
         data.name = "DebugPlayer"
         GameController.Players.list.append(data)
         reparent.call_deferred(get_tree().root, true)
-        name = "0"
+        display_name.text = str(hp)
+        display_name.show()
     else:
         camera.set_limits(GameController.current_room.room.get_node("Map"))
-    
-    # disable name tag when solo
-    if Server.solo_active:
-        display_name.hide()
 
 func update_buff(data: PlayerData) -> void:
     # TODO handle buff update
@@ -129,17 +148,15 @@ func update_buff(data: PlayerData) -> void:
     if data.has_buff(Buff.BuffPreset.DASH_UPGRADER):
         DASH_COUNT_MAX = 1 + data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount
 
-# FIXME handle with a state
-var attacking = false
-
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
-    if self.is_queued_for_deletion() or player_disabled:
+    if is_queued_for_deletion() or player_disabled:
         return
 
     # Handle animations
-    if !anim_sprite_2d.is_playing() or !attacking:
+    if !anim_sprite_2d.is_playing() or (!attacking and !damaging):
         attacking = false
+        damaging = false
         if velocity.x == 0:
             anim_sprite_2d.play("idle")
         else:
@@ -172,6 +189,17 @@ func _physics_process(delta: float) -> void:
        # Calculate the snap vector for slopes
         @warning_ignore("unused_variable")
         var snap_vector = Vector2(0, 32)  # Adjust the snap length based on your needs
+        
+        # attack
+        # FIXME if outside "if attacking", is spamming left right, hit box goes left right (so hitting multiple times?)
+        if !anim_sprite_2d.flip_h:
+            attack_box.rotation = deg_to_rad(0.0)
+        else:
+            attack_box.rotation = deg_to_rad(180.0)
+        if attacking and attack_box_collider.disabled:
+            attack_box_collider.set_deferred("disabled", false)
+        elif !attacking and !attack_box_collider.disabled:
+            attack_box_collider.set_deferred("disabled", true)
 
         # Move the player and handle collisions
         set_floor_snap_length(10)
@@ -208,11 +236,11 @@ func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):
             dash_timer = DASH_DURATION
             dash_direction = input_vector
             dash_count -= 1
-
-        if hor_direction == 1:
+        
+        if hor_direction == 1 and anim_sprite_2d.flip_h:
             sprite_2d.flip_h = false
             anim_sprite_2d.flip_h = false
-        elif hor_direction == -1:
+        elif hor_direction == -1 and !anim_sprite_2d.flip_h:
             sprite_2d.flip_h = true
             anim_sprite_2d.flip_h = true
 
@@ -247,12 +275,23 @@ func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
             dash_direction = input_vector
             dash_count -= 1
 
-        if hor_direction == 1:
+        if hor_direction == 1 and anim_sprite_2d.flip_h:
             sprite_2d.flip_h = false
             anim_sprite_2d.flip_h = false
-        elif hor_direction == -1:
+        elif hor_direction == -1 and !anim_sprite_2d.flip_h:
             sprite_2d.flip_h = true
             anim_sprite_2d.flip_h = true
+
+func handle_damaged_state(dmg: int):
+    if dmg <= 0:
+        return
+    anim_sprite_2d.play("hurt")
+    damaging = true
+    hp -= dmg
+    display_name.text = str(hp)
+    if hp <= 0:
+        # TODO death
+        pass
 
 func change_state(new_state):
     if current_state == new_state:
@@ -290,3 +329,10 @@ func on_enter_airborne():
 func on_exit_airborne():
     # Actions to be executed when exiting the airborne state
     pass
+
+func _on_attack_box_body_entered(body: Node2D) -> void:
+    if body is GlobalEnemy:
+        body.damaged.emit(atk)
+    if body is BasePlayer and body != self:
+        (body as BasePlayer).damaged.emit(atk)
+    # TODO destroy some projectiles?

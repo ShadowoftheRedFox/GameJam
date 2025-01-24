@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://cdqa1c43nocou"]
+[gd_scene load_steps=55 format=3 uid="uid://cdqa1c43nocou"]
 
 [ext_resource type="Script" path="res://scripts/entities/player.gd" id="1_6hxiq"]
 [ext_resource type="PackedScene" uid="uid://d25ombvkr34fi" path="res://scenes/UI/Pause/Pause.tscn" id="2_g4qv6"]
@@ -380,6 +380,9 @@ properties/5/replication_mode = 2
 [sub_resource type="LabelSettings" id="LabelSettings_prnli"]
 font_size = 11
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gn0am"]
+size = Vector2(28, 38)
+
 [node name="Player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 2
 collision_mask = 29
@@ -401,7 +404,7 @@ texture_filter = 1
 position = Vector2(0, -14)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_cjfn4")
-animation = &"idle"
+animation = &"attack1"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_truud")
@@ -431,3 +434,18 @@ script = ExtResource("3_786l5")
 
 [node name="Pause" parent="Camera/CanvasLayer" instance=ExtResource("2_g4qv6")]
 visible = false
+
+[node name="AttackBox" type="Area2D" parent="."]
+position = Vector2(0, -19)
+collision_layer = 32
+collision_mask = 58
+collision_priority = 2.0
+priority = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackBox"]
+position = Vector2(26, 0)
+shape = SubResource("RectangleShape2D_gn0am")
+disabled = true
+debug_color = Color(0.7, 0, 0, 0.42)
+
+[connection signal="body_entered" from="AttackBox" to="." method="_on_attack_box_body_entered"]
