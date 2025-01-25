@@ -174,9 +174,6 @@ func generate_room() -> bool:
         if resource.can_instantiate():
             room = resource.instantiate()
             check_room_valid()
-            PlayerSpawn = room.get_node("Spawn")
-            BuffSpawn = room.get_node("BuffSpawn")
-            Map = room.get_node("Map")
         else:
             printerr("resource can't instantiate")
             return false

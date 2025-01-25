@@ -34,7 +34,7 @@ const buff_description: Array[String] = [
 ]
 
 @onready var particle_gen: GPUParticles2D = $GPUParticles2D
-@onready var particle_material: ParticleProcessMaterial = particle_gen.get("process_material")
+@onready var particle_material: ParticleProcessMaterial = particle_gen.process_material
 @onready var light: PointLight2D = $PointLight2D
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var mouse_area: Area2D = $MouseTracker
@@ -60,37 +60,37 @@ var collected: bool = false:
 @export var particle_amount: int = 8:
     set(value):
         particle_amount = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_gen.amount = particle_amount
 @export var particle_scale_min: float = 1.0:
     set(value):
         particle_scale_min = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.scale_min = particle_scale_min
 @export var particle_scale_max: float = 1.0:
     set(value):
         particle_scale_max = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.scale_max = particle_scale_max
 @export var particle_color: Color = Color.AQUA:
     set(value):
         particle_color = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.color = particle_color
 @export var particle_texture: Texture2D = null:
     set(value):
         particle_texture = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_gen.texture = particle_texture
 @export var particle_lifetime: float = 1.0:
     set(value):
         particle_lifetime = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_gen.lifetime = particle_lifetime
 @export var particle_spread: float = 1.0:
     set(value):
         particle_spread = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.spread = particle_spread
 ## X is velocity min, Y is velocity max
 @export var particle_speed: Vector2 = Vector2.ZERO:
@@ -110,75 +110,73 @@ var collected: bool = false:
 @export var particle_gravity: Vector2 = Vector2.ZERO:
     set(value):
         particle_gravity = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.gravity = Vector3(particle_gravity.x, particle_gravity.y, 0)
 @export var particle_emission_shape: ParticleProcessMaterial.EmissionShape = ParticleProcessMaterial.EmissionShape.EMISSION_SHAPE_POINT:
     set(value):
         particle_emission_shape = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_shape = particle_emission_shape
 @export_subgroup("Particle Shape")
 @export_subgroup("Particle Shape/Sphere")
 @export var sphere_radius: float = 1:
     set(value):
         sphere_radius = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_sphere_radius = sphere_radius
 @export_subgroup("Particle Shape/Box")
 @export var box_extent: Vector3 = Vector3.ONE:
     set(value):
         box_extent = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_box_extents = box_extent
 @export_subgroup("Particle Shape/Ring")
 @export var ring_axis: Vector3 = Vector3.ONE:
     set(value):
         ring_axis = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_ring_axis = ring_axis
 @export var ring_height: float = 1:
     set(value):
         ring_height = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_ring_height = ring_height
 @export var ring_radius: float = 1:
     set(value):
         ring_radius = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_ring_radius = ring_radius
 @export var ring_inner_radius: float = 1:
     set(value):
         ring_inner_radius = value
-        if self.is_node_ready():
+        if is_node_ready():
             particle_material.emission_ring_inner_radius = ring_inner_radius
 @export_group("Orb")
 @export var orb_color: Color = Color.AQUA:
     set(value):
         orb_color = value
-        if self.is_node_ready():
+        if is_node_ready():
             light.color = orb_color
 @export var size: float = 1.0:
     set(value):
         size = value
-        if self.is_node_ready():
+        if is_node_ready():
             light.scale = Vector2(size, size)
 @export_group("Sprite")
 @export var texture: Texture2D = null:
     set(value):
         texture = value
-        if self.is_node_ready():
+        if is_node_ready():
             sprite.texture = texture
 #endregion
 
 func _ready() -> void:
     # if preset is other than custom, it will override params
-     # check buff_preset, and set params to their value
-    
+    # check buff_preset, and set params to their value
 #region Buff Presets
     match buff_preset:
         BuffPreset.CUSTOM:
-            apply_to_children()
-            return
+            pass
         BuffPreset.SPEED_UPGRADER:
             particle_gravity = Vector2(5, -5)
             particle_amount = 50
@@ -241,6 +239,7 @@ func _ready() -> void:
             ring_radius = 20
             ring_axis = Vector3(1, 10, 1)
         _:
+            popup_disabled = true
             push_error("Buff preset ", BuffPreset.get(buff_preset), " is not available")
 #endregion
 
@@ -248,7 +247,7 @@ func _ready() -> void:
     apply_to_children()
 
 func apply_to_children() -> void:
-    if not self.is_node_ready():
+    if !is_node_ready():
         return
 
     particle_gen.amount = particle_amount
@@ -326,7 +325,6 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 func _on_mouse_entered(_shape_idx: int) -> void:
     if !popup_disabled or !collected:
         popup.show()
-
 
 func _on_mouse_exited(_shape_idx: int) -> void:
     if !popup_disabled or !collected:

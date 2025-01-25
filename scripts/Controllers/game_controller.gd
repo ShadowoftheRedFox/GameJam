@@ -30,6 +30,10 @@ const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
 const PlayerScene = preload("res://scenes/entities/Player.tscn")
 const SpectatorScene = preload("res://scenes/UI/Spectator/Spectator.tscn")
 
+const BuffScene = preload("res://scenes/entities/buff.tscn")
+const OrcScene = preload("res://scenes/entities/enemies/orc.tscn")
+const SlimeScene = preload("res://scenes/entities/enemies/slime.tscn")
+
 signal game_loaded(result_map: MapData)
 @warning_ignore("unused_signal")
 signal player_infos_update(data: PlayerData)

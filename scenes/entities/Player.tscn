@@ -427,6 +427,7 @@ script = ExtResource("3_786l5")
 visible = false
 
 [node name="Ui" parent="Camera/CanvasLayer" instance=ExtResource("5_hlov3")]
+mouse_filter = 2
 
 [node name="AttackBox" type="Area2D" parent="."]
 position = Vector2(0, -19)

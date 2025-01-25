@@ -2,7 +2,8 @@ class_name MapData
 
 ## Array[Array[String]]
 var room_types: Array = []
-#var buff_types: Array = []
+## Array[Array[int]]
+var buff_types: Array = []
 
 ## Array[Array[MapRoom]]
 var loaded_rooms: Array = []
@@ -24,10 +25,10 @@ func parse(data: Dictionary) -> bool:
         return false
     room_types = data.get("room_types")
     
-    #if !data.has("buff_types"):
-        #printerr("data has no buff_types")
-        #return false
-    #buff_types = data.get("buff_types")
+    if !data.has("buff_types"):
+        printerr("data has no buff_types")
+        return false
+    buff_types = data.get("buff_types")
     
     if !data.has("room_size") or !data.get("room_size").has("x") or !data.get("room_size").has("y"):
         printerr("data has no room_size")
@@ -43,7 +44,7 @@ func _to_save() -> Dictionary:
     
     return {
         "room_types": room_types,
-        #"buff_types": buff_types,
+        "buff_types": buff_types,
         "room_size": {
             "x": room_size.x,
             "y": room_size.y

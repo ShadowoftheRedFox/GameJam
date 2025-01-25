@@ -141,6 +141,17 @@ func load_map(data: MapData, width: int, height: int) -> MapData:
                 room_down = data.loaded_rooms[y+1][x]
                 
             room.set_room(data.room_types[y][x], room_left, room_right, room_up, room_down)
+            room.check_room_valid()
+            
+            if data.buff_types[y][x] != Buff.BuffPreset.NONE:
+                var buff: Buff = GameController.BuffScene.instantiate()
+                @warning_ignore("int_as_enum_without_cast")
+                buff.buff_preset = data.buff_types[y][x]
+                room.BuffSpawn.add_child(buff)
+                buff.apply_to_children.call_deferred()
+                
+            var ennemy = GameController.OrcScene.instantiate() if randi_range(0, 1) else GameController.SlimeScene.instantiate()
+            room.BuffSpawn.add_child(ennemy)
             
             var tile_map = room.Map
             var tile_rect = tile_map.get_used_rect()

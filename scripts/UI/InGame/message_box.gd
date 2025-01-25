@@ -40,7 +40,7 @@ func _ready() -> void:
     realign(title_element, title_alignment)
     realign(content_element, content_alignment)
     
-    self.queue_redraw()
+    queue_redraw()
 
 func realign(node: Label, value: Alignment) -> void:
     if is_node_ready() and node.is_node_ready():

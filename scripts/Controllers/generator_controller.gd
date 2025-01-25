@@ -50,22 +50,23 @@ func generate_map(map_size: int = 0) -> MapData:
                 max_room_size.y = abs(limit_bottom - limit_top)
 
     print("Generating content...")
-    #var buffs_in_rooms: Array = []
-    #for y: int in map.size():
-        #buffs_in_rooms.append([])
-        #for x: int in map[y].size():
-            ## put buff in all spawn for now
-            #var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM+1, Buff.BuffPreset.MAX-1)
-            #var buff: Buff = Buff.new()
-            #buff.buff_preset = buff_type
-            #
-            #(map[y][x] as MapRoom).BuffSpawn.add_child(buff)
-            #buffs_in_rooms[y].append(buff_type)
+    var buffs_in_rooms: Array = []
+    for y: int in map.size():
+        buffs_in_rooms.append([])
+        for x: int in map[y].size():
+            # put buff in all spawn for now
+            var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM+1, Buff.BuffPreset.MAX-1)
+            var buff: Buff = GameController.BuffScene.instantiate()
+            @warning_ignore("int_as_enum_without_cast")
+            buff.buff_preset = buff_type
+            
+            (map[y][x] as MapRoom).BuffSpawn.add_child(buff)
+            buffs_in_rooms[y].append(buff_type)
     
     data.room_size = max_room_size
     data.loaded_rooms = map
     data.room_types = get_map_room_types(data.loaded_rooms)
-    #data.buff_types = buffs_in_rooms
+    data.buff_types = buffs_in_rooms
     data.load_valid = true
     data.save_valid = true
     return data
