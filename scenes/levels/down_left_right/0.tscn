@@ -1,13 +1,11 @@
-[gd_scene load_steps=8 format=4 uid="uid://f2faa7sec2ds"]
+[gd_scene load_steps=7 format=4 uid="uid://f2faa7sec2ds"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_7pue6"]
 [ext_resource type="PackedScene" uid="uid://bw07wguddjt14" path="res://scenes/platforms/1x1.tscn" id="3_vsdwo"]
 [ext_resource type="PackedScene" uid="uid://cx0ibmg12cpt6" path="res://scenes/platforms/2x1.tscn" id="4_ujnqc"]
 [ext_resource type="PackedScene" uid="uid://dgawu328wsjbu" path="res://scenes/platforms/3x1.tscn" id="5_48wl1"]
-[ext_resource type="PackedScene" uid="uid://dpnth2crmupb" path="res://scenes/mapgen/door.tscn" id="6_f5317"]
+[ext_resource type="PackedScene" path="res://scenes/mapgen/door.tscn" id="6_f5317"]
 [ext_resource type="PackedScene" uid="uid://b67nelkrljk4f" path="res://scenes/platforms/4x1.tscn" id="6_ly2ua"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_sldhf"]
 
 [node name="Room" type="Node2D"]
 
@@ -47,9 +45,3 @@ position = Vector2(362, 36)
 
 [node name="BuffSpawn" type="Marker2D" parent="."]
 position = Vector2(73, -432)
-
-[node name="WorldBorder" type="StaticBody2D" parent="BuffSpawn"]
-position = Vector2(-34, 850)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BuffSpawn/WorldBorder"]
-shape = SubResource("WorldBoundaryShape2D_sldhf")

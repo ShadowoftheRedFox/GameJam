@@ -10,7 +10,7 @@ func _on_body_entered(body: Node2D) -> void:
     var crit_mult = (player.CRIT_MULT) if (randf() <= player.CRIT_RATE) else 1
     if body is GlobalEnemy:
         body.damaged.emit(player.ATK * crit_mult)
-    if body is BasePlayer and body != player and !(body as BasePlayer).player_disabled:
+    if body is BasePlayer and body != player:
         (body as BasePlayer).damaged.emit(player.ATK * crit_mult)
     # TODO destroy some projectiles?
 
@@ -32,13 +32,15 @@ func handle_respawn() -> void:
         push_error("trying to respawn " + player.name + " while he's not dead")
         return
     
-    player.hp = player.HP_MAX
     player.damaging = false
-    player.collider.set_deferred("disabled", false)
-    player.player_room = player.player_spawn
+    player.attacking = false
     
     if player.DEBUG:
         player.global_position = GameController.current_room.get_node("Spawn").global_position
     else:
-        GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
+        GameController.current_room = GameController.current_map[player.player_spawn.y][player.player_spawn.x]
         player.global_position = GameController.current_room.PlayerSpawn.global_position
+        player.change_room(player.player_spawn)
+    
+    player.collider.set_deferred("disabled", false)
+    player.hp = player.HP_MAX

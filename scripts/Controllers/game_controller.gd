@@ -30,7 +30,7 @@ const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
 const PlayerScene = preload("res://scenes/entities/Player.tscn")
 const SpectatorScene = preload("res://scenes/UI/Spectator/Spectator.tscn")
 
-signal game_loaded(result_map: Array)
+signal game_loaded(result_map: MapData)
 @warning_ignore("unused_signal")
 signal player_infos_update(data: PlayerData)
 @warning_ignore("unused_signal")
@@ -46,12 +46,17 @@ var hosted_difficulty: Difficulties = Difficulties.Easy
 var hosted_map_size: MapSizes = MapSizes.Small
 var hosted_gamemode: GameModes = GameModes.Classic
 
-# TODO find a way to differentiate players and spectator
 var Players: PlayerDataManager = PlayerDataManager.new()
+var PlayerNodes: Node2D
+
 var game_started: bool = false
 var game_paused: bool = false
+
 var current_map: Array = []
 var current_room: MapRoom = null
+var MapNodes: Node2D
+var room_size: Vector2 = Vector2()
+
 # we need to keep track of player in solo between rooms
 # so here we put the node
 # other player node are in root, and just need to be checked against their type
@@ -59,9 +64,14 @@ var main_player_instance: BasePlayer = null
 
 func _init() -> void:
     process_mode = PROCESS_MODE_ALWAYS
-    self.add_child(GeneratorController)
-    self.add_child(ThreadController)
-    self.add_child(Utils)
+    
+    add_child(GeneratorController)
+    add_child(ThreadController)
+    add_child(Utils)
+    PlayerNodes = Node2D.new()
+    MapNodes = Node2D.new()
+    add_child(PlayerNodes)
+    add_child(MapNodes)
 
 func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
     # load game
@@ -79,13 +89,15 @@ func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, g
     game_loaded.connect(new_game_after_load)
 
 
-func new_game_after_load(load_result: Array) -> void:
-    current_map = load_result
+func new_game_after_load(load_result: MapData) -> void:
+    current_map = load_result.loaded_rooms
+    room_size = load_result.room_size
+    
     if SaveController.create_new_save(hosted_save_name, JSON.stringify({
         "difficulty": hosted_difficulty,
         "gamemode": hosted_gamemode,
         "map_size": hosted_map_size,
-        "map": GeneratorController.get_map_room_types(current_map),
+        "map": load_result._to_save(),
         "seed": GeneratorController.save_seed,
     })):
         launch_solo(hosted_save_name)
@@ -108,9 +120,14 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     hosted_difficulty = save_data.get("difficulty", 0)
     hosted_gamemode = save_data.get("gamemode", 0)
     hosted_map_size = save_data.get("map_size", 0)
+    
+    var data = MapData.new()
+    data.parse(save_data.get("map", "")) 
+    room_size = data.room_size
+    
     # tansition with thread
     ThreadController.thread_transition(
-        GeneratorController.load_map.bind(save_data.get("map", []), hosted_map_size, save_data.get("seed", 0)),
+        GeneratorController.load_map.bind(data, hosted_map_size, save_data.get("seed", 0)),
         game_loaded,
         multiplayer_data.is_empty(), # don't show loading screen for players joining host
         "Chargement de la carte...",
@@ -121,16 +138,18 @@ func launch_solo(save_name: String) -> void:
     if res == false:
         push_warning("Server couldn't create host")
         return
-
+    
     # if current map is loaded, means new game, so don't need to load save
     if current_map.size() == 0:
-        load_game(save_name)
         game_loaded.connect(launch_solo_after_load)
+        load_game(save_name)
     else:
         MultiplayerController.start_game()
 
-func launch_solo_after_load(load_result: Array) -> void:
-    current_map = load_result
+func launch_solo_after_load(load_result: MapData) -> void:
+    # TODO make a Map and be mapdata 
+    current_map = load_result.loaded_rooms
+    #room_size = load_result.room_size
     MultiplayerController.start_game()
 
 func launch_multiplayer(save_name: String) -> void:
@@ -147,8 +166,8 @@ func join_multiplayer() -> bool:
     game_loaded.connect(multiplayer_after_load)
     return Server.join_server()
 
-func multiplayer_after_load(result: Array) -> void: 
-    current_map = result
+func multiplayer_after_load(result: MapData) -> void: 
+    current_map = result.loaded_rooms
     lobby_readying.rpc_id(1, multiplayer.get_unique_id())
 
 @rpc("any_peer", "call_local")

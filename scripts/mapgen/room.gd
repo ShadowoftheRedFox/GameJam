@@ -1,5 +1,5 @@
 class_name MapRoom
-extends Node
+extends Node2D
 
 enum Backgrounds {
     NORMAL = 0
@@ -16,7 +16,7 @@ var up: MapRoom = null
 var down: MapRoom = null
 var left: MapRoom = null
 var right: MapRoom = null
-var room: Node = null
+var room: Node2D = null
 var room_type: String = ""
 
 var PlayerSpawn: Marker2D = null
@@ -92,12 +92,12 @@ func area_entered(body: Node2D, direction: String) -> void:
     door.door_cleared = false
     # TODO transition
     # change player pos and display next room
-    get_tree().root.add_child.call_deferred(next_room)
+    #get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
-    GameController.main_player_instance.change_room(multiplayer.get_unique_id(), next_room.room_position)
+    GameController.main_player_instance.change_room(next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.main_player_instance.global_position = door.global_position
-    get_tree().root.remove_child.call_deferred(self)
+    #get_tree().root.remove_child.call_deferred(self)
 
 # Called when the node is added to the scene tree for the first time
 func _ready():
@@ -173,6 +173,10 @@ func generate_room() -> bool:
         var resource: PackedScene = ResourceLoader.load(room_path, "PackedScene")
         if resource.can_instantiate():
             room = resource.instantiate()
+            check_room_valid()
+            PlayerSpawn = room.get_node("Spawn")
+            BuffSpawn = room.get_node("BuffSpawn")
+            Map = room.get_node("Map")
         else:
             printerr("resource can't instantiate")
             return false
@@ -192,6 +196,7 @@ func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, ro
         var resource: PackedScene = ResourceLoader.load(room_path, "PackedScene")
         if resource.can_instantiate():
             room = resource.instantiate()
+            check_room_valid()
         else:
             printerr("resource can't instantiate")
             return false

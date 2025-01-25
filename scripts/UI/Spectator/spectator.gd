@@ -87,7 +87,7 @@ func focus_on_player() -> void:
     player.camera.enabled = true
     # set this player as the main instance
     GameController.main_player_instance = player
-    GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
+    GameController.current_room = GameController.current_map[player.player_spawn.y][player.player_spawn.x]
 
 func _on_spectate_pressed() -> void:
     if spectate.visible:

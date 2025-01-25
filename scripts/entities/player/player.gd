@@ -73,7 +73,6 @@ signal respawn()
 # the authority controlling this player (peer id)
 var multiplayer_authority_id: int = 0
 # room where the player is into
-var player_room: Vector2 = Vector2(0, 0)
 var player_spawn: Vector2 = Vector2(0, 0)
 
 # to know if we must render the player
@@ -97,16 +96,11 @@ func disable_others_camera(id: int) -> void:
         camera.disable_camera()
         player_ui.hide()
 
-func hide_player() -> void:
-    if self == GameController.main_player_instance:
-        printerr("trying to hide our own player!")
-        return
-        
-    # FIXME doesn't show when it should (after instance changed room then goes back in)
-    var is_invisible = GameController.main_player_instance.player_room != player_room
-    anim_sprite_2d.visible = !is_invisible
-    #visible = !is_invisible
-    #player_disabled = is_invisible
+
+func change_room(room: Vector2) -> void:
+    # snap camera
+    camera.snap()
+    camera.set_limits(GameController.current_room.room.get_node("Map"))
 
 func _ready():
     dash_count = DASH_COUNT_MAX
@@ -151,14 +145,14 @@ func update_buff(data: PlayerData) -> void:
 #region Buff update
     #Server.peer_print(Server.MessageType.PRINT, str(data))
     if data.has_buff(Buff.BuffPreset.JUMP_UPGRADER):
-        JUMP_COUNT_MAX = 2 + data.get_buff(Buff.BuffPreset.JUMP_UPGRADER).buff_amount 
+        JUMP_COUNT_MAX = 2 + data.get_buff(Buff.BuffPreset.JUMP_UPGRADER).buff_amount
         
     if data.has_buff(Buff.BuffPreset.DASH_UPGRADER):
         DASH_COUNT_MAX = 1 + data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount
         
     if data.has_buff(Buff.BuffPreset.SPEED_UPGRADER):
         SPEED_CAP_GROUND = 200 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount) # * 1.2
-        SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount) 
+        SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount)
     if data.has_buff(Buff.BuffPreset.SPEED_BOOSTER):
         SPEED_CAP_GROUND = 200 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount)
         SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount)
@@ -172,7 +166,7 @@ func update_buff(data: PlayerData) -> void:
 
 @rpc("any_peer", "call_remote")
 func propagate_attack(id: int) -> void:
-   if multiplayer_authority_id == id:
+    if multiplayer_authority_id == id:
         attacking = true
         anim_sprite_2d.play("attack1")
 
@@ -224,9 +218,9 @@ func _physics_process(delta: float) -> void:
             PlayerState.AIRBORNE:
                 handle_airborne_state(delta, hor_direction, vel_direction, input_vector)
 
-       # Calculate the snap vector for slopes
+        # Calculate the snap vector for slopes
         @warning_ignore("unused_variable")
-        var snap_vector = Vector2(0, 32)  # Adjust the snap length based on your needs
+        var snap_vector = Vector2(0, 32) # Adjust the snap length based on your needs
         
 
         # Move the player and handle collisions
@@ -362,26 +356,3 @@ func on_enter_airborne():
 func on_exit_airborne():
     # Actions to be executed when exiting the airborne state
     pass
-
-func change_room(id: int, room: Vector2) -> void:
-    _change_room_self(room)
-    _change_room_others.rpc(id, room)
-        
-func _change_room_self(room: Vector2) -> void:
-    player_room = room
-    move_to_front.call_deferred()
-    # snap camera
-    camera.snap()
-    camera.set_limits(GameController.current_room.room.get_node("Map"))
-    
-    for p in get_tree().root.get_children():
-        if p is BasePlayer and p != self:
-            p.hide_player()
-
-@rpc("any_peer", "call_remote")
-func _change_room_others(id: int, room: Vector2) -> void:
-    if id != multiplayer_authority_id:
-        return
-    
-    player_room = room
-    hide_player()    

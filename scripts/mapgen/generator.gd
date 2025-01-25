@@ -109,8 +109,8 @@ func create_map(width: int, height: int, probability: float) -> Array:
 
     return map
 
-func load_map(room_types: Array, width: int, height: int) -> Array:
-    var map = []
+func load_map(data: MapData, width: int, height: int) -> MapData:
+    data.loaded_rooms = []
     
     # Create nodes
     for y in range(height):
@@ -120,11 +120,11 @@ func load_map(room_types: Array, width: int, height: int) -> Array:
             node.room_id = GameController.GeneratorController.mapgen_get_next_unique_id()
             node.room_position = Vector2(x, y)
             row.append(node)
-        map.append(row)
+        data.loaded_rooms.append(row)
         
     for y in range(height):
         for x in range(width):
-            var room: MapRoom = map[y][x]
+            var room: MapRoom = data.loaded_rooms[y][x]
             
             var room_right: Node = null
             var room_up: Node = null
@@ -132,13 +132,23 @@ func load_map(room_types: Array, width: int, height: int) -> Array:
             var room_left: Node = null
             
             if x > 0:
-                room_left = map[y][x-1]
+                room_left = data.loaded_rooms[y][x-1]
             if x < width - 1:
-                room_right = map[y][x+1]
+                room_right = data.loaded_rooms[y][x+1]
             if y > 0:
-                room_up = map[y-1][x]
+                room_up = data.loaded_rooms[y-1][x]
             if y < height - 1:
-                room_down = map[y+1][x]
+                room_down = data.loaded_rooms[y+1][x]
                 
-            room.set_room(room_types[y][x], room_left, room_right, room_up, room_down)
-    return map
+            room.set_room(data.room_types[y][x], room_left, room_right, room_up, room_down)
+            
+            var tile_map = room.Map
+            var tile_rect = tile_map.get_used_rect()
+            var cell_size = tile_map.tile_set.tile_size
+            if abs(tile_rect.end.x * cell_size.x) > data.room_size.x:
+                data.room_size.x = abs(tile_rect.end.x * cell_size.x)
+            if abs(tile_rect.end.y * cell_size.y) > data.room_size.y:
+                data.room_size.y = abs(tile_rect.end.y * cell_size.y)
+    
+    data.load_valid = true
+    return data

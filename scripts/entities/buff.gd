@@ -2,6 +2,8 @@ class_name Buff
 extends Node2D
 
 enum BuffPreset {
+    NONE = -1,
+    
     CUSTOM = 0,
     SPEED_BOOSTER = 1,
     SPEED_UPGRADER = 2,
@@ -9,6 +11,8 @@ enum BuffPreset {
     HEALTH_UPGRADER = 4,
     JUMP_UPGRADER = 5,
     DASH_UPGRADER = 6,
+    
+    MAX = 7
 }
 const buff_title: Array[String] = [
     "Mystère",

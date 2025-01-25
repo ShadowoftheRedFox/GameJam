@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=4 uid="uid://w8obhm14qohd"]
+[gd_scene load_steps=3 format=4 uid="uid://dwy5qt2icjv5d"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_g6qs8"]
-[ext_resource type="PackedScene" uid="uid://dpnth2crmupb" path="res://scenes/mapgen/door.tscn" id="2_72ta5"]
+[ext_resource type="PackedScene" path="res://scenes/mapgen/door.tscn" id="2_72ta5"]
 
 [node name="Room" type="Node2D"]
 

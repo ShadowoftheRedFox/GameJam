@@ -8,6 +8,7 @@
 script = ExtResource("1_yvebt")
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
+visible = false
 scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(640, 640)
 repeat_times = 8

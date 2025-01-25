@@ -15,7 +15,8 @@ func mapgen_get_next_unique_id() -> int:
 @export var ROOM_WIDTH: int = 10
 @export var ROOM_HEIGHT: int = 10
 
-func generate_map(map_size: int = 0) -> Array:
+func generate_map(map_size: int = 0) -> MapData:
+    var data = MapData.new()
     print("Starting new game...")
     print("Generating map...")
     var generator = MapGenerator.new()
@@ -25,24 +26,56 @@ func generate_map(map_size: int = 0) -> Array:
     var map: Array = generator.create_map((map_size + 1) * MAP_WIDTH, (map_size + 1) * MAP_HEIGHT, EXTRA_CONNECTION_PROBABILITY)
     if len(map) == 0:
         printerr("Something went wrong when generating map, found size 0")
-        return []
+        return data
+    
     print("Generating rooms...")
+    var max_room_size: Vector2 = Vector2()
     for row: Array in map:
         for room: MapRoom in row:
             var res: bool = room.generate_room()
             if res == false:
                 printerr("Something went wrong with room ", room.room_id)
-                return []
-    print("Rooms generated, starting...")
-    return map
+                return data
+            # get the size of the map
+            var tile_map = room.Map
+            var tile_rect = tile_map.get_used_rect()
+            var cell_size = tile_map.tile_set.tile_size
+            var limit_left = tile_rect.position.x * cell_size.x
+            var limit_top = tile_rect.position.y * cell_size.y
+            var limit_right = tile_rect.end.x * cell_size.x
+            var limit_bottom = tile_rect.end.y * cell_size.y
+            if abs(limit_right - limit_left) > max_room_size.x:
+                max_room_size.x = abs(limit_right - limit_left)
+            if abs(limit_bottom - limit_top) > max_room_size.y:
+                max_room_size.y = abs(limit_bottom - limit_top)
+
+    print("Generating content...")
+    #var buffs_in_rooms: Array = []
+    #for y: int in map.size():
+        #buffs_in_rooms.append([])
+        #for x: int in map[y].size():
+            ## put buff in all spawn for now
+            #var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM+1, Buff.BuffPreset.MAX-1)
+            #var buff: Buff = Buff.new()
+            #buff.buff_preset = buff_type
+            #
+            #(map[y][x] as MapRoom).BuffSpawn.add_child(buff)
+            #buffs_in_rooms[y].append(buff_type)
+    
+    data.room_size = max_room_size
+    data.loaded_rooms = map
+    data.room_types = get_map_room_types(data.loaded_rooms)
+    #data.buff_types = buffs_in_rooms
+    data.load_valid = true
+    data.save_valid = true
+    return data
 
 # room_types is Array[Array[String]]
-func load_map(room_types: Array, map_size: int, load_seed: int) -> Array:
+func load_map(data: MapData, map_size: int, load_seed: int) -> MapData:
     var generator = MapGenerator.new()
     save_seed = load_seed
     generator.set_seed(load_seed)
-    var map = generator.load_map(room_types, (map_size + 1) * MAP_WIDTH, (map_size + 1) * MAP_HEIGHT)
-    return map
+    return generator.load_map(data, (map_size + 1) * MAP_WIDTH, (map_size + 1) * MAP_HEIGHT)
 
 # get the 2D array of the room type
 # map is an Array[Array[MapRoom]], result is an Array[Array[String]]

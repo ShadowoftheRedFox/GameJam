@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bw07wguddjt14" path="res://scenes/platforms/1x1.tscn" id="3_qhg7p"]
 [ext_resource type="PackedScene" uid="uid://cx0ibmg12cpt6" path="res://scenes/platforms/2x1.tscn" id="4_8kq6o"]
 [ext_resource type="PackedScene" uid="uid://dgawu328wsjbu" path="res://scenes/platforms/3x1.tscn" id="5_j80ds"]
-[ext_resource type="PackedScene" uid="uid://dpnth2crmupb" path="res://scenes/mapgen/door.tscn" id="6_08mk6"]
+[ext_resource type="PackedScene" path="res://scenes/mapgen/door.tscn" id="6_08mk6"]
 [ext_resource type="PackedScene" uid="uid://b67nelkrljk4f" path="res://scenes/platforms/4x1.tscn" id="6_d1o4c"]
 
 [node name="Room" type="Node2D"]
