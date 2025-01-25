@@ -102,33 +102,33 @@ func send_map_data(id: int) -> void:
 func receive_map_data(data: Dictionary) -> void:
     GameController.load_game.call_deferred("", data)
 
-@rpc("any_peer", "call_local")
-func player_change_room(id: int, room: Vector2) -> void:
-    if !GameController.game_started:
-        printerr("game not started")
-        return
-    if GameController.main_player_instance == null or !get_tree().root.has_node(str(id)):
-        printerr("player not found")
-        return
-    
-    var player: BasePlayer = get_tree().root.get_node(str(id))
-    player.player_room = room
-        
-    if id == multiplayer.get_unique_id():
-        # update our player
-        # to "force" the player to be in front of the layer on its same level
-        player.move_to_front.call_deferred()
-        # snap camera
-        player.camera.snap()
-        player.camera.set_limits(GameController.current_room.room.get_node("Map"))
-        
-        # if called from inside, change all other player nodes
-        for children in get_tree().root.get_children():
-            if children is BasePlayer and children != GameController.main_player_instance:
-                children.disable_player(children.player_room != player.player_room)
-    else:
-        # if called from outside, just change the player who changed room
-        player.disable_player(GameController.main_player_instance.player_room != player.player_room)
+#@rpc("any_peer", "call_local")
+#func player_change_room(id: int, room: Vector2) -> void:
+    #if !GameController.game_started:
+        #printerr("game not started")
+        #return
+    #if GameController.main_player_instance == null or !get_tree().root.has_node(str(id)):
+        #printerr("player not found")
+        #return
+    #
+    #var player: BasePlayer = get_tree().root.get_node(str(id))
+    #player.player_room = room
+        #
+    #if id == multiplayer.get_unique_id():
+        ## update our player
+        ## to "force" the player to be in front of the layer on its same level
+        #player.move_to_front.call_deferred()
+        ## snap camera
+        #player.camera.snap()
+        #player.camera.set_limits(GameController.current_room.room.get_node("Map"))
+        #
+        ## if called from inside, change all other player nodes
+        #for children in get_tree().root.get_children():
+            #if children is BasePlayer and children != GameController.main_player_instance:
+                #children.disable_player(children.player_room != player.player_room)
+    #else:
+        ## if called from outside, just change the player who changed room
+        #player.disable_player(GameController.main_player_instance.player_room != player.player_room)
 
 @rpc("any_peer", "reliable")
 func player_buff_update(id: int, data_raw: String) -> void:

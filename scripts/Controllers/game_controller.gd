@@ -171,12 +171,14 @@ func pause() -> void:
     main_player_instance.move_to_front()
     GameController.game_paused = true
     main_player_instance.pause.show()
+    main_player_instance.player_ui.hide()
     if Server.solo_active == true:
         get_tree().paused = true
 
 func unpause() -> void:
     GameController.game_paused = false
     main_player_instance.pause.hide()
+    main_player_instance.player_ui.show()
     if Server.solo_active == true:
         get_tree().paused = false
 

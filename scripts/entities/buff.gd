@@ -22,9 +22,9 @@ const buff_title: Array[String] = [
 const buff_description: Array[String] = [
     "Tentez votre chance!",
     "Augmente votre vitesse de déplacement",
-    "Augmente votre vitesse actuelle de 5%",
+    "Augmente votre vitesse actuelle de 20%",
     "Augmente vos points de vie",
-    "Augmente vos points de vie actuels de 5%",
+    "Augmente vos points de vie actuels de 20%",
     "Octroie un saut supplémentaire",
     "Octroie un élan supplémentaire"
 ]
@@ -304,6 +304,8 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     if body is not BasePlayer or collected:
         return
     var player: BasePlayer = body
+    if player.player_disabled:
+        return
     var id = player.name.to_int()
     var data := GameController.Players.get_player(id)
     if data == null and !player.DEBUG:

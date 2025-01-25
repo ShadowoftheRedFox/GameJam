@@ -10,13 +10,13 @@ func update(_delta: float) -> void:
         finished.emit("Idle")
         return
         
-    if entity.global_position.distance_squared_to(entity.target_player.global_position) > entity.target_range:
+    if entity.global_position.distance_squared_to(entity.target_player.global_position) > entity.target_range or entity.target_player.hp <= 0:
         entity.info = "Idle"
         entity.target_player = null
         finished.emit("Idle")
 
 func physics_update(delta: float) -> void:
-    if entity.target_player == null:
+    if entity.target_player == null or entity.target_player.hp <= 0:
         finished.emit("Idle")
         return
     

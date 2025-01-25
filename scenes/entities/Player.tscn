@@ -1,9 +1,11 @@
-[gd_scene load_steps=55 format=3 uid="uid://cdqa1c43nocou"]
+[gd_scene load_steps=57 format=3 uid="uid://cdqa1c43nocou"]
 
-[ext_resource type="Script" path="res://scripts/entities/player.gd" id="1_6hxiq"]
+[ext_resource type="Script" path="res://scripts/entities/player/player.gd" id="1_6hxiq"]
 [ext_resource type="PackedScene" uid="uid://d25ombvkr34fi" path="res://scenes/UI/Pause/Pause.tscn" id="2_g4qv6"]
 [ext_resource type="Texture2D" uid="uid://teija122mjlo" path="res://assets/spritesheets/Soldier/Soldier.png" id="2_nbr5n"]
 [ext_resource type="Script" path="res://scripts/entities/camera.gd" id="3_786l5"]
+[ext_resource type="PackedScene" uid="uid://dh84xjkmhbh72" path="res://scenes/UI/InGame/UI.tscn" id="5_hlov3"]
+[ext_resource type="Script" path="res://scripts/entities/player/attack.gd" id="6_4oxju"]
 
 [sub_resource type="Gradient" id="Gradient_lj3yv"]
 offsets = PackedFloat32Array(0, 0.0103627, 0.222798)
@@ -365,17 +367,20 @@ properties/1/path = NodePath("AnimatedSprite2D:flip_h")
 properties/1/spawn = true
 properties/1/replication_mode = 2
 properties/2/path = NodePath("AnimatedSprite2D:flip_v")
-properties/2/spawn = true
+properties/2/spawn = false
 properties/2/replication_mode = 2
 properties/3/path = NodePath(".:velocity")
 properties/3/spawn = false
 properties/3/replication_mode = 1
 properties/4/path = NodePath(".:player_room")
-properties/4/spawn = true
+properties/4/spawn = false
 properties/4/replication_mode = 2
 properties/5/path = NodePath("DisplayName:text")
 properties/5/spawn = false
 properties/5/replication_mode = 2
+properties/6/path = NodePath(".:hp")
+properties/6/spawn = false
+properties/6/replication_mode = 1
 
 [sub_resource type="LabelSettings" id="LabelSettings_prnli"]
 font_size = 11
@@ -386,10 +391,10 @@ size = Vector2(28, 38)
 [node name="Player" type="CharacterBody2D" groups=["Players"]]
 collision_layer = 2
 collision_mask = 29
+floor_snap_length = 10.0
 script = ExtResource("1_6hxiq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
 position = Vector2(-1.5, -10)
 scale = Vector2(2, 2)
 texture = SubResource("GradientTexture2D_1q152")
@@ -435,12 +440,16 @@ script = ExtResource("3_786l5")
 [node name="Pause" parent="Camera/CanvasLayer" instance=ExtResource("2_g4qv6")]
 visible = false
 
+[node name="Ui" parent="Camera/CanvasLayer" instance=ExtResource("5_hlov3")]
+
 [node name="AttackBox" type="Area2D" parent="."]
 position = Vector2(0, -19)
 collision_layer = 32
 collision_mask = 58
 collision_priority = 2.0
+input_pickable = false
 priority = 1
+script = ExtResource("6_4oxju")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackBox"]
 position = Vector2(26, 0)
@@ -448,4 +457,4 @@ shape = SubResource("RectangleShape2D_gn0am")
 disabled = true
 debug_color = Color(0.7, 0, 0, 0.42)
 
-[connection signal="body_entered" from="AttackBox" to="." method="_on_attack_box_body_entered"]
+[connection signal="body_entered" from="AttackBox" to="AttackBox" method="_on_body_entered"]

@@ -19,6 +19,10 @@ var right: MapRoom = null
 var room: Node = null
 var room_type: String = ""
 
+var PlayerSpawn: Marker2D = null
+var BuffSpawn: Marker2D = null
+var Map: TileMapLayer = null
+
 # to tell which layer trigger the event
 const AREA_COLLISION_MASK: int = 0b1110
 
@@ -55,12 +59,10 @@ func get_connection(direction: String) -> Node:
 
 func area_entered(body: Node2D, direction: String) -> void:
     # only care about our player 
-    if body.name != GameController.main_player_instance.name:
+    if body != GameController.main_player_instance:
         return
     # if door origin is not cleared yet
     if player_door_origin != "":
-        return
-    if GameController.main_player_instance == null:
         return
     #print("player is going ", direction)
     # get the next room
@@ -92,7 +94,7 @@ func area_entered(body: Node2D, direction: String) -> void:
     # change player pos and display next room
     get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
-    MultiplayerController.player_change_room.rpc(multiplayer.get_unique_id(), next_room.room_position)
+    GameController.main_player_instance.change_room(multiplayer.get_unique_id(), next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.main_player_instance.global_position = door.global_position
     get_tree().root.remove_child.call_deferred(self)
@@ -130,6 +132,10 @@ func check_room_valid() -> void:
         assert(room.get_node("Map/Left") is Door, "Room " + room.scene_file_path + " Map/Left is not a Door")
     if room.has_node("Map/Right"):
         assert(room.get_node("Map/Right") is Door, "Room " + room.scene_file_path + " Map/Right is not a Door")
+        
+    PlayerSpawn = room.get_node("Spawn")
+    BuffSpawn = room.get_node("BuffSpawn")
+    Map = room.get_node("Map")
     
     
 func generate_room() -> bool:

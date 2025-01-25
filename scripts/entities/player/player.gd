@@ -35,35 +35,46 @@ var jump_count: int = JUMP_COUNT_MAX
 @onready var display_name: Label = $DisplayName
 @onready var camera: CameraController = $Camera
 @onready var pause: Control = $Camera/CanvasLayer/Pause
+@onready var player_ui: PlayerUI = $Camera/CanvasLayer/Ui
 
 #### Physic ####
 @onready var collider: CollisionShape2D = $CollisionShape2D
 
 #### Interractions ####
 @export_category("Stats")
-@export var HP_MAX: int = 100
-var hp: int = HP_MAX
+@export var HP_MAX: float = 20.0
+## exported for the player sync
+@export var hp: float = HP_MAX:
+    set(value):
+        hp = value
+        if is_node_ready():
+            player_ui.hp = "HP : " + str(int(hp))
 
-@export var atk: int = 3
+@export var ATK: int = 3
 @export_range(0, 1) var CRIT_RATE: float = 0.1
+@export var CRIT_MULT: int = 2
 
 @onready var attack_box: Area2D = $AttackBox
 @onready var attack_box_collider: CollisionShape2D = $AttackBox/CollisionShape2D
 
+## in seconds
+var DEATH_TIME: int = 5
 
 # FIXME handle with a state
 var attacking = false
 var damaging = false
 
+@onready var damage_handler: BasePlayerAttack = $AttackBox
 
 signal damaged(dmg: int)
+signal respawn()
 
 #### Multiplayer ####
-#@onready var synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 # the authority controlling this player (peer id)
 var multiplayer_authority_id: int = 0
 # room where the player is into
 var player_room: Vector2 = Vector2(0, 0)
+var player_spawn: Vector2 = Vector2(0, 0)
 
 # to know if we must render the player
 var player_disabled: bool = false
@@ -73,34 +84,29 @@ var buffs: Dictionary = {}
 #### Upgrades ####
 var speed_upgrades: int = 0
 
-#func _ready() -> void:
-    ## set ratio for pause menu and label
-    #$DisplayName.scale = Vector2(1 / self.scale.x, 1 / self.scale.y)
-    #$Camera2D/Pause.scale = Vector2(1 / self.scale.x, 1 / self.scale.y)
-
 func set_player_name(player_name: String) -> void:
     $DisplayName.text = player_name
 
 func set_authority(id: int) -> void:
     $MultiplayerSynchronizer.set_multiplayer_authority(id, true)
     multiplayer_authority_id = id
-    #print("Current id: ", multiplayer.get_unique_id(), " Target id: ", id)
 
 func disable_others_camera(id: int) -> void:
     # disable camera of player instance if it's not our player
     if id != multiplayer.get_unique_id():
         camera.disable_camera()
+        player_ui.hide()
 
-func disable_player(disabling: bool) -> void:
+func hide_player() -> void:
     if self == GameController.main_player_instance:
-        printerr("trying to disable our own player!")
+        printerr("trying to hide our own player!")
         return
         
-    #Server.peer_print(Server.MessageType.PRINT ,("disabling " if disabling else "enabling ") + name)
     # FIXME doesn't show when it should (after instance changed room then goes back in)
-    visible = disabling
-    collider.set_deferred("disabled", disabling)
-    player_disabled = disabling
+    var is_invisible = GameController.main_player_instance.player_room != player_room
+    anim_sprite_2d.visible = !is_invisible
+    #visible = !is_invisible
+    #player_disabled = is_invisible
 
 func _ready():
     dash_count = DASH_COUNT_MAX
@@ -108,12 +114,13 @@ func _ready():
     
     camera.snap()
     
-    # disable name tag when solo
+    # disable namwe tag when solo
     if Server.solo_active:
         display_name.hide()
     
     # connect signals
-    damaged.connect(handle_damaged_state)
+    damaged.connect(handle_damaged)
+    respawn.connect(handle_respawn)
     
     if DEBUG:
         # handle debug mode of this player instance
@@ -135,22 +142,52 @@ func _ready():
         data.name = "DebugPlayer"
         GameController.Players.list.append(data)
         reparent.call_deferred(get_tree().root, true)
-        display_name.text = str(hp)
-        display_name.show()
     else:
         camera.set_limits(GameController.current_room.room.get_node("Map"))
+        
+    hp = HP_MAX
 
 func update_buff(data: PlayerData) -> void:
-    # TODO handle buff update
-    Server.peer_print(Server.MessageType.PRINT, str(data))
+#region Buff update
+    #Server.peer_print(Server.MessageType.PRINT, str(data))
     if data.has_buff(Buff.BuffPreset.JUMP_UPGRADER):
         JUMP_COUNT_MAX = 2 + data.get_buff(Buff.BuffPreset.JUMP_UPGRADER).buff_amount 
+        
     if data.has_buff(Buff.BuffPreset.DASH_UPGRADER):
         DASH_COUNT_MAX = 1 + data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount
+        
+    if data.has_buff(Buff.BuffPreset.SPEED_UPGRADER):
+        SPEED_CAP_GROUND = 200 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount) # * 1.2
+        SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount) 
+    if data.has_buff(Buff.BuffPreset.SPEED_BOOSTER):
+        SPEED_CAP_GROUND = 200 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount)
+        SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount)
+        
+    if data.has_buff(Buff.BuffPreset.HEALTH_UPGRADER):
+        HP_MAX = 20.0 * (1.0 + 0.2 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount) # * 1.2 each
+    if data.has_buff(Buff.BuffPreset.HEALTH_BOOSTER):
+        HP_MAX = HP_MAX + 5.0 * data.get_buff(Buff.BuffPreset.DASH_UPGRADER).buff_amount
+        hp += 5.0
+#endregion
+
+@rpc("any_peer", "call_remote")
+func propagate_attack(id: int) -> void:
+   if multiplayer_authority_id == id:
+        attacking = true
+        anim_sprite_2d.play("attack1")
+
+
+func _unhandled_input(_event: InputEvent) -> void:
+    if Input.is_key_pressed(KEY_B):
+        for c in get_tree().root.get_children():
+            if c is BasePlayer:
+                Server.peer_print(Server.MessageType.PRINT,
+                    "Joueur " + str(c.multiplayer_authority_id) + ": " + str(c.global_position) + " et sprite " + str(c.anim_sprite_2d.visible)
+                )
 
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled
-    if is_queued_for_deletion() or player_disabled:
+    if is_queued_for_deletion() or hp <= 0 or player_disabled:
         return
 
     # Handle animations
@@ -171,6 +208,7 @@ func _physics_process(delta: float) -> void:
         if Input.is_action_just_pressed("SmallAttack"):
             anim_sprite_2d.play("attack1")
             attacking = true
+            propagate_attack.rpc(multiplayer_authority_id)
 
         # Get player input for movement
         input_vector = Input.get_vector("Left", "Right", "Up", "Down")
@@ -190,20 +228,20 @@ func _physics_process(delta: float) -> void:
         @warning_ignore("unused_variable")
         var snap_vector = Vector2(0, 32)  # Adjust the snap length based on your needs
         
-        # attack
-        # FIXME if outside "if attacking", is spamming left right, hit box goes left right (so hitting multiple times?)
-        if !anim_sprite_2d.flip_h:
-            attack_box.rotation = deg_to_rad(0.0)
-        else:
-            attack_box.rotation = deg_to_rad(180.0)
-        if attacking and attack_box_collider.disabled:
-            attack_box_collider.set_deferred("disabled", false)
-        elif !attacking and !attack_box_collider.disabled:
-            attack_box_collider.set_deferred("disabled", true)
 
         # Move the player and handle collisions
-        set_floor_snap_length(10)
         move_and_slide()
+    
+    # attack
+    # FIXME if outside "if attacking", is spamming left right, hit box goes left right (so hitting multiple times?)
+    if !anim_sprite_2d.flip_h:
+        attack_box.rotation = deg_to_rad(0.0)
+    else:
+        attack_box.rotation = deg_to_rad(180.0)
+    if attacking and attack_box_collider.disabled:
+        attack_box_collider.set_deferred("disabled", false)
+    elif !attacking and !attack_box_collider.disabled:
+        attack_box_collider.set_deferred("disabled", true)
 
 @warning_ignore("shadowed_variable")
 func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):
@@ -282,16 +320,11 @@ func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
             sprite_2d.flip_h = true
             anim_sprite_2d.flip_h = true
 
-func handle_damaged_state(dmg: int):
-    if dmg <= 0:
-        return
-    anim_sprite_2d.play("hurt")
-    damaging = true
-    hp -= dmg
-    display_name.text = str(hp)
-    if hp <= 0:
-        # TODO death
-        pass
+func handle_damaged(dmg: int):
+    damage_handler.handle_damaged(dmg)
+
+func handle_respawn() -> void:
+    damage_handler.handle_respawn()
 
 func change_state(new_state):
     if current_state == new_state:
@@ -330,9 +363,25 @@ func on_exit_airborne():
     # Actions to be executed when exiting the airborne state
     pass
 
-func _on_attack_box_body_entered(body: Node2D) -> void:
-    if body is GlobalEnemy:
-        body.damaged.emit(atk)
-    if body is BasePlayer and body != self:
-        (body as BasePlayer).damaged.emit(atk)
-    # TODO destroy some projectiles?
+func change_room(id: int, room: Vector2) -> void:
+    _change_room_self(room)
+    _change_room_others.rpc(id, room)
+        
+func _change_room_self(room: Vector2) -> void:
+    player_room = room
+    move_to_front.call_deferred()
+    # snap camera
+    camera.snap()
+    camera.set_limits(GameController.current_room.room.get_node("Map"))
+    
+    for p in get_tree().root.get_children():
+        if p is BasePlayer and p != self:
+            p.hide_player()
+
+@rpc("any_peer", "call_remote")
+func _change_room_others(id: int, room: Vector2) -> void:
+    if id != multiplayer_authority_id:
+        return
+    
+    player_room = room
+    hide_player()    

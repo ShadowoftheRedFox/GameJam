@@ -34,12 +34,11 @@ position = Vector2(-928, -32)
 door_state = 1
 
 [node name="Spawn" type="Marker2D" parent="."]
-position = Vector2(362, 36)
+position = Vector2(-170, -451)
 
 [node name="Player" parent="." instance=ExtResource("3_4fmae")]
 position = Vector2(-173, -429)
 DEBUG = true
-HP_MAX = 10000
 
 [node name="Buff" parent="." instance=ExtResource("4_mbtq6")]
 visible = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://d228bk6f8p0kt"]
+[gd_scene load_steps=9 format=4 uid="uid://d228bk6f8p0kt"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_rj6kl"]
 [ext_resource type="PackedScene" uid="uid://bw07wguddjt14" path="res://scenes/platforms/1x1.tscn" id="3_qhg7p"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://b67nelkrljk4f" path="res://scenes/platforms/4x1.tscn" id="6_d1o4c"]
 [ext_resource type="PackedScene" uid="uid://dpnth2crmupb" path="res://scenes/mapgen/door.tscn" id="6_v72t2"]
 [ext_resource type="PackedScene" uid="uid://d1cpj26wd0fqw" path="res://scenes/entities/buff.tscn" id="7_6ux0l"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_0uwkc"]
 
 [node name="Room" type="Node2D"]
 
@@ -50,3 +52,9 @@ ring_radius = 20.0
 ring_inner_radius = 10.0
 orb_color = Color(0.0313726, 1, 0, 1)
 size = 0.3
+
+[node name="WorldBorder" type="StaticBody2D" parent="."]
+position = Vector2(38, 230)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldBorder"]
+shape = SubResource("WorldBoundaryShape2D_0uwkc")
