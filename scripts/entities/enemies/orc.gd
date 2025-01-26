@@ -10,7 +10,7 @@ func _ready() -> void:
     animate.connect(handle_animation)
     super()
     
-func handle_animation(animation: String) -> void: 
+func handle_animation(animation: String) -> void:
     match animation:
         "jump":
             $AnimatedSprite2D.play("jump")

@@ -7,6 +7,7 @@ func reset() -> void:
         #p.unreference()
     list = []
 
+#region Data
 ## Returns the amount of non-spectator
 func get_player_count() -> int:
     var res = 0
@@ -46,7 +47,7 @@ func get_player(id: int) -> PlayerData:
         if p.id == id:
             return p
     return null
-    
+
 func erase_player(id: int) -> void:
     var temp: Array[PlayerData] = []
     for i in list.size():
@@ -61,3 +62,14 @@ func as_dictionary() -> Dictionary:
     for p in list:
         res.get_or_add(p.id, p)
     return res
+#endregion
+
+func add_node(id: int, node: BasePlayer) -> void:
+    node.name = str(id)
+    GameController.PlayerNodes.add_child(node)
+    
+func has_node(id: int) -> bool:
+    return GameController.PlayerNodes.has_node(str(id))
+
+func get_node(id: int) -> BasePlayer:
+    return GameController.PlayerNodes.get_node(str(id))

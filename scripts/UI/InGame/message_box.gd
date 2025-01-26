@@ -44,7 +44,7 @@ func _ready() -> void:
 
 func realign(node: Label, value: Alignment) -> void:
     if is_node_ready() and node.is_node_ready():
-        match  value:
+        match value:
             Alignment.CENTER:
                 node.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
             Alignment.RIGHT:

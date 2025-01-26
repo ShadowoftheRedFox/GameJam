@@ -16,8 +16,8 @@ var compression_method: ENetConnection.CompressionMode = ENetConnection.COMPRESS
 # generate peer instance
 var peer: ENetMultiplayerPeer = null
 
-signal player_connected(id:int)
-signal player_disconnected(id:int)
+signal player_connected(id: int)
+signal player_disconnected(id: int)
 signal server_connection_failed
 
 # just a handy function, print message preceded by the peer id
@@ -91,7 +91,7 @@ func change_port(text: String):
 
 func change_ip(text: String):
     # check validity of new ip (IPv4 or IPv6)
-    if text.is_valid_ip_address() :
+    if text.is_valid_ip_address():
         server_ip = text
 
 
@@ -109,8 +109,8 @@ func create_host(is_solo: bool = false) -> bool:
         max_player = 1
     
     # server creation
-    var error = peer.create_server(server_port, max_player) 
-    match(error):
+    var error = peer.create_server(server_port, max_player)
+    match (error):
         OK: # server correctly created
             print("The server was created!")
         ERR_ALREADY_IN_USE: # port can not be attributed

@@ -13,7 +13,7 @@ func _ready() -> void:
     
 func infos_update(data: PlayerData) -> void:
     if data != null and data.id == player_data.id:
-        player_data = data 
+        player_data = data
 
 func update() -> void:
     $Main/Name.text = player_data.name

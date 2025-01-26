@@ -4,7 +4,7 @@ var can_unpause: bool = false
 
 @onready var control = $MarginContainer/MarginContainer/Side/Options/Controls
 @onready var sound = $MarginContainer/MarginContainer/Side/Options/Sounds
-@onready var resume =  $MarginContainer/MarginContainer/MarginContainer/Main/Resume
+@onready var resume = $MarginContainer/MarginContainer/MarginContainer/Main/Resume
 func _init() -> void:
     # since should be WHEN_PAUSE in solo and ALWAYS in multi, just set always
     process_mode = PROCESS_MODE_ALWAYS

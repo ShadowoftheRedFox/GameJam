@@ -10,15 +10,13 @@ func update(_delta: float) -> void:
     if entity.target_player == null:
         # get the nearest player
         var found = false
-        for p in get_tree().root.get_children():
-            if p is BasePlayer:
-                var player = p as BasePlayer
-                var min_dist: float = entity.target_range
-                var current = entity.global_position.distance_squared_to(player.global_position) 
-                if current <= min_dist:
-                    found = true
-                    min_dist = current
-                    entity.target_player = player
+        for player: BasePlayer in GameController.PlayerNodes.get_children():
+            var min_dist: float = entity.target_range
+            var current = entity.global_position.distance_squared_to(player.global_position)
+            if current <= min_dist:
+                found = true
+                min_dist = current
+                entity.target_player = player
         
         if found:
             entity.info = "Found target"

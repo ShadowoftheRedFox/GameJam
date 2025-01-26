@@ -1,10 +1,12 @@
-class_name  MainMenu
+class_name MainMenu
 extends Control
 @onready var buff: Buff = $CenterContainer/Buff
 var credits = preload("res://scenes/UI/Main/credits.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+    assert(get_parent() == get_tree().root, "MainMenu should always be in root")
+    
     # grab the keyboard focus on specific button
     $Main/MarginContainer/MarginContainer/VBoxContainer/New.grab_focus()
     

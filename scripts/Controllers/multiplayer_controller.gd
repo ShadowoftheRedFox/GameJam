@@ -40,7 +40,6 @@ func start_game() -> void:
         return
         
     # add all the scene with their data
-    #get_tree().root.add_child(GameController.current_room)
     for y in GameController.current_map.size():
         for x in GameController.current_map[y].size():
             var room: MapRoom = GameController.current_map[y][x]
@@ -68,18 +67,18 @@ func start_game() -> void:
             spawn_player.call_deferred(p)
     # spawn if own is spectator
     if GameController.Players.get_player(multiplayer.get_unique_id()).is_spectator:
-        get_tree().root.add_child(GameController.SpectatorScene.instantiate())
+        GameController.MenuNodes.add_child(GameController.SpectatorScene.instantiate())
 
 func spawn_player(player_data: PlayerData) -> void:
     if player_data == null:
         push_error("player data is null")
         return
     var currentPlayer: BasePlayer = GameController.PlayerScene.instantiate()
-    currentPlayer.name = str(player_data.id)
+    #currentPlayer.name = str(player_data.id)
     currentPlayer.set_player_name(player_data.name)
     currentPlayer.set_authority(player_data.id)
     # FIXME change player spawn in multi
-    get_tree().root.add_child(currentPlayer)
+    GameController.Players.add_node(player_data.id, currentPlayer)
     currentPlayer.disable_others_camera(player_data.id)
     #Server.peer_print(Server.MessageType.ERR, "New instance of Player: " + str(player_data.id))
     # find a spawn for the player
@@ -100,9 +99,9 @@ func remove_player(id: int) -> void:
         GameController.Players.erase_player(id)
         return
     
-    var player_data = GameController.Players.get_player(id)
-    if get_tree().root.has_node(str(player_data.id)) == true:
-        get_tree().root.get_node(str(player_data.id)).queue_free()
+    #var player_data = GameController.Players.get_player(id)
+    if GameController.Players.has_node(id):
+        GameController.Players.get_node(id).queue_free()
     GameController.Players.erase_player(id)
     index -= 1
     # no player_infos_update because we should be listening to player disconnect instead
@@ -130,7 +129,7 @@ func player_buff_update(id: int, data_raw: String) -> void:
     var player_data := GameController.Players.get_player(id)
     player_data.buff = data.buff
     
-    var player: BasePlayer = get_tree().root.get_node(str(id))
+    var player: BasePlayer = GameController.Players.get_node(id)
     player.update_buff(player_data)
     GameController.player_infos_update.emit(player_data)
 

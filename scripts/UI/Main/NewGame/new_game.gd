@@ -23,9 +23,9 @@ func _on_new_pressed() -> void:
     var save_name: LineEdit = $MarginContainer/VBoxContainer/SaveName/LineEdit
     if new_button.disabled == false:
         GameController.new_game(
-            save_name.text, 
-            difficulty_options.get_item_id(difficulty_options.selected), 
-            size_options.get_item_id(size_options.selected), 
+            save_name.text,
+            difficulty_options.get_item_id(difficulty_options.selected),
+            size_options.get_item_id(size_options.selected),
             gamemode_options.get_item_id(gamemode_options.selected)
         )
 
@@ -45,5 +45,3 @@ func _on_line_edit_text_changed(new_text: String) -> void:
         error_text.text = "La partie requiert un nom!"
     
     new_button.disabled = true
-    
-    

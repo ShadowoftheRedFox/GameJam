@@ -16,13 +16,7 @@ var transition_end: String = "fade_from_black"
 var transition_timer: Timer = null
 var message = "Chargement en cours..."
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-    var root = get_tree().root
-    # load the first scece found
-    current_scene = root.get_child(-1)
-
-func goto_scene(path:String = "res://scenes/UI/MainMenu.tscn", need_transition:bool = false, start_transition_name:String = "fade_to_black", end_transition_name:String = "fade_from_black") ->void:
+func goto_scene(path: String = "res://scenes/UI/MainMenu.tscn", need_transition: bool = false, start_transition_name: String = "fade_to_black", end_transition_name: String = "fade_from_black") -> void:
     # This function will usually be called from a signal callback,
     # or some other function in the current scene.
     # Deleting the current scene at this point is
@@ -38,9 +32,10 @@ func goto_scene(path:String = "res://scenes/UI/MainMenu.tscn", need_transition:b
     else:
         _deferred_goto_scene.call_deferred(path)
 
-func _deferred_goto_scene(path:String = "res://scenes/UI/MainMenu.tscn"):
+func _deferred_goto_scene(path: String = "res://scenes/UI/MainMenu.tscn"):
     # It is now safe to remove the current scene.
-    current_scene.free()
+    if current_scene:
+        current_scene.queue_free()
 
     # Load the new scene.
     var s = ResourceLoader.load(path)
@@ -49,12 +44,12 @@ func _deferred_goto_scene(path:String = "res://scenes/UI/MainMenu.tscn"):
     current_scene = s.instantiate()
 
     # Add it to the active scene, as child of root.
-    get_tree().root.add_child(current_scene)
+    GameController.MenuNodes.add_child(current_scene)
 
     # Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
-    get_tree().current_scene = current_scene
+    # get_tree().current_scene = current_scene
 
-func _deferred_change_scene(path:String = "res://scenes/UI/MainMenu.tscn"):
+func _deferred_change_scene(path: String = "res://scenes/UI/MainMenu.tscn"):
     # load and display our transition scene
     loading = loading_scene.instantiate() as LoadingScreen
     get_tree().root.add_child(loading)
@@ -65,7 +60,7 @@ func _deferred_change_scene(path:String = "res://scenes/UI/MainMenu.tscn"):
     # Load the new scene.
     _load_new_scene(path)
 
-func _load_new_scene(path:String)->void:
+func _load_new_scene(path: String) -> void:
     # wait for the transition effect to finish
     if loading != null:
         await loading.transition_completed
@@ -86,7 +81,7 @@ func _load_new_scene(path:String)->void:
     get_tree().root.add_child(transition_timer)
     transition_timer.start()
 
-func _check_load_status(path:String = "res://scenes/UI/MainMenu.tscn")->void:
+func _check_load_status(path: String = "res://scenes/UI/MainMenu.tscn") -> void:
     # get our loading status
     var load_status = ResourceLoader.load_threaded_get_status(path)
 
@@ -107,12 +102,12 @@ func _check_load_status(path:String = "res://scenes/UI/MainMenu.tscn")->void:
             # get our loaded scene
             var new_scene = ResourceLoader.load_threaded_get(path).instantiate()
             # It is now safe to remove the current scene.
-            if current_scene != null:
-                current_scene.call_deferred("free")
+            if current_scene:
+                current_scene.queue_free()
             # add scene to root
-            get_tree().root.call_deferred("add_child",new_scene)
+            GameController.MenuNodes.add_child.call_deferred(new_scene)
             # equivalent to current_scene = new_scene
-            get_tree().set_deferred("current_scene",new_scene)
+            # get_tree().set_deferred("current_scene", new_scene)
             # end the transition
             loading.finish_transition(transition_end)
             # emit our scene change end

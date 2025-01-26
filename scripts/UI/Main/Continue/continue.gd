@@ -32,7 +32,7 @@ func check_save() -> void:
         infos_Difficulty.text = "Difficulté : " + infos.get("difficulty", "Inconnue")
         infos_Size.text = "Taille : " + infos.get("map_size", "Inconnue")
         infos_Gamemode.text = "Mode de jeu : " + infos.get("gamemode", "Inconnue")
-    else :
+    else:
         Options.add_item("LabHyrinTical", 0)
         Options.set_item_disabled(0, true)
         # disable other buttons

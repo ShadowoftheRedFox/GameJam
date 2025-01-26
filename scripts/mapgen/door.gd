@@ -23,7 +23,7 @@ enum DoorFacing {
 
 ## Size of the door
 @export var door_size: Vector2 = Vector2(1, 3):
-    get: 
+    get:
         return door_size
     set(value):
         door_size = value
@@ -35,7 +35,7 @@ enum DoorFacing {
     get:
         return door_state
     set(value):
-        door_state = value 
+        door_state = value
         _change_door_state()
 ## Show door on this side.
 ## Each 90° rotation switch to next facing

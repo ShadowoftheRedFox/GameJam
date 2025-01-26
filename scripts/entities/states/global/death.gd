@@ -1,7 +1,7 @@
 class_name GlobalDeath
 extends State
 
-func enter(_previous_state_path: String, _data := {}) -> void:  
+func enter(_previous_state_path: String, _data := {}) -> void:
     entity.animate.emit("death")
     entity.info = "Dead"
     

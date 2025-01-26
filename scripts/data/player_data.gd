@@ -27,7 +27,7 @@ func _init(string: String = "") -> void:
     id = data.get("id", 0)
     name = data.get("name", "(Aucun)")
     color = data.get("color", "ff0000")
-    score = ScoreData.new(data.get("score", "")) 
+    score = ScoreData.new(data.get("score", ""))
     
     var raw_buff = data.get("buff", [])
     for buff_data in raw_buff:

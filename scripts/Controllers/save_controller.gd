@@ -20,7 +20,7 @@ var parameters := {
     },
     "Controls": {
         "key": [],
-        "controller": []   
+        "controller": []
     },
     "Sounds": {
         "music": 100,
@@ -60,20 +60,12 @@ func _ready() -> void:
             save_names.append(key_name)
         saves_changed.emit()
     
-    #print("Found ", len(save_names), " saves")
+    # print("Found ", len(save_names), " saves")
     
-    
-#func _ready() -> void:
-    #if !create_new_save("ploof"):
-        #printerr("Error while saving")
-    #if !delete_save("ploof"):
-        #printerr("Error while deleting")
-    #print("Ploof exists: ", is_save_name("Ploof"))
-    
-    #parameters_changed.connect(p)
-    #pass
-func p(): 
+
+func p():
     printerr("param change")
+
 #### Parameters save ####
 
 func setup_parameters() -> void:
@@ -192,7 +184,7 @@ func save_parameters() -> void:
     if parameters.Controls.controller.size() == 0:
         var input_map = get_own_event()
         for input_name in input_map:
-            var event_key = InputMap.action_get_events(input_name)[1] if InputMap.action_get_events(input_name).size() >= 2 else null 
+            var event_key = InputMap.action_get_events(input_name)[1] if InputMap.action_get_events(input_name).size() >= 2 else null
             general_config.set_value("Controls_controller", input_name, str(event_key))
     else:
         for pair in parameters.Controls.controller:
@@ -223,7 +215,7 @@ func parse_input_event_key(data: String) -> InputEventKey:
     # a base string looks like this: 
     ## InputEventKey: keycode=74 (J), mods=none, physical=true, location=unspecified, pressed=false, echo=false
     # we will erase the input event key and parse each member
-    var members : PackedStringArray = data.erase(0, len("InputEventKey: ")).split(", ", false, 6)
+    var members: PackedStringArray = data.erase(0, len("InputEventKey: ")).split(", ", false, 6)
     
     # parse physical with contains
     # then parse keycode, using the int() property, then trhough OS to prevent warning "cast to enum"
@@ -246,10 +238,10 @@ func parse_input_event_joypad_button(data: String) -> InputEventJoypadButton:
     # a base string looks like this: 
     ## InputEventJoypadButton: button_index=1, pressed=true, pressure=0.00
     # we will erase the input event key and parse each member
-    var members : PackedStringArray = data.erase(0, len("InputEventJoypadButton: ")).split(", ", false, 3)
+    var members: PackedStringArray = data.erase(0, len("InputEventJoypadButton: ")).split(", ", false, 3)
     # parse button_index using int property
     @warning_ignore("int_as_enum_without_cast")
-    event.button_index = int(members[0]) 
+    event.button_index = int(members[0])
     # parse pressed
     event.pressed = members[1].contains("true")
     # parse pressure using float property
@@ -266,7 +258,7 @@ func parse_input_event_joypad_motion(data: String) -> InputEventJoypadMotion:
     # a base string looks like this: 
     ## InputEventJoypadMotion: axis=1, axis_value=-1.00
     # we will erase the input event key and parse each member
-    var members : PackedStringArray = data.erase(0, len("InputEventJoypadMotion: ")).split(", ", false, 2)
+    var members: PackedStringArray = data.erase(0, len("InputEventJoypadMotion: ")).split(", ", false, 2)
     # parse axis 
     @warning_ignore("int_as_enum_without_cast")
     event.axis = int(members[0])
@@ -293,12 +285,12 @@ func get_save_display_name(save_name: String) -> String:
 func get_save_name(save_display_name: String) -> String:
     if !is_save_display_name(save_display_name):
         return save_display_name
-    return save_names[save_display_names.find(save_display_name)] 
+    return save_names[save_display_names.find(save_display_name)]
 
 func create_new_save(save_name: String, content: String = "") -> bool:
     # edit variable to find the save file
     general_config.set_value("Save_names", save_name, save_name)
-    general_config.set_value("General", "save_amount", len(save_names)+1)
+    general_config.set_value("General", "save_amount", len(save_names) + 1)
     save_names.append(save_name)
     save_display_names.append(save_name)
     
@@ -396,7 +388,7 @@ func update_save(save_name: String, args: Dictionary = {}) -> bool:
         # open the save file
         general_save_file = FileAccess.open(SAVE_PATH + save_name + ".save", FileAccess.READ_WRITE)
         if general_save_file == null:
-            printerr("Error while opening save file '",save_name,"' for update")
+            printerr("Error while opening save file '", save_name, "' for update")
             return false
         
         # saving our data

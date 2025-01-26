@@ -58,15 +58,15 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
     # node name
     var french_label_name = ""
     match label_name:
-        "Up":           french_label_name = "Haut"
-        "Down":         french_label_name = "Bas"
-        "Left":         french_label_name = "Gauche"
-        "Right":        french_label_name = "Droite"
-        "Jump":         french_label_name = "Saut"
-        "Pause":        french_label_name = "Pause"
-        "Dash":         french_label_name = "Dash"
-        "SmallAttack":  french_label_name = "Attaque"
-        _:              french_label_name = label_name
+        "Up": french_label_name = "Haut"
+        "Down": french_label_name = "Bas"
+        "Left": french_label_name = "Gauche"
+        "Right": french_label_name = "Droite"
+        "Jump": french_label_name = "Saut"
+        "Pause": french_label_name = "Pause"
+        "Dash": french_label_name = "Dash"
+        "SmallAttack": french_label_name = "Attaque"
+        _: french_label_name = label_name
 
     label.text = french_label_name
     # text align
@@ -110,7 +110,7 @@ func controller_button_name(event: InputEvent) -> String:
         var format := base_name.erase(0, len("Joypad "))
         # find first occurence of ( and erase everything after
         var start_parenthesis = format.find("(")
-        return format.erase(start_parenthesis-1, len(format))
+        return format.erase(start_parenthesis - 1, len(format))
     
     if event is InputEventJoypadMotion:
         # button name looks like this: Joypad Motion on Axis 1 (Left Stick Y-Axis, Joystick 0 Y-Axis) with Value -1.00

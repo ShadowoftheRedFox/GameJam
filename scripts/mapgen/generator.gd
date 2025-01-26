@@ -132,13 +132,13 @@ func load_map(data: MapData, width: int, height: int) -> MapData:
             var room_left: Node = null
             
             if x > 0:
-                room_left = data.loaded_rooms[y][x-1]
+                room_left = data.loaded_rooms[y][x - 1]
             if x < width - 1:
-                room_right = data.loaded_rooms[y][x+1]
+                room_right = data.loaded_rooms[y][x + 1]
             if y > 0:
-                room_up = data.loaded_rooms[y-1][x]
+                room_up = data.loaded_rooms[y - 1][x]
             if y < height - 1:
-                room_down = data.loaded_rooms[y+1][x]
+                room_down = data.loaded_rooms[y + 1][x]
                 
             room.set_room(data.room_types[y][x], room_left, room_right, room_up, room_down)
             room.check_room_valid()

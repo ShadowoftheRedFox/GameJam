@@ -1,6 +1,6 @@
 ## Virtual base class for all states.
 ## Extend this class and override its methods to implement a state.
-class_name State 
+class_name State
 extends Node
 
 # must be filled

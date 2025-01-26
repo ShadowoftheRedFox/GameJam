@@ -4,7 +4,7 @@ extends State
 func enter(_previous_state_path: String, _data := {}) -> void:
     var input_direction_x := entity.global_position.direction_to(entity.target_player.global_position).x
     # enable hitbox
-    entity.attack_box.get_child(0).set_deferred("disabled", false)    
+    entity.attack_box.get_child(0).set_deferred("disabled", false)
     # change side of the attack hitbox
     if input_direction_x > 0:
         entity.attack_box.rotation = deg_to_rad(0.0)
@@ -36,7 +36,7 @@ func physics_update(delta: float) -> void:
         finished.emit("Idle")
         
 func exit() -> void:
-    entity.attack_box.get_child(0).set_deferred("disabled", true)    
+    entity.attack_box.get_child(0).set_deferred("disabled", true)
     GameController.Utils.remove_signal_listener(entity.attack_box.body_entered)
 
 func attacking(body: Node2D) -> void:

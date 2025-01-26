@@ -18,9 +18,9 @@ func get_num_files_in_dir(path: String, ends_with = ".tscn") -> int:
         var file_name = dir.get_next()
         while file_name != "":
             if file_name.ends_with(ends_with):
-                count+=1
+                count += 1
             file_name = dir.get_next()
         # do not add path if dir not found
         num_scenes_in_dir.get_or_add(path, count)
     
-    return count 
+    return count

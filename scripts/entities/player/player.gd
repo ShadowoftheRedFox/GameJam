@@ -75,7 +75,7 @@ signal room_changed()
 var multiplayer_authority_id: int = 0
 # room where the player is into
 var player_spawn: Vector2 = Vector2()
-var player_room: Vector2 = Vector2(): 
+var player_room: Vector2 = Vector2():
     set(value):
         player_room = value
         room_changed.emit()
@@ -141,7 +141,7 @@ func _ready():
         name = str(data.id)
         data.name = "DebugPlayer"
         GameController.Players.list.append(data)
-        reparent.call_deferred(get_tree().root, true)
+        reparent.call_deferred(GameController.PlayerNodes, true)
     else:
         camera.set_limits(GameController.current_room.room.get_node("Map"))
         
@@ -175,15 +175,6 @@ func propagate_attack(id: int) -> void:
     if multiplayer_authority_id == id:
         attacking = true
         anim_sprite_2d.play("attack1")
-
-
-func _unhandled_input(_event: InputEvent) -> void:
-    if Input.is_key_pressed(KEY_B):
-        for c in get_tree().root.get_children():
-            if c is BasePlayer:
-                Server.peer_print(Server.MessageType.PRINT,
-                    "Joueur " + str(c.multiplayer_authority_id) + ": " + str(c.global_position) + " et sprite " + str(c.anim_sprite_2d.visible)
-                )
 
 func _physics_process(delta: float) -> void:
     # Return early if the player is queued for deletion or disabled

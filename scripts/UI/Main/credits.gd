@@ -32,7 +32,7 @@ func resize_margin() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-    main.position.y -= scroll_speed * _delta    
+    main.position.y -= scroll_speed * _delta
     
     if !ending and \
         (-main.position.y > main.size.y - old_screen_size or \

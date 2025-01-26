@@ -55,7 +55,7 @@ func generate_map(map_size: int = 0) -> MapData:
         buffs_in_rooms.append([])
         for x: int in map[y].size():
             # put buff in all spawn for now
-            var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM+1, Buff.BuffPreset.MAX-1)
+            var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM + 1, Buff.BuffPreset.MAX - 1)
             var buff: Buff = GameController.BuffScene.instantiate()
             @warning_ignore("int_as_enum_without_cast")
             buff.buff_preset = buff_type
@@ -89,11 +89,11 @@ func get_map_room_types(map: Array) -> Array:
         res.append([])
         for room in line:
             if room is MapRoom:
-                res[i].append(room.room_type) 
+                res[i].append(room.room_type)
             else:
                 printerr("Room type is not MapRoom")
                 return []
-        i+=1
+        i += 1
     return res
 
 func free_map(map: Array):

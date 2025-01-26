@@ -8,7 +8,7 @@ enum Backgrounds {
 # WHY
 # WHERE IS MY STD::OPTIONAL OR GO-LIKE ERROR HANDLING OR OPTION<T>
 var room_id: int = -1
-var room_position: Vector2 = Vector2(-1,-1)
+var room_position: Vector2 = Vector2(-1, -1)
 # Oh yeah and unique IDs too ig
 static var next_id: int = 0
 # Connections to other nodes (up, down, left, right)
@@ -92,12 +92,10 @@ func area_entered(body: Node2D, direction: String) -> void:
     door.door_cleared = false
     # TODO transition
     # change player pos and display next room
-    #get_tree().root.add_child.call_deferred(next_room)
     GameController.current_room = next_room
     GameController.main_player_instance.change_room(next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
     GameController.main_player_instance.global_position = door.global_position
-    #get_tree().root.remove_child.call_deferred(self)
 
 # Called when the node is added to the scene tree for the first time
 func _ready():
@@ -112,7 +110,7 @@ func check_room_valid() -> void:
     
     # needs to have a Spawn and be a Marker2D
     assert(room.has_node("Spawn"), "Room " + room.scene_file_path + " has no Spawn Markder2D")
-    assert(room.get_node("Spawn") is Marker2D,"Room " + room.scene_file_path + " Spawn is not a Markder2D")
+    assert(room.get_node("Spawn") is Marker2D, "Room " + room.scene_file_path + " Spawn is not a Markder2D")
     
     # needs to have a Map and be TileMapLayer
     assert(room.has_node("Map"), "Room " + room.scene_file_path + " has no Map TileMapLayer")
@@ -158,7 +156,7 @@ func generate_room() -> bool:
         path += "up_"
         
     if path.ends_with("_"):
-        path = path.erase(len(path)-1)
+        path = path.erase(len(path) - 1)
 
     #print("Room ", room_id, " can choose between ", GameController.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
     var amount_room_available = GameController.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn")
@@ -166,8 +164,8 @@ func generate_room() -> bool:
         printerr("No room available for ", path)
         return false
     
-    var level_id = randi_range(0, amount_room_available -1)
-    var room_path := "res://scenes/levels/" + path + "/" + str(level_id) + ".tscn" 
+    var level_id = randi_range(0, amount_room_available - 1)
+    var room_path := "res://scenes/levels/" + path + "/" + str(level_id) + ".tscn"
     room_type = path + "/" + str(level_id)
     if ResourceLoader.exists(room_path):
         var resource: PackedScene = ResourceLoader.load(room_path, "PackedScene")
@@ -187,7 +185,7 @@ func generate_room() -> bool:
     return true
 
 func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, room_down: Node) -> bool:
-    var room_path := "res://scenes/levels/" + type + ".tscn" 
+    var room_path := "res://scenes/levels/" + type + ".tscn"
     room_type = type
     if ResourceLoader.exists(room_path):
         var resource: PackedScene = ResourceLoader.load(room_path, "PackedScene")
@@ -208,7 +206,7 @@ func set_room(type: String, room_left: Node, room_right: Node, room_up: Node, ro
             "down":
                 set_connection("down", room_down)
             "up":
-                set_connection("up", room_up)               
+                set_connection("up", room_up)
             "left":
                 set_connection("left", room_left)
             "right":

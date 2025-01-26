@@ -21,7 +21,6 @@ enum MapSizes {
 }
 const MapSizesNames = ["Petite", "Grande", "Large", "Immense"]
 
-
 var GeneratorController = GeneratorControllerScript.new()
 var ThreadController = ThreadControllerScript.new()
 var Utils = UtilsScript.new()
@@ -52,6 +51,7 @@ var hosted_gamemode: GameModes = GameModes.Classic
 
 var Players: PlayerDataManager = PlayerDataManager.new()
 var PlayerNodes: Node2D
+var MenuNodes: Node2D
 
 var game_started: bool = false
 var game_paused: bool = false
@@ -73,8 +73,10 @@ func _init() -> void:
     add_child(ThreadController)
     add_child(Utils)
     PlayerNodes = Node2D.new()
+    MenuNodes = Node2D.new()
     MapNodes = Node2D.new()
     add_child(PlayerNodes)
+    add_child(MenuNodes)
     add_child(MapNodes)
 
 func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
@@ -91,7 +93,6 @@ func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, g
         "Création du monde en cours..."
     )
     game_loaded.connect(new_game_after_load)
-
 
 func new_game_after_load(load_result: MapData) -> void:
     current_map = load_result.loaded_rooms
@@ -111,7 +112,7 @@ func new_game_after_load(load_result: MapData) -> void:
 func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     print("loading map...")
     var save: Array[Dictionary] = []
-    var save_data: Dictionary  = {}
+    var save_data: Dictionary = {}
     # load from ultiplayer data
     if !multiplayer_data.is_empty() and save_name == "":
         save_data = multiplayer_data
@@ -126,7 +127,7 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     hosted_map_size = save_data.get("map_size", 0)
     
     var data = MapData.new()
-    data.parse(save_data.get("map", "")) 
+    data.parse(save_data.get("map", ""))
     room_size = data.room_size
     
     # tansition with thread
@@ -153,7 +154,6 @@ func launch_solo(save_name: String) -> void:
 func launch_solo_after_load(load_result: MapData) -> void:
     # TODO make a Map and be mapdata 
     current_map = load_result.loaded_rooms
-    #room_size = load_result.room_size
     MultiplayerController.start_game()
 
 func launch_multiplayer(save_name: String) -> void:
@@ -170,7 +170,7 @@ func join_multiplayer() -> bool:
     game_loaded.connect(multiplayer_after_load)
     return Server.join_server()
 
-func multiplayer_after_load(result: MapData) -> void: 
+func multiplayer_after_load(result: MapData) -> void:
     current_map = result.loaded_rooms
     lobby_readying.rpc_id(1, multiplayer.get_unique_id())
 
@@ -180,9 +180,9 @@ func lobby_readying(id: int) -> void:
 
 func hide_menu() -> void:
     # hide main menu
-    for child in get_tree().root.get_children():
-        if child is MainMenu:
-            child.queue_free()
+    for c in get_tree().root.get_children():
+        if c is MainMenu:
+            c.queue_free()
 
 func show_menu() -> void:
     # make sure main menu is deleted
@@ -214,9 +214,15 @@ func stop_game(no_new_menu: bool = false) -> void:
     if current_room != null:
         current_room.queue_free()
 
-    for children in get_tree().root.get_children():
-        if children is BasePlayer or children is MapRoom or children is SpectatorMenu:
-            children.queue_free()
+    for c in PlayerNodes.get_children():
+        c.queue_free()
+        
+    for c in MapNodes.get_children():
+        c.queue_free()
+    
+    for c in MenuNodes.get_children():
+        if c is SpectatorMenu:
+            c.queue_free()
 
     Server.stop_server()
 

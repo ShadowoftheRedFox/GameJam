@@ -80,13 +80,12 @@ func _on_after_pressed() -> void:
 func _on_players_item_selected(_index: int) -> void:
     focus_on_player()
 
-
 func focus_on_player() -> void:
     # clear listeners
     var player: BasePlayer = null
     if player_spectating_id != 0:
-        if get_tree().root.has_node(str(player_spectating_id)):
-            player = get_tree().root.get_node(str(player_spectating_id))
+        if GameController.Players.has_node(player_spectating_id):
+            player = GameController.Players.get_node(player_spectating_id)
             GameController.Utils.remove_signal_listener(player.room_changed)
             player.camera.disable_camera()
             player = null
@@ -102,8 +101,8 @@ func focus_on_player() -> void:
     # listen if changing room
     # connect to it's camera, or own camera follows him
     var player_data = GameController.Players.get_player(player_spectating_id)
-    if get_tree().root.has_node(str(player_spectating_id)):
-        player = get_tree().root.get_node(str(player_spectating_id))
+    if GameController.Players.has_node(player_spectating_id):
+        player = GameController.Players.get_node(player_spectating_id)
         player.room_changed.connect(follow_camera)
         player.camera.enabled = true
         
@@ -115,8 +114,8 @@ func focus_on_player() -> void:
     GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
 
 func follow_camera() -> void:
-    if get_tree().root.has_node(str(player_spectating_id)):
-        var player: BasePlayer = get_tree().root.get_node(str(player_spectating_id))
+    if GameController.Players.has_node(player_spectating_id):
+        var player: BasePlayer = GameController.Players.get_node(player_spectating_id)
         GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
         player.camera.snap()
         player.camera.set_limits(GameController.current_room.Map)

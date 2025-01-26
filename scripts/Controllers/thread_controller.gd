@@ -29,10 +29,10 @@ var mutex: Mutex = Mutex.new()
 var is_windows: bool = OS.get_name() == "Windows"
 
 func thread_transition(
-    workload: Callable, 
+    workload: Callable,
     callback: Signal = thread_finished,
     show_loading: bool = false,
-    message: String = "Chargement en cours...", 
+    message: String = "Chargement en cours...",
     start_transition: String = "fade_to_black",
     end_transition: String = "fade_from_black"
 ) -> bool:
@@ -77,7 +77,7 @@ func _check_thread_status(thread: Thread, callback: Signal, show_loading: bool) 
         if !callback.is_null():
             callback.emit(thread.wait_to_finish())
         else:
-            thread_finished.emit(thread.wait_to_finish())   
+            thread_finished.emit(thread.wait_to_finish())
         
         mutex.lock()
         active_thread -= 1

@@ -51,5 +51,5 @@ func _to_save() -> Dictionary:
         }
     }
 
-func _to_string() -> String:  
+func _to_string() -> String:
     return JSON.stringify(_to_save())
