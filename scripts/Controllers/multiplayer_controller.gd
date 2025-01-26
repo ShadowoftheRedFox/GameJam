@@ -60,11 +60,14 @@ func start_game() -> void:
     GameController.game_started = true
     GameController.current_room = GameController.current_map[0][0]
     
+    # sort in ID order to make sure everyone spawn correctly
+    GameController.Players.list.sort_custom(func sort_spawn(a: PlayerData, b: PlayerData): return a.id < b.id)
     # spawn all peer instances
     for p in GameController.Players.list:
         # TODO spawn player in different room and at coos
         if !p.is_spectator:
             spawn_player.call_deferred(p)
+
     # spawn if own is spectator
     if GameController.Players.get_player(multiplayer.get_unique_id()).is_spectator:
         GameController.MenuNodes.add_child(GameController.SpectatorScene.instantiate())
@@ -73,19 +76,28 @@ func spawn_player(player_data: PlayerData) -> void:
     if player_data == null:
         push_error("player data is null")
         return
+    
+    # find a spawn for the player
+    var spawn = _work_position()
+    var spawn_room: MapRoom = GameController.current_map[spawn.y][spawn.x]
+    GameController.current_room = spawn_room
+    
     var currentPlayer: BasePlayer = GameController.PlayerScene.instantiate()
+    currentPlayer.player_spawn = spawn
+    currentPlayer.global_position = spawn_room.PlayerSpawn.global_position
     #currentPlayer.name = str(player_data.id)
     currentPlayer.set_player_name(player_data.name)
     currentPlayer.set_authority(player_data.id)
-    # FIXME change player spawn in multi
+    
     GameController.Players.add_node(player_data.id, currentPlayer)
+    currentPlayer.change_room(spawn)
     currentPlayer.disable_others_camera(player_data.id)
+    currentPlayer.camera.snap()
+    currentPlayer.camera.set_limits(spawn_room.Map)
+        
+    index += 1
     #Server.peer_print(Server.MessageType.ERR, "New instance of Player: " + str(player_data.id))
-    # find a spawn for the player
-    if GameController.current_room.room.has_node("Spawn"):
-        var spawn = GameController.current_room.room.get_node("Spawn")
-        currentPlayer.global_position = spawn.global_position
-        index += 1
+    
     # remember our own player
     if player_data.id == multiplayer.get_unique_id():
         GameController.main_player_instance = currentPlayer
@@ -138,3 +150,59 @@ func update_spectator(id: int, is_spectator: bool) -> void:
     if GameController.Players.has_player(id):
         GameController.Players.get_player(id).is_spectator = is_spectator
         GameController.spectator_update.emit(id)
+
+func _work_position() -> Vector2:
+    var size_y = GameController.current_map.size()
+    var size_x = GameController.current_map[0].size()
+    
+    # random
+#region Random
+    var selected = Vector2(randi_range(0, size_x), randi_range(0, size_y))
+    for p: BasePlayer in GameController.PlayerNodes.get_children():
+        if p.player_spawn == selected:
+            return _work_position()            
+#endregion
+    return Vector2(randi_range(0, size_x - 1), randi_range(0, size_y - 1))
+    
+    # repartition
+#region Repartition
+    @warning_ignore("unreachable_code")
+    var rx = 0
+    var ry = 0
+
+    match index % 4:
+        0:
+            rx = 0 + int(index / 4.0)
+            ry = 0 + int(index / 4.0)
+        1:
+            rx = size_x - 1 + int(index / 4.0) * size_x
+            ry = size_y - 1 + int(index / 4.0) * size_y
+        2: 
+            rx = (size_y) * (size_x - 1) - int(index / 4.0) * size_x
+            ry = (size_y) * (size_x - 1) - int(index / 4.0) * size_y
+        3:
+            rx = size_y * size_x - 1 - int(index / 4.0)
+            ry = size_y * size_x - 1 - int(index / 4.0)
+#endregion
+    return Vector2(rx % size_x, int(ry / size_y))
+    
+    # matrix
+#region Matrix
+    var base_x = randi_range(0, size_x - 1)
+    var base_y = randi_range(0, size_y - 1)
+    var angle = deg_to_rad(360.0 / float(GameController.Players.get_player_count()))
+
+    var x = int(base_x * cos(angle * index) - base_y * sin(angle * index))
+    var y = int(base_x * sin(angle * index) + base_y * cos(angle * index))
+
+    if x < 0 or x >= size_x:
+        x = x % size_x
+    if y < 0 or y >= size_y:
+        y = y % size_y
+
+    for p: BasePlayer in GameController.PlayerNodes.get_children():
+        if p.player_spawn == selected:
+            return _work_position()  
+#endregion
+    return Vector2(x, y)
+    

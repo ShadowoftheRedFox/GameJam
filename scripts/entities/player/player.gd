@@ -106,12 +106,9 @@ func change_room(room: Vector2) -> void:
     player_room = room
     # snap camera
     camera.snap()
-    camera.set_limits(GameController.current_room.room.get_node("Map"))
+    camera.set_limits(GameController.current_room.Map)
 
 func _ready():
-    dash_count = DASH_COUNT_MAX
-    jump_count = JUMP_COUNT_MAX
-    
     camera.snap()
     
     # disable namwe tag when solo
@@ -143,7 +140,7 @@ func _ready():
         GameController.Players.list.append(data)
         reparent.call_deferred(GameController.PlayerNodes, true)
     else:
-        camera.set_limits(GameController.current_room.room.get_node("Map"))
+        camera.set_limits(GameController.current_room.Map)
         
     hp = HP_MAX
 
