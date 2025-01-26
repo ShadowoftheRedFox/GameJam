@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dpnth2crmupb"]
+[gd_scene load_steps=6 format=3 uid="uid://ct850ic78xaur"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/door.gd" id="1_1bwiw"]
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="2_05pwa"]

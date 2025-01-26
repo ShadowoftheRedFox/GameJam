@@ -366,6 +366,9 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath("AnimatedSprite2D:flip_h")
 properties/1/spawn = true
 properties/1/replication_mode = 2
+properties/2/path = NodePath(".:player_room")
+properties/2/spawn = true
+properties/2/replication_mode = 2
 
 [sub_resource type="LabelSettings" id="LabelSettings_prnli"]
 font_size = 11

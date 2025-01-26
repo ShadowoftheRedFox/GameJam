@@ -17,6 +17,7 @@ script = ExtResource("1_yvebt")
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 show_behind_parent = true
+z_index = -1
 scroll_scale = Vector2(0.2, 0.2)
 scroll_offset = Vector2(-331, -213)
 repeat_size = Vector2(640, 640)

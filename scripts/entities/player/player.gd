@@ -68,12 +68,17 @@ var damaging = false
 
 signal damaged(dmg: int)
 signal respawn()
+signal room_changed()
 
 #### Multiplayer ####
 # the authority controlling this player (peer id)
 var multiplayer_authority_id: int = 0
 # room where the player is into
-var player_spawn: Vector2 = Vector2(0, 0)
+var player_spawn: Vector2 = Vector2()
+var player_room: Vector2 = Vector2(): 
+    set(value):
+        player_room = value
+        room_changed.emit()
 
 # to know if we must render the player
 var player_disabled: bool = false
@@ -98,6 +103,7 @@ func disable_others_camera(id: int) -> void:
 
 
 func change_room(room: Vector2) -> void:
+    player_room = room
     # snap camera
     camera.snap()
     camera.set_limits(GameController.current_room.room.get_node("Map"))

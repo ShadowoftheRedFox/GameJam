@@ -2,23 +2,39 @@
 
 This is the project repository for the group 1 of the 2024 game jam hosted by CY Tech.
 
-# TODO List
-- [ ] Many movements
-- [x] Map
-- [ ] buff that unlocks zones (doors)
-- [ ] upgrades
-- [x] multiplayer
-- [x] score
-- [ ] leaderboard?
-- [x] multiple game saves?
-- [ ] Host is spectator?
-- [x] Different room type and size
-- [x] Room connection
-- [ ] Timer or zone that shrinks, or mobs that are super strong on outskirt
-- [ ] different game modes: solo (PvE), PvP, team, PvPvE
-- [x] difficulty customizable (map size, buff that can spawn, mob type, game mode)
-- [x] **Priority** can move the player on the map
-- [ ] temporary buff, buff merge?
-- [ ] different characters ?
-- [ ] different UI options? minimalist with nothing, normal (with buff infos), everything (with player HP if it's not a buff)
-- [ ] mouse parameters if we need to use the mouse
+![CY TECH](./assets/credits/CY_Tech.png)
+![GAME JAM](./assets/credits/logo_sans_bg.png)
+
+# Known bugs:
+
+- It's possible that you can't delete a save on windows through the game.
+- Enemies can fall through doors.
+- Dash mid-air without moving makes you float for a short time.
+- Doing your first jump mid-air gives you "another" air-jump.
+- Spamming left right while attacking gives you a higher DPS.
+
+
+# Features to add:
+- currencies
+- boss
+- timer before game ends
+- score
+- spectators
+- skill thief when killing player (or money thief)
+- more enemies
+- more player movement
+- more room environnements
+- traps
+- hidden room
+- password protected server
+- discovery room to see local game near you
+- sounds
+- more buffs
+- buffs merge
+- temporary buff
+- different game modes (PvP, PvE, PvPvE, equip, speedrun ...)
+- save game in progress
+- save personnal score data (to keep a personnal score: time played, game won, game lost, enemies killed, players killed, buff collected ...)
+- improved enemy AI
+- live tchat for spectators
+- different playable character

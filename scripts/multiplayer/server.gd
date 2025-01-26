@@ -76,8 +76,8 @@ func connected_to_server() -> void:
     # send the client data to host, id=1 is host
     var data = PlayerData.new()
     data.id = multiplayer.get_unique_id()
-    #data.name = SaveController.parameters.Multiplayer.name
-    data.name = str(multiplayer.get_unique_id())
+    data.name = SaveController.parameters.Multiplayer.name
+    #data.name = str(multiplayer.get_unique_id())
     data.color = SaveController.parameters.Multiplayer.color
     
     MultiplayerController.send_player_infos.rpc_id(1, str(data))

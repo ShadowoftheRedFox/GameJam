@@ -10,7 +10,6 @@ func _ready() -> void:
 func handle_player_disconnection(id: int) -> void:
     # handle at the end of the frame to let other listeners the time to do their things
     remove_player.call_deferred(id)
-    # FIXME doesn't work if peer left before he finished loading
 
 @rpc("any_peer")
 func send_player_infos(data_raw: String) -> void:
