@@ -2,16 +2,19 @@
 
 This is the project repository for the group 1 of the 2024 game jam hosted by CY Tech.
 
-![CY TECH](./assets/credits/CY_Tech.png)
-![GAME JAM](./assets/credits/logo_sans_bg.png)
+<picture style="display:flex;flex-direction:row;align-items:center;justify-content:space-evenly;">
+  <img alt="CY Tech Logo" src="./assets/credits/CY_Tech.png"  width="30%">
+  <img alt="Game Jam Logo" src="./assets/credits/logo_sans_bg.png"  width="30%">
+</picture>
 
 # Known bugs:
 
-- It's possible that you can't delete a save on windows through the game.
+- It's possible that you can't delete a save on Windows through the game.
 - Enemies can fall through doors.
 - Dash mid-air without moving makes you float for a short time.
 - Doing your first jump mid-air gives you "another" air-jump.
 - Spamming left right while attacking gives you a higher DPS.
+- Dashing through doors could not change your room.
 
 
 # Features to add:
