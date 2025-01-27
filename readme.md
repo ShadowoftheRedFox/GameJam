@@ -41,3 +41,15 @@ This is the project repository for the group 1 of the 2024 game jam hosted by CY
 - improved enemy AI
 - live tchat for spectators
 - different playable character
+- spectator doesn't spectate default on launch
+- when spectator leave, it's not removed from other spectators
+
+# Feedback
+
+- balance hp/atk
+- increase attack hitbox
+- increase player size
+- some room need fix
+- lobby and not waiting room
+- global feed (kill, disconnection...)
+- since we don't move the mouse, show buff info when near
