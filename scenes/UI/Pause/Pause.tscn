@@ -89,6 +89,8 @@ text = "Retour"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_bottom = 80
 
 [node name="Options" type="VBoxContainer" parent="MarginContainer/MarginContainer/Side"]
 layout_mode = 2
@@ -99,9 +101,8 @@ layout_mode = 2
 size_flags_vertical = 6
 
 [node name="Controls" parent="MarginContainer/MarginContainer/Side/Options" instance=ExtResource("2_kumwd")]
-visible = false
 layout_mode = 2
-size_flags_vertical = 6
+size_flags_vertical = 3
 
 [connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Settings" to="." method="_on_settings_pressed"]

@@ -159,12 +159,14 @@ func update_buff(data: PlayerData) -> void:
     if data.has_buff(Buff.BuffPreset.SPEED_BOOSTER):
         SPEED_CAP_GROUND = 200 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.SPEED_BOOSTER).buff_amount)
         SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.SPEED_BOOSTER).buff_amount)
-        
+    
+    var old_hp_ratio: float = hp / HP_MAX
     if data.has_buff(Buff.BuffPreset.HEALTH_UPGRADER):
         HP_MAX = 20.0 * (1.0 + 0.2 * data.get_buff(Buff.BuffPreset.HEALTH_UPGRADER).buff_amount) # * 1.2 each
+        hp = old_hp_ratio * HP_MAX
     if data.has_buff(Buff.BuffPreset.HEALTH_BOOSTER):
         HP_MAX = HP_MAX + 5.0 * data.get_buff(Buff.BuffPreset.HEALTH_BOOSTER).buff_amount
-        hp += 5.0
+        hp = old_hp_ratio * HP_MAX
 #endregion
 
 @rpc("any_peer", "call_remote")

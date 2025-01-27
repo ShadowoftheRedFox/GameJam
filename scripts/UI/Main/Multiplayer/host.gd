@@ -46,7 +46,7 @@ func _on_launch_pressed() -> void:
 func _on_ip_text_changed(new_text: String) -> void:
     if new_text.is_valid_ip_address():
         Error.text = ""
-        MultiplayerController.server.change_ip(new_text)
+        Server.change_ip(new_text)
         IpValid = true
     else:
         Error.text = "L'IP fournie n'est pas valide"

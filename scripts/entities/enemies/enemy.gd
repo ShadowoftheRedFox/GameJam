@@ -16,6 +16,7 @@ var hp: int = HP_MAX:
             hp_label.text = str(hp)
 @export var atk: int = 3
 @export_range(0, 1) var CRIT_RATE: float = 0.1
+@export var atk_speed: float = 1.5
 @export var friendly_fire: bool = false
 
 @export_category("Animations")
