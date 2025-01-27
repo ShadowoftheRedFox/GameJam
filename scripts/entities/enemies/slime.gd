@@ -21,6 +21,9 @@ func _ready() -> void:
     state_machine = $StateMachine
     body_collider = $CollisionShape2D
     
+    hp_label = $HP
+    hp_label.text = str(hp)
+    
     info = "Idle"
     move_texture()
     # change the color of the slime to one in the array

@@ -7,6 +7,9 @@ func _ready() -> void:
     animation_sprite = $AnimatedSprite2D
     body_collider = $CollisionShape2D
     
+    hp_label = $HP
+    hp_label.text = str(hp)
+    
     animate.connect(handle_animation)
     super()
     

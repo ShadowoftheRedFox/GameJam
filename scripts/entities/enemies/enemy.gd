@@ -9,7 +9,11 @@ extends CharacterBody2D
 
 @export_category("Stats")
 @export var HP_MAX: int = 100
-var hp: int = HP_MAX
+var hp: int = HP_MAX:
+    set(value):
+        hp = value
+        if is_node_ready():
+            hp_label.text = str(hp)
 @export var atk: int = 3
 @export_range(0, 1) var CRIT_RATE: float = 0.1
 @export var friendly_fire: bool = false
@@ -28,6 +32,8 @@ var body_collider: CollisionShape2D
 
 var animation_sprite: AnimatedSprite2D
 var animation_player: AnimationPlayer
+
+var hp_label: Label
 
 @warning_ignore("unused_signal")
 signal animate(animation: String)

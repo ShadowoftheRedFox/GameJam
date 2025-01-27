@@ -104,8 +104,11 @@ func _check_load_status(path: String = "res://scenes/UI/MainMenu.tscn") -> void:
             # It is now safe to remove the current scene.
             if current_scene:
                 current_scene.queue_free()
-            # add scene to root
-            GameController.MenuNodes.add_child.call_deferred(new_scene)
+            # add scene to correct node
+            if new_scene is MainMenu:
+                get_tree().root.add_child(new_scene)
+            else:
+                GameController.MenuNodes.add_child.call_deferred(new_scene)
             # equivalent to current_scene = new_scene
             # get_tree().set_deferred("current_scene", new_scene)
             # end the transition

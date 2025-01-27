@@ -51,7 +51,7 @@ var hosted_gamemode: GameModes = GameModes.Classic
 
 var Players: PlayerDataManager = PlayerDataManager.new()
 var PlayerNodes: Node2D
-var MenuNodes: Node2D
+var MenuNodes: CanvasLayer
 
 var game_started: bool = false
 var game_paused: bool = false
@@ -73,11 +73,15 @@ func _init() -> void:
     add_child(ThreadController)
     add_child(Utils)
     PlayerNodes = Node2D.new()
-    MenuNodes = Node2D.new()
+    MenuNodes = CanvasLayer.new()
     MapNodes = Node2D.new()
     add_child(PlayerNodes)
     add_child(MenuNodes)
     add_child(MapNodes)
+    
+    # since they noew inherit from game_controller, make them pausable
+    PlayerNodes.process_mode = Node.PROCESS_MODE_PAUSABLE
+    MapNodes.process_mode = Node.PROCESS_MODE_PAUSABLE
 
 func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
     # load game
@@ -195,14 +199,14 @@ func pause() -> void:
     GameController.game_paused = true
     main_player_instance.pause.show()
     main_player_instance.player_ui.hide()
-    if Server.solo_active == true:
+    if Server.solo_active:
         get_tree().paused = true
 
 func unpause() -> void:
     GameController.game_paused = false
     main_player_instance.pause.hide()
     main_player_instance.player_ui.show()
-    if Server.solo_active == true:
+    if Server.solo_active:
         get_tree().paused = false
 
 func stop_game(no_new_menu: bool = false) -> void:
