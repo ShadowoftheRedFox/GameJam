@@ -76,9 +76,12 @@ func _start_broadcast() -> void:
         
         for ip: String in _filtered_ips():
             var parts := ip.split(".")
-            parts[3] = "255"
-            udp.set_dest_address(".".join(parts), broadcast_port)
-            udp.put_packet(packet.to_utf8_buffer())
+            # looks like only those 4 port work to broadcast
+            # if it doesn't work, replace range(8, 12) by 256
+            for i in range(8, 12): 
+                parts[3] = str(i)
+                udp.set_dest_address(".".join(parts), broadcast_port)
+                udp.put_packet(packet.to_utf8_buffer())
         
         await get_tree().create_timer(BroadCastTimeout).timeout
 
