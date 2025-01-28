@@ -53,7 +53,17 @@ func _filtered_ips() -> Array[String]:
 func _start_broadcast() -> void:
     udp = PacketPeerUDP.new()
     udp.set_broadcast_enabled(true)
-    udp.bind(broadcast_port)
+    var err := udp.bind(broadcast_port)
+    
+    if err != OK:
+        printerr("Error while binding udp host")
+        _broadcast_host = false
+        return
+    
+    if !udp.is_bound():
+        printerr("Udp host is not bound")
+        _broadcast_host = false
+        return
     
     print("Broadcasting")
     while _broadcast_host:
@@ -72,7 +82,16 @@ func _start_broadcast() -> void:
 
 func _discover_broadcast() -> void:
     udp = PacketPeerUDP.new()
-    udp.bind(broadcast_port, "0.0.0.0")
+    var err := udp.bind(broadcast_port, "0.0.0.0")
+    if err != OK:
+        printerr("Error while binding udp peer")
+        _broadcast_peer = false
+        return
+    
+    if !udp.is_bound():
+        printerr("Udp peer is not bound")
+        _broadcast_peer = false
+        return
     
     print("Searching for rooms...")
     while _broadcast_peer:
