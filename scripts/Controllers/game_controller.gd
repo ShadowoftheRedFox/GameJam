@@ -178,9 +178,12 @@ func join_multiplayer() -> bool:
 
 func multiplayer_after_load(result: MapData) -> void:
     current_map = result.loaded_rooms
-    lobby_readying.rpc_id(1, multiplayer.get_unique_id())
+    if multiplayer.is_server():
+        lobby_ready.emit(1)
+    else:
+        lobby_readying.rpc_id(1, multiplayer.get_unique_id())
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_remote")
 func lobby_readying(id: int) -> void:
     lobby_ready.emit(id)
 
