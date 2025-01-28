@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dh84xjkmhbh72"]
+[gd_scene load_steps=3 format=3 uid="uid://dh84xjkmhbh72"]
 
 [ext_resource type="Script" path="res://scripts/UI/InGame/ui.gd" id="1_476ek"]
+[ext_resource type="Script" path="res://scripts/UI/InGame/feed_container.gd" id="2_sxlir"]
 
 [node name="Ui" type="Control"]
 layout_mode = 3
@@ -29,3 +30,31 @@ text = "Hp : unset"
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
+
+[node name="FeedContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+script = ExtResource("2_sxlir")
+
+[node name="Panel" type="Panel" parent="MarginContainer/FeedContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/FeedContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/FeedContainer/MarginContainer"]
+custom_minimum_size = Vector2(350, 250)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+horizontal_scroll_mode = 3
+
+[node name="Feed" type="VBoxContainer" parent="MarginContainer/FeedContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 10

@@ -30,7 +30,7 @@ This is the project repository for the group 1 of the 2024 game jam hosted by CY
 - traps
 - hidden room
 - password protected server
-- discovery room to see local game near you
+- discovery room to see local game near you (name, private/public)
 - sounds
 - more buffs
 - buffs merge
@@ -43,13 +43,14 @@ This is the project repository for the group 1 of the 2024 game jam hosted by CY
 - different playable character
 - spectator doesn't spectate default on launch
 - when spectator leave, it's not removed from other spectators
+- add little text to show how much damage we do/get
 
 # Feedback
 
 - balance hp/atk
-- increase attack hitbox
-- increase player size
+- ~~increase attack hitbox~~
+- ~~increase player size~~
 - some room need fix
 - lobby and not waiting room
-- global feed (kill, disconnection...)
-- since we don't move the mouse, show buff info when near
+- ~~global feed (kill, disconnection...)~~
+- ~~since we don't move the mouse, show buff info when near~~

@@ -42,6 +42,8 @@ signal spectator_update(id: int)
 signal game_starting
 @warning_ignore("unused_signal")
 signal lobby_ready(id: int) # everyone has finished loading the game
+@warning_ignore("unused_signal")
+signal global_feed(message: String)
 
 # current save data
 var hosted_save_name: String = ""

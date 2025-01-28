@@ -13,6 +13,7 @@ var hp: String = "HP : unset":
             
 @onready var death_counter: Label = $MarginContainer/DeathCounter
 @onready var player: BasePlayer = $"../../.."
+@onready var message_feed: MessageFeed = $MarginContainer/FeedContainer
 
 signal start_counter(time: int)
 var time_remaining: float = 0.0

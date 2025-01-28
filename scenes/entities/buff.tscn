@@ -77,7 +77,7 @@ _data = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_urub3"]
-radius = 30.0
+radius = 600.0
 
 [node name="Buff" type="Node2D" groups=["Buffs"]]
 script = ExtResource("1_gm7h6")
@@ -127,14 +127,17 @@ title = "Mystère"
 content = "Tentez votre chance!"
 title_alignment = 1
 
-[node name="MouseTracker" type="Area2D" parent="."]
+[node name="PlayerTracker" type="Area2D" parent="."]
 collision_layer = 4
-collision_mask = 0
+collision_mask = 2
+input_pickable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MouseTracker"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerTracker"]
 shape = SubResource("CircleShape2D_urub3")
 debug_color = Color(0, 0.6, 0.701961, 0)
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
-[connection signal="mouse_shape_entered" from="MouseTracker" to="." method="_on_mouse_entered"]
-[connection signal="mouse_shape_exited" from="MouseTracker" to="." method="_on_mouse_exited"]
+[connection signal="body_entered" from="PlayerTracker" to="." method="_on_player_tracker_body_entered"]
+[connection signal="body_exited" from="PlayerTracker" to="." method="_on_player_tracker_body_exited"]
+[connection signal="body_shape_entered" from="PlayerTracker" to="." method="_on_player_tracker_body_shape_entered"]
+[connection signal="body_shape_exited" from="PlayerTracker" to="." method="_on_player_tracker_body_shape_exited"]

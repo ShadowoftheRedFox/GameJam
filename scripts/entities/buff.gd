@@ -37,7 +37,7 @@ const buff_description: Array[String] = [
 @onready var particle_material: ParticleProcessMaterial = particle_gen.process_material
 @onready var light: PointLight2D = $PointLight2D
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var mouse_area: Area2D = $MouseTracker
+@onready var mouse_area: Area2D = $PlayerTracker
 @onready var popup: MarginContainer = $Popup
 @onready var popup_message: MessageBox = $Popup/MessageBox
 @onready var animation: AnimationPlayer = $AnimationPlayer
@@ -322,14 +322,22 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     GameController.player_infos_update.emit(data)
     collected = true
 
-func _on_mouse_entered(_shape_idx: int) -> void:
+func _on_player_tracker_body_entered(body: Node2D) -> void:
+    if body != GameController.main_player_instance:
+        return
     if !popup_disabled or !collected:
         popup.show()
 
-func _on_mouse_exited(_shape_idx: int) -> void:
+func _on_player_tracker_body_exited(body: Node2D) -> void:
+    if body != GameController.main_player_instance:
+        return
     if !popup_disabled or !collected:
         popup.hide()
 
 func dispawn() -> void:
     animation.play("dispawn")
     particle_gen.amount_ratio = 0
+
+func transition_to_color(time: int, new_color: Color) -> void:
+    # TODO transition color
+    pass

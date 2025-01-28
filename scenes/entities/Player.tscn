@@ -374,9 +374,10 @@ properties/2/replication_mode = 2
 font_size = 11
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gn0am"]
-size = Vector2(28, 38)
+size = Vector2(68, 38)
 
 [node name="Player" type="CharacterBody2D" groups=["Players"]]
+scale = Vector2(1.2, 1.2)
 collision_layer = 2
 collision_mask = 29
 floor_snap_length = 10.0
@@ -399,6 +400,8 @@ position = Vector2(0, -14)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_cjfn4")
 animation = &"attack1"
+frame = 3
+frame_progress = 0.445824
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_truud")
@@ -442,7 +445,7 @@ priority = 1
 script = ExtResource("6_4oxju")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackBox"]
-position = Vector2(26, 0)
+position = Vector2(6, 0)
 shape = SubResource("RectangleShape2D_gn0am")
 disabled = true
 debug_color = Color(0.7, 0, 0, 0.42)

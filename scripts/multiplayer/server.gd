@@ -61,9 +61,12 @@ func peer_connected(id: int) -> void:
 func peer_disconnected(id: int) -> void:
     peer_print(MessageType.PRINT, "Player " + str(id) + " disconnected")
     player_disconnected.emit(id)
+    if GameController.game_started:
+        GameController.global_feed.emit(GameController.Players.get_player(id).name + " s'est déconnecté")
     # if the server has disconnected
     if id == 1:
         GameController.stop_game()
+        
     
 func connection_failed() -> void:
     push_error("Connection failed")
