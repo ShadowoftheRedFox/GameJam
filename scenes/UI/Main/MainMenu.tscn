@@ -107,6 +107,7 @@ focus_neighbor_bottom = NodePath("../New")
 text = "Quitter"
 
 [node name="Test" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "--Test--"
 
