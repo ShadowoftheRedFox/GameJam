@@ -11,7 +11,7 @@ var SaveValid := false
 signal host_pressed
 
 func _ready() -> void:
-    SaveController.saves_changed.connect(check_save)
+    Save.saves_changed.connect(check_save)
     check_save()
 
 
@@ -22,9 +22,9 @@ func enable_launch():
 func check_save() -> void:
     # remove everything
     Options.clear()
-    if len(SaveController.save_names) > 0:
+    if len(Save.save_names) > 0:
         var i = 0
-        for save_name in SaveController.save_names:
+        for save_name in Save.save_names:
             Options.add_item(save_name, i)
             i += 1
         # enable other buttons
@@ -38,7 +38,7 @@ func check_save() -> void:
 
 
 func _on_launch_pressed() -> void:
-    GameController.launch_multiplayer(Options.get_item_text(Options.selected))
+    Game.launch_multiplayer(Options.get_item_text(Options.selected))
     host_pressed.emit()
     self.hide()
 
@@ -57,7 +57,7 @@ func _on_ip_text_changed(new_text: String) -> void:
 func _on_port_text_changed(new_text: String) -> void:
     if new_text.is_valid_int() and int(new_text) > 0 and int(new_text) < 65535:
         Error.text = ""
-        MultiplayerController.server.change_port(new_text)
+        Multi.server.change_port(new_text)
         PortValid = true
     else:
         Error.text = "Le port fourni n'est pas valide"
@@ -69,7 +69,7 @@ func _on_max_player_text_changed(new_text: String) -> void:
     if new_text.is_valid_int():
         if int(new_text) >= 2 and int(new_text) <= 32:
             Error.text = ""
-            MultiplayerController.server.change_max_player(new_text)
+            Multi.server.change_max_player(new_text)
             MaxPlayerValid = true
             enable_launch()
             return

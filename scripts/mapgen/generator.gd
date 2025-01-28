@@ -19,7 +19,7 @@ func create_map(width: int, height: int, probability: float) -> Array:
         var row = []
         for x in range(width):
             var node: MapRoom = Room.instantiate()
-            node.room_id = GameController.GeneratorController.mapgen_get_next_unique_id()
+            node.room_id = Game.GeneratorController.mapgen_get_next_unique_id()
             node.room_position = Vector2(x, y)
             row.append(node)
         map.append(row)
@@ -117,7 +117,7 @@ func load_map(data: MapData, width: int, height: int) -> MapData:
         var row = []
         for x in range(width):
             var node: MapRoom = Room.instantiate()
-            node.room_id = GameController.GeneratorController.mapgen_get_next_unique_id()
+            node.room_id = Game.GeneratorController.mapgen_get_next_unique_id()
             node.room_position = Vector2(x, y)
             row.append(node)
         data.loaded_rooms.append(row)
@@ -144,13 +144,13 @@ func load_map(data: MapData, width: int, height: int) -> MapData:
             room.check_room_valid()
             
             if data.buff_types[y][x] != Buff.BuffPreset.NONE:
-                var buff: Buff = GameController.BuffScene.instantiate()
+                var buff: Buff = Game.BuffScene.instantiate()
                 @warning_ignore("int_as_enum_without_cast")
                 buff.buff_preset = data.buff_types[y][x]
                 room.BuffSpawn.add_child(buff)
                 buff.apply_to_children.call_deferred()
                 
-            var ennemy = GameController.OrcScene.instantiate() if randi_range(0, 1) else GameController.SlimeScene.instantiate()
+            var ennemy = Game.OrcScene.instantiate() if randi_range(0, 1) else Game.SlimeScene.instantiate()
             room.BuffSpawn.add_child(ennemy)
             
             var tile_map = room.Map

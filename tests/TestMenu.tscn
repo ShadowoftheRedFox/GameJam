@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxbrrhpfd1qno"]
+
+[sub_resource type="GDScript" id="GDScript_gw1bf"]
+script/source = "extends Control
+
+signal back_pressed
+
+func _on_back_pressed() -> void:
+    back_pressed.emit()
+
+func _on_join_pressed() -> void:
+    Server.Network.start_broadcast.emit()
+
+func _on_host_pressed() -> void:
+    Server.Network.start_broadcast.emit(true)
+
+
+func _on_stop_pressed() -> void:
+    Server.Network.stop_broadcast.emit()
+"
+
+[node name="TestMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_gw1bf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Host" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Host"
+
+[node name="Stop" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Stop"
+
+[node name="Join" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Join"
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -8.0
+offset_right = 8.0
+grow_vertical = 0
+text = "Back"
+
+[connection signal="pressed" from="HBoxContainer/Host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="pressed" from="HBoxContainer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]

@@ -11,13 +11,13 @@ const PlayerScorePanel = preload("res://scenes/UI/Spectator/PlayerScore.tscn")
 var player_spectating_id: int = 0
 
 func _ready() -> void:
-    GameController.player_infos_update.connect(update_player_list)
+    Game.player_infos_update.connect(update_player_list)
     update_player_list(null)
     update_score()
     
 func update_player_list(_data: PlayerData) -> void:
     # add every player in the list
-    var players := GameController.Players.list
+    var players := Game.Players.list
     for player in players:
         if !player.is_spectator:
             players_options.add_item(player.name, player.id)
@@ -29,7 +29,7 @@ func update_player_list(_data: PlayerData) -> void:
     if players_options.item_count > 0:
         # when it's our first focus, focus on first in the list
         # or our previously focused player has been removed
-        if player_spectating_id == 0 or !GameController.Players.has_player(player_spectating_id):
+        if player_spectating_id == 0 or !Game.Players.has_player(player_spectating_id):
             focus_on_player()
 
 func update_score() -> void:
@@ -38,7 +38,7 @@ func update_score() -> void:
         if !child.name.contains("Header"):
             child.queue_free()
     
-    for p in GameController.Players.list:
+    for p in Game.Players.list:
         if !p.is_spectator:
             var panel = PlayerScorePanel.instantiate()
             panel.player_data = p
@@ -54,7 +54,7 @@ func _on_before_pressed() -> void:
         players_options.select(players_options.selected - 1)
     
     var id = players_options.get_item_id(players_options.selected)
-    var id_data := GameController.Players.get_player(id)
+    var id_data := Game.Players.get_player(id)
     if id_data and id_data.is_spectator:
         _on_before_pressed()
         return
@@ -70,7 +70,7 @@ func _on_after_pressed() -> void:
         players_options.select(players_options.selected + 1)
         
     var id = players_options.get_item_id(players_options.selected)
-    var id_data := GameController.Players.get_player(id)
+    var id_data := Game.Players.get_player(id)
     if id_data and id_data.is_spectator:
         _on_after_pressed()
         return
@@ -84,9 +84,9 @@ func focus_on_player() -> void:
     # clear listeners
     var player: BasePlayer = null
     if player_spectating_id != 0:
-        if GameController.Players.has_node(player_spectating_id):
-            player = GameController.Players.get_node(player_spectating_id)
-            GameController.Utils.remove_signal_listener(player.room_changed)
+        if Game.Players.has_node(player_spectating_id):
+            player = Game.Players.get_node(player_spectating_id)
+            Game.Utils.remove_signal_listener(player.room_changed)
             player.camera.disable_camera()
             player = null
     
@@ -100,9 +100,9 @@ func focus_on_player() -> void:
     # need to: move to the room of the player
     # listen if changing room
     # connect to it's camera, or own camera follows him
-    var player_data = GameController.Players.get_player(player_spectating_id)
-    if GameController.Players.has_node(player_spectating_id):
-        player = GameController.Players.get_node(player_spectating_id)
+    var player_data = Game.Players.get_player(player_spectating_id)
+    if Game.Players.has_node(player_spectating_id):
+        player = Game.Players.get_node(player_spectating_id)
         player.room_changed.connect(follow_camera)
         player.camera.enabled = true
         
@@ -110,15 +110,15 @@ func focus_on_player() -> void:
         return
     
     # set this player as the main instance
-    GameController.main_player_instance = player
-    GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
+    Game.main_player_instance = player
+    Game.current_room = Game.current_map[player.player_room.y][player.player_room.x]
 
 func follow_camera() -> void:
-    if GameController.Players.has_node(player_spectating_id):
-        var player: BasePlayer = GameController.Players.get_node(player_spectating_id)
-        GameController.current_room = GameController.current_map[player.player_room.y][player.player_room.x]
+    if Game.Players.has_node(player_spectating_id):
+        var player: BasePlayer = Game.Players.get_node(player_spectating_id)
+        Game.current_room = Game.current_map[player.player_room.y][player.player_room.x]
         player.camera.snap()
-        player.camera.set_limits(GameController.current_room.Map)
+        player.camera.set_limits(Game.current_room.Map)
 
 func _on_spectate_pressed() -> void:
     if spectate.visible:
@@ -137,4 +137,4 @@ func _on_score_pressed() -> void:
 
 
 func _on_quit_pressed() -> void:
-    GameController.stop_game()
+    Game.stop_game()

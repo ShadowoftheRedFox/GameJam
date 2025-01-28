@@ -37,7 +37,7 @@ func physics_update(delta: float) -> void:
         
 func exit() -> void:
     entity.attack_box.get_child(0).set_deferred("disabled", true)
-    GameController.Utils.remove_signal_listener(entity.attack_box.body_entered)
+    Game.Utils.remove_signal_listener(entity.attack_box.body_entered)
 
 func attacking(body: Node2D) -> void:
     if body is GlobalEnemy and entity.friendly_fire:

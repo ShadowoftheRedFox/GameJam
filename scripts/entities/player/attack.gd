@@ -36,10 +36,10 @@ func handle_respawn() -> void:
     player.attacking = false
     
     if player.DEBUG:
-        player.global_position = GameController.current_room.get_node("Spawn").global_position
+        player.global_position = Game.current_room.get_node("Spawn").global_position
     else:
-        GameController.current_room = GameController.current_map[player.player_spawn.y][player.player_spawn.x]
-        player.global_position = GameController.current_room.PlayerSpawn.global_position
+        Game.current_room = Game.current_map[player.player_spawn.y][player.player_spawn.x]
+        player.global_position = Game.current_room.PlayerSpawn.global_position
         player.change_room(player.player_spawn)
     
     player.collider.set_deferred("disabled", false)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c6efwceppjp36"]
+[gd_scene load_steps=8 format=3 uid="uid://c6efwceppjp36"]
 
 [ext_resource type="Script" path="res://scripts/UI/Main/MainMenu.gd" id="1_v1k7h"]
 [ext_resource type="PackedScene" uid="uid://d1cpj26wd0fqw" path="res://scenes/entities/buff.tscn" id="2_s43ht"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bro2asdburtfg" path="res://scenes/UI/Main/Options/Options.tscn" id="4_41hkr"]
 [ext_resource type="PackedScene" uid="uid://dwrjfxf12yrvt" path="res://scenes/UI/Main/NewGame/NewGame.tscn" id="5_vkava"]
 [ext_resource type="PackedScene" uid="uid://b8ushcso2djve" path="res://scenes/UI/Main/Continue/Continue.tscn" id="6_v7v2s"]
+[ext_resource type="PackedScene" uid="uid://dxbrrhpfd1qno" path="res://tests/TestMenu.tscn" id="7_te5ou"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -105,9 +106,9 @@ layout_mode = 2
 focus_neighbor_bottom = NodePath("../New")
 text = "Quitter"
 
-[node name="MarginContainer2" type="MarginContainer" parent="Main/MarginContainer"]
+[node name="Test" type="Button" parent="Main/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+text = "--Test--"
 
 [node name="Multiplayer" parent="." instance=ExtResource("3_8c6ax")]
 visible = false
@@ -125,13 +126,19 @@ layout_mode = 1
 visible = false
 layout_mode = 1
 
+[node name="TestMenu" parent="." instance=ExtResource("7_te5ou")]
+visible = false
+layout_mode = 1
+
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/New" to="." method="_on_new_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Multiplayer" to="." method="_on_multiplayer_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Main/MarginContainer/MarginContainer/VBoxContainer/Test" to="." method="_on_test_pressed"]
 [connection signal="back_pressed" from="Multiplayer" to="." method="_on_multiplayer_back_pressed"]
 [connection signal="back_pressed" from="Options" to="." method="_on_options_back_pressed"]
 [connection signal="back_pressed" from="NewGame" to="." method="_on_new_game_back_pressed"]
 [connection signal="back_pressed" from="Continue" to="." method="_on_continue_back_pressed"]
+[connection signal="back_pressed" from="TestMenu" to="." method="_on_test_menu_back_pressed"]

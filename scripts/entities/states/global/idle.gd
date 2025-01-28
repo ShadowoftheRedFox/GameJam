@@ -10,7 +10,7 @@ func update(_delta: float) -> void:
     if entity.target_player == null:
         # get the nearest player
         var found = false
-        for player: BasePlayer in GameController.PlayerNodes.get_children():
+        for player: BasePlayer in Game.PlayerNodes.get_children():
             var min_dist: float = entity.target_range
             var current = entity.global_position.distance_squared_to(player.global_position)
             if current <= min_dist:

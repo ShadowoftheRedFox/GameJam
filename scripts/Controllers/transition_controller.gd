@@ -44,7 +44,7 @@ func _deferred_goto_scene(path: String = "res://scenes/UI/MainMenu.tscn"):
     current_scene = s.instantiate()
 
     # Add it to the active scene, as child of root.
-    GameController.MenuNodes.add_child(current_scene)
+    Game.MenuNodes.add_child(current_scene)
 
     # Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
     # get_tree().current_scene = current_scene
@@ -108,7 +108,7 @@ func _check_load_status(path: String = "res://scenes/UI/MainMenu.tscn") -> void:
             if new_scene is MainMenu:
                 get_tree().root.add_child(new_scene)
             else:
-                GameController.MenuNodes.add_child.call_deferred(new_scene)
+                Game.MenuNodes.add_child.call_deferred(new_scene)
             # equivalent to current_scene = new_scene
             # get_tree().set_deferred("current_scene", new_scene)
             # end the transition

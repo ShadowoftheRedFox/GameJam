@@ -20,7 +20,7 @@ func _input(event: InputEvent) -> void:
     if event is InputEventKey and event.pressed and is_waiting_key:
         waiting_button.text = event.as_text()
         # save change
-        SaveController.save_control(waiting_label_name, str(event), false)
+        Save.save_control(waiting_label_name, str(event), false)
         is_waiting_key = false
     
     if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and is_waiting_controller:
@@ -30,11 +30,11 @@ func _input(event: InputEvent) -> void:
         
         waiting_button.text = event.as_text()
         # save change
-        SaveController.save_control(waiting_label_name, str(event), true)
+        Save.save_control(waiting_label_name, str(event), true)
         is_waiting_controller = false
 
 func _ready() -> void:
-    SaveController.parameters_changed.connect(_on_parameters_changed)
+    Save.parameters_changed.connect(_on_parameters_changed)
     setup()
 
 func setup() -> void:
@@ -152,5 +152,5 @@ func _on_parameters_changed() -> void:
     setup()
 
 func _on_reset_pressed() -> void:
-    SaveController.reset_controls()
-    SaveController.save_parameters()
+    Save.reset_controls()
+    Save.save_parameters()

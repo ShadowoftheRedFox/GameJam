@@ -11,8 +11,8 @@ var ending = false
 func end() -> void:
     print("credits ending...")
     ending = true
-    TransitionController.current_scene = self
-    TransitionController._deferred_change_scene("res://scenes/UI/Main/MainMenu.tscn")
+    Transition.current_scene = self
+    Transition._deferred_change_scene("res://scenes/UI/Main/MainMenu.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

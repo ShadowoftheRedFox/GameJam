@@ -302,7 +302,6 @@ func apply_to_children() -> void:
     popup_message.title = buff_title[buff_preset]
     popup_message.content = buff_description[buff_preset]
     
-
 func _on_area_2d_body_entered(body: Node2D) -> void:
     if body is not BasePlayer or collected:
         return
@@ -310,7 +309,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     if player.player_disabled:
         return
     var id = player.name.to_int()
-    var data := GameController.Players.get_player(id)
+    var data := Game.Players.get_player(id)
     if data == null and !player.DEBUG:
         push_warning("The player colliding is not in the player list")
         return
@@ -318,18 +317,18 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
     data.add_buff(buff_preset)
     
     player.update_buff(data)
-    MultiplayerController.player_buff_update.rpc(id, str(data))
-    GameController.player_infos_update.emit(data)
+    Multi.player_buff_update.rpc(id, str(data))
+    Game.player_infos_update.emit(data)
     collected = true
 
 func _on_player_tracker_body_entered(body: Node2D) -> void:
-    if body != GameController.main_player_instance:
+    if body != Game.main_player_instance:
         return
     if !popup_disabled or !collected:
         popup.show()
 
 func _on_player_tracker_body_exited(body: Node2D) -> void:
-    if body != GameController.main_player_instance:
+    if body != Game.main_player_instance:
         return
     if !popup_disabled or !collected:
         popup.hide()
@@ -338,6 +337,6 @@ func dispawn() -> void:
     animation.play("dispawn")
     particle_gen.amount_ratio = 0
 
-func transition_to_color(time: int, new_color: Color) -> void:
+func transition_to_color(_time: int, _new_color: Color) -> void:
     # TODO transition color
     pass

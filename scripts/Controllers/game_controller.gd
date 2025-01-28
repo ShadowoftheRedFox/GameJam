@@ -84,7 +84,7 @@ func _init() -> void:
     # since they noew inherit from game_controller, make them pausable
     PlayerNodes.process_mode = Node.PROCESS_MODE_PAUSABLE
     MapNodes.process_mode = Node.PROCESS_MODE_PAUSABLE
-
+    
 func new_game(save_name: String, difficulty: Difficulties, map_size: MapSizes, gamemode: GameModes) -> void:
     # load game
     hosted_save_name = save_name
@@ -104,7 +104,7 @@ func new_game_after_load(load_result: MapData) -> void:
     current_map = load_result.loaded_rooms
     room_size = load_result.room_size
     
-    if SaveController.create_new_save(hosted_save_name, JSON.stringify({
+    if Save.create_new_save(hosted_save_name, JSON.stringify({
         "difficulty": hosted_difficulty,
         "gamemode": hosted_gamemode,
         "map_size": hosted_map_size,
@@ -123,7 +123,7 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     if !multiplayer_data.is_empty() and save_name == "":
         save_data = multiplayer_data
     else:
-        save = SaveController.get_save(save_name)
+        save = Save.get_save(save_name)
         save_data = save[0]
 
     # store data
@@ -155,12 +155,12 @@ func launch_solo(save_name: String) -> void:
         game_loaded.connect(launch_solo_after_load)
         load_game(save_name)
     else:
-        MultiplayerController.start_game()
+        Multi.start_game()
 
 func launch_solo_after_load(load_result: MapData) -> void:
     # TODO make a Map and be mapdata 
     current_map = load_result.loaded_rooms
-    MultiplayerController.start_game()
+    Multi.start_game()
 
 func launch_multiplayer(save_name: String) -> void:
     var res: bool = Server.create_host()
@@ -198,14 +198,14 @@ func show_menu() -> void:
 
 func pause() -> void:
     main_player_instance.move_to_front()
-    GameController.game_paused = true
+    Game.game_paused = true
     main_player_instance.pause.show()
     main_player_instance.player_ui.hide()
     if Server.solo_active:
         get_tree().paused = true
 
 func unpause() -> void:
-    GameController.game_paused = false
+    Game.game_paused = false
     main_player_instance.pause.hide()
     main_player_instance.player_ui.show()
     if Server.solo_active:
@@ -213,7 +213,7 @@ func unpause() -> void:
 
 func stop_game(no_new_menu: bool = false) -> void:
     if game_started == true and multiplayer.is_server():
-        SaveController.save_game(hosted_save_name)
+        Save.save_game(hosted_save_name)
     GeneratorController.free_map(current_map)
     if main_player_instance != null:
         main_player_instance.queue_free()
@@ -233,7 +233,7 @@ func stop_game(no_new_menu: bool = false) -> void:
     Server.stop_server()
 
     Utils.remove_signal_listener(game_loaded)
-    GameController.Players.reset()
+    Game.Players.reset()
     game_started = false
     current_map = []
     current_room = null

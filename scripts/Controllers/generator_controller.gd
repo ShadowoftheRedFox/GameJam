@@ -56,7 +56,7 @@ func generate_map(map_size: int = 0) -> MapData:
         for x: int in map[y].size():
             # put buff in all spawn for now
             var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM + 1, Buff.BuffPreset.MAX - 1)
-            var buff: Buff = GameController.BuffScene.instantiate()
+            var buff: Buff = Game.BuffScene.instantiate()
             @warning_ignore("int_as_enum_without_cast")
             buff.buff_preset = buff_type
             

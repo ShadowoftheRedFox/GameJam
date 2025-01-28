@@ -12,11 +12,11 @@ func _ready() -> void:
     
     # enable the button if any save is available
     update_continue_state()
-    SaveController.saves_changed.connect(update_continue_state)
+    Save.saves_changed.connect(update_continue_state)
 
 func update_continue_state() -> void:
     # enable or disable the continue button
-    $Main/MarginContainer/MarginContainer/VBoxContainer/Continue.disabled = len(SaveController.save_names) == 0
+    $Main/MarginContainer/MarginContainer/VBoxContainer/Continue.disabled = len(Save.save_names) == 0
 
 func _on_new_pressed() -> void:
     $Main.hide()
@@ -76,6 +76,16 @@ func _on_continue_back_pressed() -> void:
 
 func _on_credits_pressed() -> void:
     # sometimes, main is deleted, tell transition that it's himself we want to remove
-    TransitionController.current_scene = self
-    TransitionController.message = ""
-    TransitionController._deferred_change_scene("res://scenes/UI/Main/credits.tscn")
+    Transition.current_scene = self
+    Transition.message = ""
+    Transition._deferred_change_scene("res://scenes/UI/Main/credits.tscn")
+
+
+func _on_test_menu_back_pressed() -> void:
+    $TestMenu.hide()
+    generic_back_pressed()
+
+
+func _on_test_pressed() -> void:
+    $TestMenu.show()
+    $Main.hide()

@@ -59,7 +59,7 @@ func get_connection(direction: String) -> Node:
 
 func area_entered(body: Node2D, direction: String) -> void:
     # only care about our player 
-    if body != GameController.main_player_instance:
+    if body != Game.main_player_instance:
         return
     # if door origin is not cleared yet
     if player_door_origin != "":
@@ -92,10 +92,10 @@ func area_entered(body: Node2D, direction: String) -> void:
     door.door_cleared = false
     # TODO transition
     # change player pos and display next room
-    GameController.current_room = next_room
-    GameController.main_player_instance.change_room(next_room.room_position)
+    Game.current_room = next_room
+    Game.main_player_instance.change_room(next_room.room_position)
     # FIXME get the same relative pos from door to door (and not spawn from center) or generalize doors
-    GameController.main_player_instance.global_position = door.global_position
+    Game.main_player_instance.global_position = door.global_position
 
 # Called when the node is added to the scene tree for the first time
 func _ready():
@@ -158,8 +158,8 @@ func generate_room() -> bool:
     if path.ends_with("_"):
         path = path.erase(len(path) - 1)
 
-    #print("Room ", room_id, " can choose between ", GameController.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
-    var amount_room_available = GameController.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn")
+    #print("Room ", room_id, " can choose between ", Game.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn"), " scenes")
+    var amount_room_available = Game.Utils.get_num_files_in_dir("res://scenes/levels/" + path, ".tscn")
     if amount_room_available == 0:
         printerr("No room available for ", path)
         return false

@@ -106,7 +106,7 @@ func change_room(room: Vector2) -> void:
     player_room = room
     # snap camera
     camera.snap()
-    camera.set_limits(GameController.current_room.Map)
+    camera.set_limits(Game.current_room.Map)
 
 func _ready():
     camera.snap()
@@ -126,21 +126,21 @@ func _ready():
             camera.set_limits(get_parent().get_node("Map"))
             # add room (so parent) as current_room
             # must have the room script attached
-            GameController.current_room = get_parent()
+            Game.current_room = get_parent()
         else:
             push_warning("Couldn't find map, make sure the map is a brother of this node, and that the node called Map is a TileMapLayer")
         # makes himself the main instance
-        GameController.main_player_instance = self
+        Game.main_player_instance = self
         Server.solo_active = true
         # add himself to the player list
         var data = PlayerData.new()
         data.id = 0
         name = str(data.id)
         data.name = "DebugPlayer"
-        GameController.Players.list.append(data)
-        reparent.call_deferred(GameController.PlayerNodes, true)
+        Game.Players.list.append(data)
+        reparent.call_deferred(Game.PlayerNodes, true)
     else:
-        camera.set_limits(GameController.current_room.Map)
+        camera.set_limits(Game.current_room.Map)
         
     hp = HP_MAX
 
@@ -192,7 +192,7 @@ func _physics_process(delta: float) -> void:
     if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active or DEBUG:
         # Handle pause functionality
         if Input.is_action_just_pressed("Pause"):
-            GameController.pause()
+            Game.pause()
             return
             
         if Input.is_action_just_pressed("SmallAttack"):

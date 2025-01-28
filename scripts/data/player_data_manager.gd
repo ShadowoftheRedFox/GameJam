@@ -66,10 +66,10 @@ func as_dictionary() -> Dictionary:
 
 func add_node(id: int, node: BasePlayer) -> void:
     node.name = str(id)
-    GameController.PlayerNodes.add_child(node)
+    Game.PlayerNodes.add_child(node)
     
 func has_node(id: int) -> bool:
-    return GameController.PlayerNodes.has_node(str(id))
+    return Game.PlayerNodes.has_node(str(id))
 
 func get_node(id: int) -> BasePlayer:
-    return GameController.PlayerNodes.get_node(str(id))
+    return Game.PlayerNodes.get_node(str(id))

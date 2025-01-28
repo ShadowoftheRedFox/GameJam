@@ -15,14 +15,14 @@ var save_data: Dictionary = {}
 
 func _ready() -> void:
     get_save.connect(load_get_save)
-    for diff in GameController.Difficulties:
-        difficulty_options.add_item(GameController.DifficultiesNames[GameController.Difficulties.get(diff)], GameController.Difficulties.get(diff))
-    for gm in GameController.GameModes:
-        gamemode_options.add_item(GameController.GameModesNames[GameController.GameModes.get(gm)], GameController.GameModes.get(gm))
+    for diff in Game.Difficulties:
+        difficulty_options.add_item(Game.DifficultiesNames[Game.Difficulties.get(diff)], Game.Difficulties.get(diff))
+    for gm in Game.GameModes:
+        gamemode_options.add_item(Game.GameModesNames[Game.GameModes.get(gm)], Game.GameModes.get(gm))
 
 func load_get_save(string: String, data: Dictionary) -> void:
     save_data = data.duplicate(true)
-    true_save_name = SaveController.get_save_name(string)
+    true_save_name = Save.get_save_name(string)
     display_save_name = string
     save_name_edit.text = string
     save_name_label.text = string
@@ -30,9 +30,9 @@ func load_get_save(string: String, data: Dictionary) -> void:
     gamemode_options.select(save_data.gamemode)
 
 func _on_save_pressed() -> void:
-    SaveController.update_save(true_save_name, {
-        SaveController.UpdateActions.CHANGE_DISPLAY_NAME: display_save_name,
-        SaveController.UpdateActions.CHANGE_SAVE_CONTENT: JSON.stringify(save_data)
+    Save.update_save(true_save_name, {
+        Save.UpdateActions.CHANGE_DISPLAY_NAME: display_save_name,
+        Save.UpdateActions.CHANGE_SAVE_CONTENT: JSON.stringify(save_data)
     })
     back_pressed.emit()
 

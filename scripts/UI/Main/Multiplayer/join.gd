@@ -15,7 +15,7 @@ func enable_launch() -> void:
     Launch.disabled = !(IpValid and PortValid)
 
 func _on_launch_pressed() -> void:
-    if !GameController.join_multiplayer():
+    if !Game.join_multiplayer():
         Error.text = "Erreur lors de la connexion à l'hôte"
         return
         

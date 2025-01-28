@@ -15,14 +15,14 @@ func _ready() -> void:
 func _input(_event: InputEvent) -> void:
     if Input.is_action_just_pressed("Pause"):
         if can_unpause:
-            GameController.unpause.call_deferred()
+            Game.unpause.call_deferred()
             can_unpause = false
             resume.grab_focus()
         else:
             can_unpause = true
 
 func _on_resume_pressed() -> void:
-    GameController.unpause()
+    Game.unpause()
     can_unpause = false
     resume.grab_focus()
 
@@ -54,10 +54,10 @@ func _on_control_pressed() -> void:
 
 
 func _on_save_pressed() -> void:
-    SaveController.save_game(GameController.hosted_save_name)
+    Save.save_game(Game.hosted_save_name)
 
 
 func _on_quit_pressed() -> void:
-    GameController.unpause()
+    Game.unpause()
     resume.grab_focus()
-    GameController.stop_game()
+    Game.stop_game()

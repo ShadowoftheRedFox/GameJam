@@ -19,10 +19,10 @@ config/windows_native_icon="res://tests/icon.ico"
 
 [autoload]
 
-GameController="*res://scripts/Controllers/game_controller.gd"
-TransitionController="*res://scripts/Controllers/transition_controller.gd"
-SaveController="*res://scripts/Controllers/save_controller.gd"
-MultiplayerController="*res://scripts/Controllers/multiplayer_controller.gd"
+Game="*res://scripts/Controllers/game_controller.gd"
+Transition="*res://scripts/Controllers/transition_controller.gd"
+Save="*res://scripts/Controllers/save_controller.gd"
+Multi="*res://scripts/Controllers/multiplayer_controller.gd"
 Server="*res://scripts/multiplayer/server.gd"
 
 [dotnet]

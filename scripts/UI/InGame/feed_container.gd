@@ -8,7 +8,7 @@ var current_transition: float = 0.0
 @onready var feed: VBoxContainer = $MarginContainer/ScrollContainer/Feed
 
 func _ready() -> void:
-    GameController.global_feed.connect(feed_listener)
+    Game.global_feed.connect(feed_listener)
     modulate = Color("ffffff00")
 
 func feed_listener(message: String) -> void:
@@ -33,5 +33,5 @@ func _process(delta: float) -> void:
     
     if current_transition <= transition_time:
         modulate = Color("ffffff" + "%02x" % (
-            int(current_transition/float(transition_time) * 255)
+            int(current_transition / float(transition_time) * 255)
         ))

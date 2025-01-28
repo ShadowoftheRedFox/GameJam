@@ -315,9 +315,9 @@ func get_save_info(save_name: String) -> Dictionary:
     var data := get_save(save_name)[0]
     
     return {
-        "map_size": GameController.MapSizesNames[data.get("map_size", 0)],
-        "difficulty": GameController.DifficultiesNames[data.get("difficulty", 0)],
-        "gamemode": GameController.GameModesNames[data.get("gamemode", 0)]
+        "map_size": Game.MapSizesNames[data.get("map_size", 0)],
+        "difficulty": Game.DifficultiesNames[data.get("difficulty", 0)],
+        "gamemode": Game.GameModesNames[data.get("gamemode", 0)]
     }
     
 func get_save(save_name: String) -> Array[Dictionary]:
@@ -404,7 +404,7 @@ func update_save(save_name: String, args: Dictionary = {}) -> bool:
 func save_game(save_name: String) -> bool:
     print("Saving...")
     # TODO save game
-    var _save = SaveController.get_save(save_name)
+    var _save = Save.get_save(save_name)
     
     print("Saved")
     return true
