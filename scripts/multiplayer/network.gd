@@ -51,12 +51,15 @@ func _filtered_ips() -> Array[String]:
     return res
 
 func _start_broadcast() -> void:
+    if udp:
+        return
+    
     udp = PacketPeerUDP.new()
     udp.set_broadcast_enabled(true)
     var err := udp.bind(broadcast_port)
     
     if err != OK:
-        printerr("Error while binding udp host")
+        printerr("Error while binding udp host: ", error_string(err))
         _broadcast_host = false
         return
     
@@ -67,12 +70,14 @@ func _start_broadcast() -> void:
     
     print("Broadcasting")
     while _broadcast_host:
+        # update info
         broadcast_data.update_from_server()
         var packet = str(broadcast_data)
         
-        for ip in _filtered_ips():
-            # update info
-            udp.set_dest_address(ip, broadcast_port)
+        for ip: String in _filtered_ips():
+            var parts := ip.split(".")
+            parts[3] = "255"
+            udp.set_dest_address(".".join(parts), broadcast_port)
             udp.put_packet(packet.to_utf8_buffer())
         
         await get_tree().create_timer(BroadCastTimeout).timeout
@@ -81,10 +86,13 @@ func _start_broadcast() -> void:
     _stopped_broadcasting.emit()
 
 func _discover_broadcast() -> void:
+    if udp:
+        return
+    
     udp = PacketPeerUDP.new()
     var err := udp.bind(broadcast_port, "0.0.0.0")
     if err != OK:
-        printerr("Error while binding udp peer")
+        printerr("Error while binding udp peer: ", error_string(err))
         _broadcast_peer = false
         return
     
