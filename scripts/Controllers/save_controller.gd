@@ -346,6 +346,7 @@ func get_save(save_name: String) -> Array[Dictionary]:
             continue
         file_data.append(json.data)
     
+    general_save_file.close()
     return file_data
     
 func get_save_raw(save_name: String) -> String:
