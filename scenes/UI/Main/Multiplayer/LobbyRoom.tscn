@@ -1,0 +1,109 @@
+[gd_scene load_steps=3 format=3 uid="uid://ci0v6mh54s1rn"]
+
+[sub_resource type="GDScript" id="GDScript_vqert"]
+script/source = "class_name LobbyRoom
+extends Control
+
+signal join(ip: String, data: NetworkData)
+
+var room_ip: String = \"\"
+var room_data: NetworkData = null
+
+@onready var room_name: Label = $MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/Name
+@onready var gamemode: Label = $MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/Gamemode
+@onready var players: Label = $MarginContainer/MarginContainer/HBoxContainer/HBoxContainer/Players
+@onready var lock: Label = $MarginContainer/MarginContainer/HBoxContainer/Lock
+
+func setup(ip: String, data: NetworkData) -> void:
+    room_ip = ip
+    update(room_ip, data)
+
+func update(ip: String, data: NetworkData) -> void:
+    if ip != room_ip:
+        return
+    
+    room_data = data
+    
+    room_name.text = room_data.lobby_name
+    gamemode.text = Game.GameModesNames[room_data.game_mode]
+    players.text = str(room_data.current_player) + \" / \" + str(room_data.max_player)
+    visible = room_data.private.is_empty() # visible if private code is empty
+    lock.visible = room_data.protected # visible if password required
+
+func _on_join_pressed() -> void:
+    join.emit(room_ip, room_data)
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_wiiiu"]
+line_spacing = 0.0
+font_size = 22
+
+[node name="LobbyRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_vqert")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Lock" type="Label" parent="MarginContainer/MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+text = "🔒"
+label_settings = SubResource("LabelSettings_wiiiu")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="MarginContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RoomName"
+
+[node name="Gamemode" type="Label" parent="MarginContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gamemode"
+horizontal_alignment = 1
+
+[node name="Players" type="Label" parent="MarginContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IN / MAX"
+horizontal_alignment = 2
+
+[node name="Join" type="Button" parent="MarginContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Rejoindre"
+expand_icon = true
+
+[connection signal="pressed" from="MarginContainer/MarginContainer/HBoxContainer/Join" to="." method="_on_join_pressed"]

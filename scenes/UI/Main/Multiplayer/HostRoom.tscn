@@ -1,0 +1,116 @@
+[gd_scene load_steps=2 format=3 uid="uid://dphyh8fea5x7o"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/Multiplayer/host_room.gd" id="1_y5sy4"]
+
+[node name="HostRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y5sy4")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -113.0
+offset_bottom = 113.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Name" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Name"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Nom de la salle :"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/Name"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Emilie"
+placeholder_text = "Emilie"
+max_length = 32
+
+[node name="MaxPlayers" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MaxPlayers"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Nombre de joueurs max :"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/MaxPlayers"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "5"
+placeholder_text = "5"
+virtual_keyboard_type = 2
+
+[node name="Save" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Save"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Choisissez une sauvegarde: "
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/Save"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+selected = 0
+item_count = 1
+popup/item_0/text = "LabHyrinTical"
+popup/item_0/disabled = true
+
+[node name="Password" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Si il n'y a aucun mot de passe, tout le monde qui voit la salle peut y rentrer directement."
+
+[node name="Label" type="Label" parent="VBoxContainer/Password"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mot de passe : "
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/Password"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "SuperMotDePasse"
+max_length = 32
+virtual_keyboard_type = 6
+
+[node name="Public" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Les salles privées créent un code pour les rejoindres, et ne seront pas visible dans la liste."
+
+[node name="Label" type="Label" parent="VBoxContainer/Public"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Salle publique : "
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer/Public"]
+layout_mode = 2
+size_flags_horizontal = 2
+button_pressed = true
+
+[node name="Host" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Ouvrir la salle"
+
+[node name="Error" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="text_changed" from="VBoxContainer/Name/LineEdit" to="." method="_on_name_changed"]
+[connection signal="text_changed" from="VBoxContainer/MaxPlayers/LineEdit" to="." method="_on_max_player_changed"]
+[connection signal="text_changed" from="VBoxContainer/Password/LineEdit" to="." method="_on_password_changed"]
+[connection signal="toggled" from="VBoxContainer/Public/CheckButton" to="." method="_on_public_toggled"]
+[connection signal="pressed" from="VBoxContainer/Host" to="." method="_on_host_pressed"]

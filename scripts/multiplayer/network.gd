@@ -5,8 +5,9 @@ var broadcast_port = 24520
 var udp: PacketPeerUDP = null
 
 var broadcast_data: NetworkData = NetworkData.new() 
-const BroadCastTimeout: float = 1.0
-const DiscoverTimeout: float = 0.1
+const BroadCastTimeout: float = 5.0
+const DiscoverTimeout: float = 1.0
+var current_timout: float = 0
 
 var _broadcast_host: bool = false
 var _broadcast_peer: bool = false
@@ -14,9 +15,9 @@ var _broadcast_peer: bool = false
 signal discovered(ip: String, data: NetworkData)
 signal stop_broadcast()
 signal start_broadcast(host: bool)
+signal udp_clear
 
-signal _stopped_broadcasting
-signal _stopped_discovering
+var worker_thread: Thread = Thread.new()
 
 func _ready() -> void:
     stop_broadcast.connect(_stop)
@@ -25,23 +26,84 @@ func _ready() -> void:
 func _stop() -> void:
     if _broadcast_host:
         _broadcast_host = false
-        await _stopped_broadcasting
+        print("Broadcast host stopped")
     if _broadcast_peer:
         _broadcast_peer = false
-        await _stopped_discovering
+        print("Broadcast peer stopped")
     
-    if udp:  
-        udp.close()
-        udp = null
+    current_timout = 0
 
 func _start(host: bool = false) -> void:
     _stop()
+    if udp:
+        await udp_clear
     if host:
-        _broadcast_host = true
         _start_broadcast()
     else:
-        _broadcast_peer = true
         _discover_broadcast()
+
+func _process(delta: float) -> void:
+    if !_broadcast_host and !_broadcast_peer:
+        if udp:
+            udp.close()
+            udp = null
+            udp_clear.emit()
+        return
+        
+    if _broadcast_host:
+        # look for timeout
+        if current_timout <= 0:
+            current_timout = BroadCastTimeout
+            # update info
+            broadcast_data.update_from_server()
+            
+            if !worker_thread.is_alive():
+                if worker_thread.is_started():
+                    worker_thread.wait_to_finish()
+                worker_thread.start(_brute.bind(_filtered_ips(), str(broadcast_data)))
+                print("started iteration")
+            else:
+                print("skipped iteration")
+        else:
+            current_timout -= delta
+    
+    if _broadcast_peer:
+        # look for timeout
+        if current_timout <= 0:
+            current_timout = BroadCastTimeout
+            if udp.get_available_packet_count() > 0:
+                var packet = udp.get_packet().get_string_from_utf8()
+                print(packet)
+                if packet.begins_with(broadcast_data.UniqueSHA):
+                    #var server_port = broadcast_port
+                    var server_ip = udp.get_packet_ip()
+                    #print("Found server at", server_ip, ":", server_port)
+                    var data = NetworkData.new()
+                    if data.parse(packet):
+                        #print("packet valid")
+                        discovered.emit(server_ip, data)
+                    #else:
+                        #print("packet invalid")
+        else:
+            current_timout -= delta
+
+func _brute(ips: Array[String], packet: String) -> Error:
+    for ip in ips:
+        var parts := ip.split(".")
+        # looks like only those 4 zones where broadcast is detected on windows: range(8, 12)
+        # on linux, it's other zones, so broadcast everywhere and hope for the best
+        for i in 256: 
+            parts[3] = str(i)
+            var broadcasted_ip: String = ".".join(parts)
+            if _broadcast_host and udp:
+                udp.set_dest_address(broadcasted_ip, broadcast_port)
+                udp.put_packet(packet.to_utf8_buffer())
+            else:
+                udp.close()
+                udp = null
+                udp_clear.emit.call_deferred()
+                return OK
+    return OK
 
 func _filtered_ips() -> Array[String]:
     var res: Array[String] = []
@@ -52,7 +114,9 @@ func _filtered_ips() -> Array[String]:
 
 func _start_broadcast() -> void:
     if udp:
-        return
+        await udp_clear
+    if udp:
+        printerr("udp should really be cleared now")
     
     udp = PacketPeerUDP.new()
     udp.set_broadcast_enabled(true)
@@ -60,66 +124,31 @@ func _start_broadcast() -> void:
     
     if err != OK:
         printerr("Error while binding udp host: ", error_string(err))
-        _broadcast_host = false
         return
     
     if !udp.is_bound():
         printerr("Udp host is not bound")
-        _broadcast_host = false
         return
     
     print("Broadcasting")
-    while _broadcast_host:
-        # update info
-        broadcast_data.update_from_server()
-        var packet = str(broadcast_data)
-        
-        for ip: String in _filtered_ips():
-            var parts := ip.split(".")
-            # looks like only those 4 port work to broadcast
-            # if it doesn't work, replace range(8, 12) by 256
-            for i in range(8, 12): 
-                parts[3] = str(i)
-                udp.set_dest_address(".".join(parts), broadcast_port)
-                udp.put_packet(packet.to_utf8_buffer())
-        
-        await get_tree().create_timer(BroadCastTimeout).timeout
+    _broadcast_host = true
 
-    print("Stopping broadcast host")
-    _stopped_broadcasting.emit()
 
 func _discover_broadcast() -> void:
     if udp:
-        return
+        await udp_clear
+    if udp:
+        printerr("udp should really be cleared now")
     
     udp = PacketPeerUDP.new()
     var err := udp.bind(broadcast_port, "0.0.0.0")
     if err != OK:
         printerr("Error while binding udp peer: ", error_string(err))
-        _broadcast_peer = false
         return
     
     if !udp.is_bound():
         printerr("Udp peer is not bound")
-        _broadcast_peer = false
         return
     
     print("Searching for rooms...")
-    while _broadcast_peer:
-        if udp.get_available_packet_count() > 0:
-            var packet = udp.get_packet().get_string_from_utf8()
-            print(packet)
-            if packet.begins_with(broadcast_data.UniqueSHA):
-                var server_port = broadcast_port
-                var server_ip = udp.get_packet_ip()
-                print("Found server at", server_ip, ":", server_port)
-                var data = NetworkData.new()
-                if data.parse(packet):
-                    print("packet valid")
-                    discovered.emit(server_ip, data)
-                else:
-                    print("packet invalid")
-        await get_tree().create_timer(DiscoverTimeout).timeout
-    
-    print("Stopping broadcast peer")
-    _stopped_discovering.emit()
+    _broadcast_peer = true

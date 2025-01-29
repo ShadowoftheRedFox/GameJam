@@ -7,17 +7,14 @@ var max_player: int = 5
 var current_player: int = 1
 var game_mode: Game.GameModes = Game.GameModes.Classic
 # visible on broadcast
-var public: bool = true
+var private: String = ""
 # need password
 var protected: bool = false
 
 func update_from_server() -> void:
     max_player = Server.server_max_player
-    if Server.multiplayer_active:
-        current_player = Server.multiplayer.get_peers().size()
-    else:
-        current_player = 1
-    public = Server.server_public
+    current_player = Server.current_player
+    private = Server.server_code if Server.server_public else "" 
     protected = Server.server_password_protected
     game_mode = Game.hosted_gamemode
 
@@ -34,7 +31,7 @@ func parse(string: String) -> bool:
     current_player = int(data.get_or_add("players", 1))
     @warning_ignore("int_as_enum_without_cast")
     game_mode = (data.get_or_add("mode", Game.GameModes.Classic))
-    public = bool(data.get_or_add("public", 0))
+    private = data.get_or_add("private", "")
     protected = bool(data.get_or_add("protected", 1))
     IP.get_local_addresses()
     return true
@@ -45,6 +42,6 @@ func _to_string() -> String:
         "max": max_player,
         "players": current_player,
         "mode": int(game_mode),
-        "public": int(public),
+        "private": private,
         "protected": int(protected)
     })

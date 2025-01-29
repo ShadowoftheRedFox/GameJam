@@ -71,12 +71,18 @@ var main_player_instance: BasePlayer = null
 func _init() -> void:
     process_mode = PROCESS_MODE_ALWAYS
     
+    GeneratorController.name = "GeneratorController"
     add_child(GeneratorController)
+    ThreadController.name = "ThreadController"
     add_child(ThreadController)
+    Utils.name = "Utils"
     add_child(Utils)
     PlayerNodes = Node2D.new()
+    PlayerNodes.name = "PlayerNodes"
     MenuNodes = CanvasLayer.new()
+    MenuNodes.name = "MenuNodes"
     MapNodes = Node2D.new()
+    MapNodes.name = "MapNodes"
     add_child(PlayerNodes)
     add_child(MenuNodes)
     add_child(MapNodes)

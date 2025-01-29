@@ -13,9 +13,12 @@ script = ExtResource("1_of2ws")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 14
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.5
+offset_top = -35.0
+offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -28,7 +31,7 @@ size_flags_stretch_ratio = 5.0
 [node name="Actions" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 10
+size_flags_vertical = 4
 
 [node name="Start" type="Button" parent="VBoxContainer/Actions"]
 layout_mode = 2
@@ -41,18 +44,29 @@ size_flags_vertical = 8
 text = "Retour"
 
 [node name="Spectator" type="CheckButton" parent="."]
-visible = false
 layout_mode = 1
-anchors_preset = 3
+anchors_preset = 6
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.5
 offset_left = -180.0
-offset_top = -40.0
+offset_top = -15.5
+offset_bottom = 15.5
 grow_horizontal = 0
-grow_vertical = 0
+grow_vertical = 2
 text = "Être spectateur : "
+
+[node name="Code" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_right = 117.0
+offset_bottom = 11.5
+grow_vertical = 2
+text = "Code : unset"
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="pressed" from="VBoxContainer/Actions/Start" to="." method="_on_start_pressed"]

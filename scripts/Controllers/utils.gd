@@ -24,3 +24,13 @@ func get_num_files_in_dir(path: String, ends_with = ".tscn") -> int:
         num_scenes_in_dir.get_or_add(path, count)
     
     return count
+
+func random_str(length: int, chars: String = "abcdefghijklmnopqrstuvwxyz0123456789") -> String:
+    if length <= 0:
+        return ""
+    
+    var word: String = ""
+    var n_char = len(chars)
+    for i in range(length):
+        word += chars[randi() % n_char]
+    return word

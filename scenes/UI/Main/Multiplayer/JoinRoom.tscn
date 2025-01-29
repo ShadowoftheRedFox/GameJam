@@ -1,0 +1,108 @@
+[gd_scene load_steps=3 format=3 uid="uid://chjjol7cnwy37"]
+
+[ext_resource type="Script" path="res://scripts/UI/Main/Multiplayer/discovering.gd" id="1_qpnqs"]
+[ext_resource type="PackedScene" uid="uid://ci0v6mh54s1rn" path="res://scenes/UI/Main/Multiplayer/LobbyRoom.tscn" id="2_25ill"]
+
+[node name="JoinRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qpnqs")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RoomContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Panel/ScrollContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 40
+
+[node name="LobbyRoom" parent="MarginContainer/VBoxContainer/Panel/ScrollContainer/RoomContainer" instance=ExtResource("2_25ill")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="SubMenu" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer/SubMenu"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Retour"
+
+[node name="Error" type="Label" parent="MarginContainer/VBoxContainer/SubMenu"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Code" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SubMenu"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SubMenu/Code"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Code de la salle : "
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SubMenu/Code"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+placeholder_text = "Code"
+alignment = 1
+
+[node name="Password" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SubMenu"]
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "Si nécéssaire"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SubMenu/Password"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Mot de passe : "
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SubMenu/Password"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+placeholder_text = "Mot de passe"
+alignment = 1
+max_length = 32
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SubMenu/Back" to="." method="_on_back_pressed"]
+[connection signal="text_submitted" from="MarginContainer/VBoxContainer/SubMenu/Code/LineEdit" to="." method="_on_line_edit_text_submitted"]

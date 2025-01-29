@@ -5,6 +5,7 @@ extends Node
 var server_port: int = 8080
 var server_ip: String = "127.0.0.1"
 var server_max_player: int = 2
+const ABS_MAX_PLAYER: int = 32 # can be up to 4095
 
 var server_name: String = ""
 
@@ -18,6 +19,9 @@ var server_password: String = ""
 
 var multiplayer_active: bool = false
 var solo_active: bool = false
+
+## follow how many player in server (so thread can see it without manipulating multiplayer)
+var current_player: int = 0
 
 ## If server is closed, any new player will be kicked out
 var server_closed: bool = false
@@ -78,6 +82,7 @@ func _ready() -> void:
 func peer_connected(id: int) -> void:
     peer_print(MessageType.PRINT, "Player " + str(id) + " connected")
     player_connected.emit(id)
+    current_player += 1
     
 func peer_disconnected(id: int) -> void:
     peer_print(MessageType.PRINT, "Player " + str(id) + " disconnected")
@@ -87,6 +92,7 @@ func peer_disconnected(id: int) -> void:
     # if the server has disconnected
     if id == 1:
         Game.stop_game()
+    current_player -= 1
           
 func connection_failed() -> void:
     push_error("Connection failed")
@@ -116,7 +122,7 @@ func change_ip(text: String):
 
 func change_max_player(text: String):
     # check validity of new max player
-    if text.is_valid_int() and int(text) >= 2 and int(text) <= 4095:
+    if text.is_valid_int() and int(text) >= 2 and int(text) <= ABS_MAX_PLAYER:
         server_max_player = int(text)
 
 func create_host(is_solo: bool = false) -> bool:
@@ -219,3 +225,5 @@ func stop_server() -> void:
         multiplayer.multiplayer_peer.close()
     else:
         multiplayer.multiplayer_peer.close()
+    
+    current_player = 0

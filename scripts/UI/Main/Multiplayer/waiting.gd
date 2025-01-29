@@ -1,6 +1,11 @@
 extends Control
 
+@onready var start: Button = $VBoxContainer/Actions/Start
+@onready var player_list: VBoxContainer = $VBoxContainer/PlayerList
+@onready var code: Label = $Code
+
 signal back_pressed
+
 var players_waiting: Array[int] = []
 var players_ready: Array[int] = []
 var just_pressed = true
@@ -22,11 +27,13 @@ func _on_back_pressed() -> void:
     reset_menu()
     # remove waiting player
     remove_all_players()
+    # stop broadcast
+    Server.Network.stop_broadcast.emit()
     # disconnect from server
     Game.stop_game(true)
 
 func reset_menu() -> void:
-    $VBoxContainer/Actions/Start.text = "Connection en cours..."
+    start.text = "Connection en cours..."
     just_pressed = true
     back_pressed.emit()
     # remove waiting player
@@ -47,7 +54,7 @@ func display_player(player_data: PlayerData) -> void:
     label.name = str(player_data.id)
     label.text = player_data.name
     
-    $VBoxContainer/PlayerList.add_child(label)
+    player_list.add_child(label)
     players_waiting.append(player_data.id)
     update_buttons()
 
@@ -56,14 +63,14 @@ func remove_player(id: int) -> void:
     if id == 1:
         back_pressed.emit()
         reset_menu()
-    if $VBoxContainer/PlayerList.has_node(str(id)):
-        $VBoxContainer/PlayerList.get_node(str(id)).queue_free()
+    if player_list.has_node(str(id)):
+        player_list.get_node(str(id)).queue_free()
         players_waiting.erase(id)
         players_ready.erase(id)
         update_buttons()
 
 func remove_all_players() -> void:
-    for label in $VBoxContainer/PlayerList.get_children():
+    for label in player_list.get_children():
         label.queue_free()
     players_waiting = []
     update_buttons()
@@ -74,36 +81,37 @@ func _on_visibility_changed() -> void:
         update_buttons()
         
 func update_buttons() -> void:
-    $Spectator.show()
+    code.text = "Code : " + Server.server_code
+
     if multiplayer.is_server():
         if players_waiting.size() < 2:
-            $VBoxContainer/Actions/Start.disabled = true
-            $VBoxContainer/Actions/Start.text = "Il faut au moins 2 joueurs pour commencer"
+            start.disabled = true
+            start.text = "Il faut au moins 2 joueurs pour commencer"
         elif players_ready.size() != players_waiting.size():
-            $VBoxContainer/Actions/Start.disabled = true
-            $VBoxContainer/Actions/Start.text = "Tout le monde n'a pas fini de charger"
+            start.disabled = true
+            start.text = "Tout le monde n'a pas fini de charger"
         else:
-            $VBoxContainer/Actions/Start.disabled = false
-            $VBoxContainer/Actions/Start.text = "Commencer la partie"
+            start.disabled = false
+            start.text = "Commencer la partie"
     else:
         # there is a bug, where if you try to connect to server less host
         # it takes the timeout (30s) before sending connection failed
         # with this, it wait for the first update before saying anything else
-        $VBoxContainer/Actions/Start.disabled = true
+        start.disabled = true
         if !just_pressed:
-            $VBoxContainer/Actions/Start.text = "Seul l'hôte peut commencer la partie"
+            start.text = "Seul l'hôte peut commencer la partie"
     just_pressed = false
 
 func update_spectator(id: int) -> void:
-    if $VBoxContainer/PlayerList.has_node(str(id)) and Game.Players.has_player(id):
+    if player_list.has_node(str(id)) and Game.Players.has_player(id):
         var text = Game.Players.get_player(id).name
         if Game.Players.get_player(id).is_spectator:
             text += " (Spectateur)"
-        $VBoxContainer/PlayerList.get_node(str(id)).text = text
+        player_list.get_node(str(id)).text = text
     update_buttons()
 
 func connection_failed() -> void:
-    $VBoxContainer/Actions/Start.text = "Connection impossible, veuillez réessayer"
+    start.text = "Connection impossible, veuillez réessayer"
 
 
 func _on_spectator_toggled(toggled_on: bool) -> void:
