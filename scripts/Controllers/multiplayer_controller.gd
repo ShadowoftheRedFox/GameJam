@@ -66,7 +66,6 @@ func start_game() -> void:
     Game.Players.list.sort_custom(func sort_spawn(a: PlayerData, b: PlayerData): return a.id < b.id)
     # spawn all peer instances
     for p in Game.Players.list:
-        # TODO spawn player in different room and at coos
         if !p.is_spectator:
             spawn_player.call_deferred(p)
 
