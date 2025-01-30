@@ -55,3 +55,10 @@ func _on_host_multiplayer_pressed() -> void:
 func _on_join_room_back_pressed() -> void:
     $JoinRoom.hide()
     $Margin.show()
+
+
+func _on_join_room_join_pressed() -> void:
+    $JoinRoom.hide()
+    $Margin.show()
+    $Margin/HBoxContainer/Sub/Waiting.show()
+    $Margin/HBoxContainer/Main.hide()

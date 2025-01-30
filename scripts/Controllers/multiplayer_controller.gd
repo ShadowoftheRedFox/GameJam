@@ -39,6 +39,8 @@ func start_game() -> void:
         push_warning("Server is not active, can not use 'start_game'")
         return
         
+    Server.Network.stop_broadcast.emit()
+        
     # add all the scene with their data
     for y in Game.current_map.size():
         for x in Game.current_map[y].size():

@@ -1,5 +1,6 @@
 class_name NetworkData
 
+## if by any chance something is also sending packets on the port, ours starts with this
 const UniqueSHA = "a9aaab6446c29f26347454c1bd1fa8c7f3fa4be4337d1248e69ca743d1fdb19b"
 
 var lobby_name: String = "Emilie"
@@ -14,9 +15,17 @@ var protected: bool = false
 func update_from_server() -> void:
     max_player = Server.server_max_player
     current_player = Server.current_player
-    private = Server.server_code if Server.server_public else "" 
+    private = Server.server_code if Server.server_public else ":" + Server.server_code
     protected = Server.server_password_protected
     game_mode = Game.hosted_gamemode
+
+func equal(data: NetworkData) -> bool:
+    return lobby_name == data.lobby_name            and \
+            max_player == data.max_player           and \
+            current_player == data.current_player   and \
+            game_mode == data.game_mode             and \
+            private == data.private                 and \
+            protected == data.protected  
 
 func parse(string: String) -> bool:
     if !string.begins_with(UniqueSHA + ":"):
