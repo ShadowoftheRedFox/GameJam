@@ -107,6 +107,7 @@ func change_room(room: Vector2) -> void:
     # snap camera
     camera.snap()
     camera.set_limits(Game.current_room.Map)
+    player_ui.pos = str(room)
 
 func _ready():
     camera.snap()

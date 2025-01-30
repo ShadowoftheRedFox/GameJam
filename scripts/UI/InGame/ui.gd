@@ -10,6 +10,13 @@ var hp: String = "HP : unset":
             hp = "HP : " + str(int(value))
         if is_node_ready():
             hp_label.text = hp
+
+@onready var pos_label: Label = $MarginContainer/Pos
+var pos: String = "0, 0":
+    set(value):
+        pos = value
+        if is_node_ready():
+            pos_label.text = pos
             
 @onready var death_counter: Label = $MarginContainer/DeathCounter
 @onready var player: BasePlayer = $"../../.."
@@ -20,6 +27,7 @@ var time_remaining: float = 0.0
 
 func _ready() -> void:
     hp_label.text = hp
+    pos_label.text = pos
     start_counter.connect(display_timer)
 
 func _physics_process(delta: float) -> void:
