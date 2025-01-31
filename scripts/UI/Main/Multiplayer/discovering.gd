@@ -58,6 +58,7 @@ func lobby_discovered(ip: String, data: NetworkData) -> void:
 func _join_lobby(ip: String, data: NetworkData) -> void:
     # TODO handle password
     Server.change_ip(ip)
+    Server.server_code = data.private.trim_prefix(":")
     if !Game.join_multiplayer():
         printerr("Error while joining multiplayer")
         return

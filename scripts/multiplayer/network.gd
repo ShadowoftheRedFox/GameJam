@@ -2,7 +2,8 @@ class_name NetworkBroadCaster
 extends Node
 
 var broadcast_port = 24520
-var udp: PacketPeerUDP = null
+var udp_host: PacketPeerUDP = null
+var udp_peer: PacketPeerUDP = null
 
 var broadcast_data: NetworkData = NetworkData.new() 
 const BroadCastTimeout: float = 5.0
@@ -15,7 +16,7 @@ var _broadcast_peer: bool = false
 signal discovered(ip: String, data: NetworkData)
 signal stop_broadcast()
 signal start_broadcast(host: bool)
-signal udp_clear
+signal udp_host_clearable
 
 var worker_thread: Thread = Thread.new()
 
@@ -35,8 +36,7 @@ func _stop() -> void:
 
 func _start(host: bool = false) -> void:
     _stop()
-    if udp:
-        await udp_clear
+
     if host:
         _start_broadcast()
     else:
@@ -44,10 +44,6 @@ func _start(host: bool = false) -> void:
 
 func _process(delta: float) -> void:
     if !_broadcast_host and !_broadcast_peer:
-        if udp:
-            udp.close()
-            udp = null
-            udp_clear.emit()
         return
         
     if _broadcast_host:
@@ -71,12 +67,12 @@ func _process(delta: float) -> void:
         # look for timeout
         if current_timout <= 0:
             current_timout = BroadCastTimeout
-            if udp.get_available_packet_count() > 0:
-                var packet = udp.get_packet().get_string_from_utf8()
+            if udp_peer.get_available_packet_count() > 0:
+                var packet = udp_peer.get_packet().get_string_from_utf8()
                 print(packet)
                 if packet.begins_with(broadcast_data.UniqueSHA):
                     #var server_port = broadcast_port
-                    var server_ip = udp.get_packet_ip()
+                    var server_ip = udp_peer.get_packet_ip()
                     #print("Found server at", server_ip, ":", server_port)
                     var data = NetworkData.new()
                     if data.parse(packet):
@@ -95,14 +91,10 @@ func _brute(ips: Array[String], packet: String) -> Error:
         for i in 256: 
             parts[3] = str(i)
             var broadcasted_ip: String = ".".join(parts)
-            if _broadcast_host and udp:
-                udp.set_dest_address(broadcasted_ip, broadcast_port)
-                udp.put_packet(packet.to_utf8_buffer())
-            else:
-                udp.close()
-                udp = null
-                udp_clear.emit.call_deferred()
-                return OK
+            if _broadcast_host:
+                udp_host.set_dest_address(broadcasted_ip, broadcast_port)
+                udp_host.put_packet(packet.to_utf8_buffer())
+                udp_host_clearable.emit.call_deferred()
     return OK
 
 func _filtered_ips() -> Array[String]:
@@ -113,20 +105,23 @@ func _filtered_ips() -> Array[String]:
     return res
 
 func _start_broadcast() -> void:
-    if udp:
-        await udp_clear
-    if udp:
-        printerr("udp should really be cleared now")
+    if udp_host:
+        await udp_host_clearable
+        udp_host.close()
+        udp_host = null
+
+    if udp_host:
+        printerr("udp host should really be cleared now")
     
-    udp = PacketPeerUDP.new()
-    udp.set_broadcast_enabled(true)
-    var err := udp.bind(broadcast_port)
+    udp_host = PacketPeerUDP.new()
+    udp_host.set_broadcast_enabled(true)
+    var err := udp_host.bind(broadcast_port)
     
     if err != OK:
         printerr("Error while binding udp host: ", error_string(err))
         return
     
-    if !udp.is_bound():
+    if !udp_host.is_bound():
         printerr("Udp host is not bound")
         return
     
@@ -135,18 +130,20 @@ func _start_broadcast() -> void:
 
 
 func _discover_broadcast() -> void:
-    if udp:
-        await udp_clear
-    if udp:
-        printerr("udp should really be cleared now")
+    if udp_peer:
+        udp_peer.close()
+        udp_peer = null
     
-    udp = PacketPeerUDP.new()
-    var err := udp.bind(broadcast_port, "0.0.0.0")
+    if udp_host:
+        printerr("udp peer should really be cleared now")
+    
+    udp_peer = PacketPeerUDP.new()
+    var err := udp_peer.bind(broadcast_port, "0.0.0.0")
     if err != OK:
         printerr("Error while binding udp peer: ", error_string(err))
         return
     
-    if !udp.is_bound():
+    if !udp_peer.is_bound():
         printerr("Udp peer is not bound")
         return
     

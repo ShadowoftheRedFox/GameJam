@@ -27,6 +27,7 @@ func _on_back_pressed() -> void:
     reset_menu()
     # remove waiting player
     remove_all_players()
+    players_ready = []
     # stop broadcast
     Server.Network.stop_broadcast.emit()
     # disconnect from server
@@ -84,7 +85,6 @@ func update_buttons() -> void:
     code.text = "Code : " + Server.server_code
 
     if multiplayer.is_server():
-        print(players_ready.size(), " ", players_waiting.size())
         if players_waiting.size() < 2:
             start.disabled = true
             start.text = "Il faut au moins 2 joueurs pour commencer"

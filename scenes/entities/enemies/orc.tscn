@@ -385,6 +385,8 @@ size = Vector2(17, 20.5)
 scale = Vector2(3, 3)
 collision_layer = 16
 collision_mask = 27
+platform_floor_layers = 4278190089
+platform_wall_layers = 1
 script = ExtResource("1_qb12o")
 HP_MAX = 30
 atk = 4
@@ -422,7 +424,6 @@ script = ExtResource("8_nqvh1")
 script = ExtResource("9_a1brm")
 
 [node name="Info" type="Label" parent="."]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -435,6 +436,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HP" type="Label" parent="."]
+visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5

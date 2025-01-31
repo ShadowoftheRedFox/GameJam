@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=4 uid="uid://psrmhralkdgl"]
 
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="1_kymsl"]
-[ext_resource type="PackedScene" path="res://scenes/mapgen/door.tscn" id="2_sapp0"]
+[ext_resource type="PackedScene" uid="uid://ct850ic78xaur" path="res://scenes/mapgen/door.tscn" id="2_sapp0"]
 
 [node name="Room" type="Node2D"]
 
@@ -25,7 +25,7 @@ door_facing = 1
 position = Vector2(-928, -32)
 
 [node name="Spawn" type="Marker2D" parent="."]
-position = Vector2(362, 36)
+position = Vector2(520, -165)
 
 [node name="BuffSpawn" type="Marker2D" parent="."]
 position = Vector2(162, -418)

@@ -75,7 +75,6 @@ text = " < "
 [node name="Players" type="OptionButton" parent="CanvasLayer/MarginContainer/Spectate"]
 layout_mode = 2
 size_flags_horizontal = 4
-selected = 0
 fit_to_longest_item = false
 allow_reselect = true
 

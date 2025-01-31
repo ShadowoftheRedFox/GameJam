@@ -22,6 +22,7 @@ func _input(event: InputEvent) -> void:
         # save change
         Save.save_control(waiting_label_name, str(event), false)
         is_waiting_key = false
+        waiting_button.grab_focus()
     
     if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and is_waiting_controller:
         # force value at -+1.0
@@ -32,6 +33,7 @@ func _input(event: InputEvent) -> void:
         # save change
         Save.save_control(waiting_label_name, str(event), true)
         is_waiting_controller = false
+        waiting_button.grab_focus()
 
 func _ready() -> void:
     Save.parameters_changed.connect(_on_parameters_changed)
@@ -53,6 +55,7 @@ func create_input_button(label_name: String, key: InputEvent, controller: InputE
     hbox.add_theme_constant_override("separation", 20)
     hbox.alignment = BoxContainer.ALIGNMENT_CENTER
     hbox.grow_horizontal = Control.GROW_DIRECTION_BOTH
+    hbox.name = label_name
 
     var label = Label.new()
     # node name
@@ -131,8 +134,16 @@ func controller_button_name(event: InputEvent) -> String:
     return base_name
 
 func update_input(label_name: String, button: Button, input: InputEvent, is_joypad: bool):
+    # BUG sometimes, button is null
+    if button == null:
+        push_error("Button is null")
+        return
+    #if waiting_button == null:
+        #push_error("WaitingButton is null")
+        #return
+    
     # a new key want to be edited, cancel previous
-    if is_waiting_key or is_waiting_controller:
+    if (is_waiting_key or is_waiting_controller) and waiting_button != null:
         waiting_button.text = old_key_label
 
     waiting_button = button
