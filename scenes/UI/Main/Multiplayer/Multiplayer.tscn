@@ -54,7 +54,11 @@ layout_mode = 2
 [node name="Join" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../Back")
-text = "Rejoindre"
+text = "Rejoindre une salle"
+
+[node name="Join manually" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
+layout_mode = 2
+text = "  Rejoindre manuellement  "
 
 [node name="Host" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
 layout_mode = 2
@@ -93,6 +97,7 @@ layout_mode = 2
 [connection signal="back_pressed" from="JoinRoom" to="." method="_on_join_room_back_pressed"]
 [connection signal="join_pressed" from="JoinRoom" to="." method="_on_join_room_join_pressed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Join manually" to="." method="_on_join_manually_pressed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Back" to="." method="_on_back_pressed"]
 [connection signal="join_pressed" from="Margin/HBoxContainer/Sub/Join" to="." method="_on_join_multiplayer_pressed"]

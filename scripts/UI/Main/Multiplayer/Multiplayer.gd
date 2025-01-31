@@ -23,6 +23,8 @@ func _on_host_pressed() -> void:
         #previous_menu = PreviousMenu.Host
     #$Margin/HBoxContainer/Sub/Join.hide()
     $Margin/HBoxContainer/Sub/HostRoom.visible = !$Margin/HBoxContainer/Sub/HostRoom.visible
+    $Margin/HBoxContainer/Sub/Join.visible = false
+    
 
 func _on_join_pressed() -> void:
     #if $Margin/HBoxContainer/Sub/Join.visible == true:
@@ -36,6 +38,10 @@ func _on_join_pressed() -> void:
     $JoinRoom.show()
     $Margin.hide()
 
+func _on_join_manually_pressed() -> void:
+    $Margin/HBoxContainer/Sub/Join.visible = !$Margin/HBoxContainer/Sub/Join.visible
+    $Margin/HBoxContainer/Sub/HostRoom.visible = false
+    
 
 func _on_waiting_back_pressed() -> void:
     $Margin/HBoxContainer/Sub/Waiting.hide()

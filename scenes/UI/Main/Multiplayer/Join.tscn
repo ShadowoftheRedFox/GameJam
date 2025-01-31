@@ -38,17 +38,6 @@ placeholder_text = "127.0.0.1"
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="LabelPort" type="Label" parent="Join/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Port du serveur: "
-
-[node name="Port" type="LineEdit" parent="Join/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "8000"
-placeholder_text = "8000"
-
 [node name="Launch" type="Button" parent="Join"]
 layout_mode = 2
 disabled = true
@@ -58,5 +47,4 @@ text = "Rejoindre"
 layout_mode = 2
 
 [connection signal="text_changed" from="Join/HBoxContainer/IP" to="." method="_on_ip_text_changed"]
-[connection signal="text_changed" from="Join/HBoxContainer2/Port" to="." method="_on_port_text_changed"]
 [connection signal="pressed" from="Join/Launch" to="." method="_on_launch_pressed"]
