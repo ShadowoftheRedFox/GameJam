@@ -16,7 +16,9 @@ var _broadcast_peer: bool = false
 signal discovered(ip: String, data: NetworkData)
 signal stop_broadcast()
 signal start_broadcast(host: bool)
-signal udp_host_clearable
+#signal udp_host_clearable
+
+var mutex: Mutex = Mutex.new()
 
 var worker_thread: Thread = Thread.new()
 
@@ -67,6 +69,7 @@ func _process(delta: float) -> void:
         # look for timeout
         if current_timout <= 0:
             current_timout = BroadCastTimeout
+            mutex.lock()
             if udp_peer.get_available_packet_count() > 0:
                 var packet = udp_peer.get_packet().get_string_from_utf8()
                 print(packet)
@@ -80,21 +83,33 @@ func _process(delta: float) -> void:
                         discovered.emit(server_ip, data)
                     #else:
                         #print("packet invalid")
+            mutex.unlock()
         else:
             current_timout -= delta
 
 func _brute(ips: Array[String], packet: String) -> Error:
     for ip in ips:
         var parts := ip.split(".")
-        # looks like only those 4 zones where broadcast is detected on windows: range(8, 12)
-        # on linux, it's other zones, so broadcast everywhere and hope for the best
-        for i in 256: 
-            parts[3] = str(i)
-            var broadcasted_ip: String = ".".join(parts)
+           
+        # we take 0b10000 for 16 possibilities to switch one of 4 parts with 255
+        # so i is between 0b10000-1 and 0, we check if the fourth byte is flipped
+        # if yes, 255, else normal, and so on
+        
+        # after testing, it seems only the last two part needs to be swapped, so down to 0b100
+        for i: int in 0b100: 
+            var broadcasted_ip: String = ".".join([
+                parts[0], # if i & 0b1000 != 0 else '255',
+                parts[1], #if i & 0b0100 != 0 else '255',
+                parts[2] if i & 0b0010 != 0 else '255',
+                parts[3] if i & 0b0001 != 0 else '255'
+            ])
+           
             if _broadcast_host:
+                mutex.lock()
                 udp_host.set_dest_address(broadcasted_ip, broadcast_port)
                 udp_host.put_packet(packet.to_utf8_buffer())
-                udp_host_clearable.emit.call_deferred()
+                mutex.unlock()
+                #udp_host_clearable.emit.call_deferred()
     return OK
 
 func _filtered_ips() -> Array[String]:
@@ -105,8 +120,9 @@ func _filtered_ips() -> Array[String]:
     return res
 
 func _start_broadcast() -> void:
+    mutex.lock()
     if udp_host:
-        await udp_host_clearable
+        #await udp_host_clearable
         udp_host.close()
         udp_host = null
 
@@ -116,6 +132,7 @@ func _start_broadcast() -> void:
     udp_host = PacketPeerUDP.new()
     udp_host.set_broadcast_enabled(true)
     var err := udp_host.bind(broadcast_port)
+    mutex.unlock()
     
     if err != OK:
         printerr("Error while binding udp host: ", error_string(err))
@@ -130,15 +147,19 @@ func _start_broadcast() -> void:
 
 
 func _discover_broadcast() -> void:
+    mutex.lock()
     if udp_peer:
         udp_peer.close()
         udp_peer = null
+        
     
-    if udp_host:
+    if udp_peer:
         printerr("udp peer should really be cleared now")
     
     udp_peer = PacketPeerUDP.new()
     var err := udp_peer.bind(broadcast_port, "0.0.0.0")
+    mutex.unlock()
+    
     if err != OK:
         printerr("Error while binding udp peer: ", error_string(err))
         return
