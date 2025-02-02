@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://dh84xjkmhbh72"]
+[gd_scene load_steps=12 format=3 uid="uid://dh84xjkmhbh72"]
 
 [ext_resource type="Script" path="res://scripts/UI/InGame/ui.gd" id="1_476ek"]
 [ext_resource type="Script" path="res://scripts/UI/InGame/feed_container.gd" id="2_sxlir"]
+[ext_resource type="Texture2D" uid="uid://cpata20jhynpb" path="res://assets/prompt/Space_Key_Light.png" id="3_3vdsn"]
+[ext_resource type="Texture2D" uid="uid://bhu50korhgmu4" path="res://assets/prompt/Tab_Key_Light.png" id="4_qr854"]
+[ext_resource type="Texture2D" uid="uid://cuv6mq5n302ls" path="res://assets/prompt/P_Key_Light.png" id="5_vprhh"]
+[ext_resource type="Texture2D" uid="uid://bv6kfgyuaaxsd" path="res://assets/prompt/K_Key_Light.png" id="6_m8r35"]
+[ext_resource type="Texture2D" uid="uid://um4l8pqo1bcy" path="res://assets/prompt/J_Key_Light.png" id="7_wfjvg"]
+[ext_resource type="Texture2D" uid="uid://c25644khix5n4" path="res://assets/prompt/Z_Key_Light.png" id="8_oyyeb"]
+[ext_resource type="Texture2D" uid="uid://cppod0m6dmjwl" path="res://assets/prompt/D_Key_Light.png" id="9_s2wcw"]
+[ext_resource type="Texture2D" uid="uid://bs83yd55gwmjy" path="res://assets/prompt/Q_Key_Light.png" id="9_tnqg8"]
+[ext_resource type="Texture2D" uid="uid://fx0y1mk45gwf" path="res://assets/prompt/S_Key_Light.png" id="10_5lex1"]
 
 [node name="Ui" type="Control"]
 layout_mode = 3
@@ -65,8 +74,136 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 10
 
+[node name="Prompts" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Prompts"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Sauter"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("3_3vdsn")
+expand_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Score"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+texture = ExtResource("4_qr854")
+expand_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Pause"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+texture = ExtResource("5_vprhh")
+expand_mode = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Attaquer"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+texture = ExtResource("6_m8r35")
+expand_mode = 2
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Dash"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+texture = ExtResource("7_wfjvg")
+expand_mode = 2
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "Déplacement"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("8_oyyeb")
+expand_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = ExtResource("9_tnqg8")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("10_5lex1")
+expand_mode = 2
+
+[node name="TextureRect3" type="TextureRect" parent="MarginContainer/Prompts/VBoxContainer/HBoxContainer6/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("9_s2wcw")
+expand_mode = 2
+
 [node name="Scores" type="MarginContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

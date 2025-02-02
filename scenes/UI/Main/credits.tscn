@@ -101,7 +101,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Asset du slime: rvros (itch.io)
 Asset de l'orc et du joueur: zerie (itch.io)
-Assets pour la carte: Kenney's \"Abstract Platformer\" pack"
+Assets pour la carte: Kenney's \"Abstract Platformer\" pack
+Assets des touches: Xelu's controller prompts"
 horizontal_alignment = 1
 
 [node name="Bottom" type="MarginContainer" parent="Main"]

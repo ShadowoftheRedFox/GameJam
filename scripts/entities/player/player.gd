@@ -98,9 +98,10 @@ func set_authority(id: int) -> void:
 
 func disable_others_camera(id: int) -> void:
     # disable camera of player instance if it's not our player
+    # and delete all ui elements
     if id != multiplayer.get_unique_id():
         camera.disable_camera()
-        player_ui.hide()
+        camera.get_node("CanvasLayer").queue_free()
 
 
 func change_room(room: Vector2) -> void:

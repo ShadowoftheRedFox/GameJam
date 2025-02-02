@@ -21,13 +21,13 @@ func _ready() -> void:
     state_machine = $StateMachine
     body_collider = $CollisionShape2D
     dmg_spawn = $DmgSpawn
+    hp_label = $HP
     
     HP_MAX = 20
     atk = 1
     hp = HP_MAX
     atk_speed = 1.2
     
-    hp_label = $HP
     hp_label.text = str(hp)
     
     info = "Idle"

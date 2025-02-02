@@ -1,9 +1,8 @@
 extends MarginContainer
 class_name MessageFeed
 
-var transition_time: int = 3
-var wait_before_transition: int = 5
-var current_transition: float = 0.0
+const TimeOut: int = 3
+const Wait: int = 5
 
 @onready var feed: VBoxContainer = $MarginContainer/ScrollContainer/Feed
 
@@ -20,18 +19,8 @@ func feed_listener(message: String) -> void:
     
     feed.add_child(msg)
     
+    # animation
     modulate = Color("ffffff")
-    current_transition = transition_time + wait_before_transition
-
-func _process(delta: float) -> void:
-    if current_transition == 0:
-        return
+    var tween: Tween = get_tree().create_tween()
+    tween.tween_property(self, "modulate", Color.TRANSPARENT, TimeOut).set_ease(Tween.EASE_OUT).set_delay(Wait)
     
-    current_transition -= delta
-    if current_transition <= 0:
-        current_transition = 0
-    
-    if current_transition <= transition_time:
-        modulate = Color("ffffff" + "%02x" % (
-            int(current_transition / float(transition_time) * 255)
-        ))

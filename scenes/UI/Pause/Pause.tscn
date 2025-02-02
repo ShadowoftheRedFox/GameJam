@@ -103,7 +103,6 @@ size_flags_vertical = 6
 [node name="Controls" parent="MarginContainer/MarginContainer/Side/Options" instance=ExtResource("2_kumwd")]
 visible = false
 layout_mode = 2
-size_flags_vertical = 3
 
 [connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="MarginContainer/MarginContainer/MarginContainer/Main/Settings" to="." method="_on_settings_pressed"]
