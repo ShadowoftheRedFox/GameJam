@@ -84,6 +84,11 @@ func spawn_player(player_data: PlayerData) -> void:
     Game.current_room = spawn_room
     
     var currentPlayer: BasePlayer = Game.PlayerScene.instantiate()
+    # remember our own player
+    if player_data.id == multiplayer.get_unique_id():
+        Game.main_player_instance = currentPlayer
+    
+    # setup everything
     currentPlayer.player_spawn = spawn
     currentPlayer.global_position = spawn_room.PlayerSpawn.global_position
     #currentPlayer.name = str(player_data.id)
@@ -98,10 +103,6 @@ func spawn_player(player_data: PlayerData) -> void:
         
     index += 1
     #Server.peer_print(Server.MessageType.ERR, "New instance of Player: " + str(player_data.id))
-    
-    # remember our own player
-    if player_data.id == multiplayer.get_unique_id():
-        Game.main_player_instance = currentPlayer
 
 @rpc("any_peer", "call_local")
 func remove_player(id: int) -> void:
@@ -156,18 +157,17 @@ func _work_position() -> Vector2:
     var size_y = Game.current_map.size()
     var size_x = Game.current_map[0].size()
     
-    # random
 #region Random
-    var selected = Vector2(randi_range(0, size_x), randi_range(0, size_y))
-    for p: BasePlayer in Game.PlayerNodes.get_children():
-        if p.player_spawn == selected:
-            return _work_position()
+    # random
+    #var selected = Vector2i(randi_range(0, size_x), randi_range(0, size_y))
+    #for p: BasePlayer in Game.PlayerNodes.get_children():
+        #if p.player_spawn == selected:
+            #return _work_position()
+    #return Vector2i(randi_range(0, size_x - 1), randi_range(0, size_y - 1))
 #endregion
-    return Vector2(randi_range(0, size_x - 1), randi_range(0, size_y - 1))
     
-    # repartition
 #region Repartition
-    @warning_ignore("unreachable_code")
+    # repartition
     var rx = 0
     var ry = 0
 
@@ -184,25 +184,25 @@ func _work_position() -> Vector2:
         3:
             rx = size_y * size_x - 1 - int(index / 4.0)
             ry = size_y * size_x - 1 - int(index / 4.0)
+    return Vector2i(rx % size_x, int(ry / size_y))
 #endregion
-    return Vector2(rx % size_x, int(ry / size_y))
     
-    # matrix
 #region Matrix
-    var base_x = randi_range(0, size_x - 1)
-    var base_y = randi_range(0, size_y - 1)
-    var angle = deg_to_rad(360.0 / float(Game.Players.get_player_count()))
-
-    var x = int(base_x * cos(angle * index) - base_y * sin(angle * index))
-    var y = int(base_x * sin(angle * index) + base_y * cos(angle * index))
-
-    if x < 0 or x >= size_x:
-        x = x % size_x
-    if y < 0 or y >= size_y:
-        y = y % size_y
-
-    for p: BasePlayer in Game.PlayerNodes.get_children():
-        if p.player_spawn == selected:
-            return _work_position()
+    # matrix
+    #var base_x = randi_range(0, size_x - 1)
+    #var base_y = randi_range(0, size_y - 1)
+    #var angle = deg_to_rad(360.0 / float(Game.Players.get_player_count()))
+#
+    #var x = int(base_x * cos(angle * index) - base_y * sin(angle * index))
+    #var y = int(base_x * sin(angle * index) + base_y * cos(angle * index))
+#
+    #if x < 0 or x >= size_x:
+        #x = x % size_x
+    #if y < 0 or y >= size_y:
+        #y = y % size_y
+#
+    #for p: BasePlayer in Game.PlayerNodes.get_children():
+        #if p.player_spawn == Vector2i(x, y):
+            #return _work_position()
+    #return Vector2i(x, y)
 #endregion
-    return Vector2(x, y)

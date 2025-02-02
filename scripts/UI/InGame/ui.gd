@@ -27,6 +27,10 @@ signal start_counter(time: int)
 var time_remaining: float = 0.0
 
 func _ready() -> void:
+    if player != Game.main_player_instance:
+        print("return because not main")
+        return
+    
     hp_label.text = hp
     pos_label.text = pos
     start_counter.connect(display_timer)

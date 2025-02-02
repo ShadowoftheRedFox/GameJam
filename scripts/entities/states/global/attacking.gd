@@ -27,9 +27,6 @@ func physics_update(delta: float) -> void:
     attack_cooldown -= delta
     if attack_cooldown <= 0:
         finished.emit("Idle")
-        #if entity.animation_sprite and !entity.animation_sprite.is_playing():
-            #finished.emit("Idle")
-        #if entity.animation_player and !entity.animation_player.is_playing():
         
 func exit() -> void:
     attack_cooldown = 0

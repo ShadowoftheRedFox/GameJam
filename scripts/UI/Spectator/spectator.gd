@@ -12,8 +12,10 @@ var player_spectating_id: int = 0
 
 func _ready() -> void:
     Game.player_infos_update.connect(update_player_list)
+    Server.player_disconnected.connect(remove_player)
     update_player_list(null)
     update_score()
+    focus_on_player.call_deferred()
     
 func update_player_list(_data: PlayerData) -> void:
     # add every player in the list
@@ -31,6 +33,9 @@ func update_player_list(_data: PlayerData) -> void:
         # or our previously focused player has been removed
         if player_spectating_id == 0 or !Game.Players.has_player(player_spectating_id):
             focus_on_player()
+
+func remove_player(id: int) -> void: 
+    players_options.remove_item(players_options.get_item_index(id))
 
 func update_score() -> void:
     # remove all child except header
@@ -96,8 +101,7 @@ func focus_on_player() -> void:
         
     # get our focused player id 
     player_spectating_id = players_options.get_item_id(players_options.selected)
-    # TODO follow player selected
-    # need to: move to the room of the player
+    # what it does: move to the room of the player
     # listen if changing room
     # connect to it's camera, or own camera follows him
     var player_data = Game.Players.get_player(player_spectating_id)

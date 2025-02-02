@@ -48,7 +48,7 @@ var jump_count: int = JUMP_COUNT_MAX
 @export var hp: float = HP_MAX:
     set(value):
         hp = value
-        if is_node_ready():
+        if is_node_ready() and player_ui:
             player_ui.hp = "HP : " + str(int(hp))
 
 @export var ATK: int = 3
@@ -75,8 +75,8 @@ signal room_changed()
 # the authority controlling this player (peer id)
 var multiplayer_authority_id: int = 0
 # room where the player is into
-var player_spawn: Vector2 = Vector2()
-var player_room: Vector2 = Vector2():
+var player_spawn: Vector2i = Vector2i()
+var player_room: Vector2i = Vector2i():
     set(value):
         player_room = value
         room_changed.emit()
@@ -102,14 +102,15 @@ func disable_others_camera(id: int) -> void:
     if id != multiplayer.get_unique_id():
         camera.disable_camera()
         camera.get_node("CanvasLayer").queue_free()
-
+        player_ui = null
 
 func change_room(room: Vector2) -> void:
     player_room = room
     # snap camera
     camera.snap()
     camera.set_limits(Game.current_room.Map)
-    player_ui.pos = str(room)
+    if player_ui:
+        player_ui.pos = str(room)
 
 func _ready():
     camera.snap()
