@@ -6,6 +6,7 @@ func _ready() -> void:
     state_machine = $StateMachine
     animation_sprite = $AnimatedSprite2D
     body_collider = $CollisionShape2D
+    dmg_spawn = $DmgSpawn
     
     hp_label = $HP
     hp_label.text = str(hp)

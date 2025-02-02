@@ -372,6 +372,9 @@ properties/2/replication_mode = 2
 
 [sub_resource type="LabelSettings" id="LabelSettings_prnli"]
 font_size = 11
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gn0am"]
 size = Vector2(68, 38)
@@ -399,9 +402,7 @@ texture_filter = 1
 position = Vector2(0, -14)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_cjfn4")
-animation = &"attack1"
-frame = 3
-frame_progress = 0.445824
+animation = &"idle"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_truud")
@@ -449,5 +450,8 @@ position = Vector2(6, 0)
 shape = SubResource("RectangleShape2D_gn0am")
 disabled = true
 debug_color = Color(0.7, 0, 0, 0.42)
+
+[node name="DmgSpawn" type="Marker2D" parent="."]
+position = Vector2(0, -44.1667)
 
 [connection signal="body_entered" from="AttackBox" to="AttackBox" method="_on_body_entered"]

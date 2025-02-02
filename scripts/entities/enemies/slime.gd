@@ -20,6 +20,7 @@ func _ready() -> void:
     attack_box = $AttackBox
     state_machine = $StateMachine
     body_collider = $CollisionShape2D
+    dmg_spawn = $DmgSpawn
     
     hp_label = $HP
     hp_label.text = str(hp)

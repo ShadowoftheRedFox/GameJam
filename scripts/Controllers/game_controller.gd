@@ -24,6 +24,7 @@ const MapSizesNames = ["Petite", "Grande", "Large", "Immense"]
 var GeneratorController = GeneratorControllerScript.new()
 var ThreadController = ThreadControllerScript.new()
 var Utils = UtilsScript.new()
+var DmgNumber = DamageNumber.new()
 
 const MainMenuScene = preload("res://scenes/UI/Main/MainMenu.tscn")
 const PlayerScene = preload("res://scenes/entities/Player.tscn")
@@ -77,14 +78,17 @@ func _init() -> void:
     add_child(ThreadController)
     Utils.name = "Utils"
     add_child(Utils)
+    DmgNumber.name = "DmgNumber"
+    add_child(DmgNumber)
+    
     PlayerNodes = Node2D.new()
     PlayerNodes.name = "PlayerNodes"
+    add_child(PlayerNodes)
     MenuNodes = CanvasLayer.new()
     MenuNodes.name = "MenuNodes"
+    add_child(MenuNodes)
     MapNodes = Node2D.new()
     MapNodes.name = "MapNodes"
-    add_child(PlayerNodes)
-    add_child(MenuNodes)
     add_child(MapNodes)
     
     # since they noew inherit from game_controller, make them pausable

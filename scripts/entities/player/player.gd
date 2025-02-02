@@ -36,6 +36,7 @@ var jump_count: int = JUMP_COUNT_MAX
 @onready var camera: CameraController = $Camera
 @onready var pause: Control = $Camera/CanvasLayer/Pause
 @onready var player_ui: PlayerUI = $Camera/CanvasLayer/Ui
+@onready var dmg_spawn: Marker2D = $DmgSpawn
 
 #### Physic ####
 @onready var collider: CollisionShape2D = $CollisionShape2D
@@ -66,7 +67,7 @@ var damaging = false
 
 @onready var damage_handler: BasePlayerAttack = $AttackBox
 
-signal damaged(dmg: int)
+signal damaged(dmg: int, crit: bool)
 signal respawn()
 signal room_changed()
 
@@ -311,8 +312,8 @@ func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
             sprite_2d.flip_h = true
             anim_sprite_2d.flip_h = true
 
-func handle_damaged(dmg: int):
-    damage_handler.handle_damaged(dmg)
+func handle_damaged(dmg: int, crit: bool):
+    damage_handler.handle_damaged(dmg, crit)
 
 func handle_respawn() -> void:
     damage_handler.handle_respawn()

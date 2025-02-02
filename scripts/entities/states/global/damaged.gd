@@ -1,8 +1,17 @@
 class_name GlobalDamaged
 extends State
 
-func enter(_previous_state_path: String, data := {"damages": 0}) -> void:
-    var damages = data.get_or_add("damages", 0)
+func enter(_previous_state_path: String, data := {"damages": 0, "crit": false}) -> void:
+    var damages: int = data.get_or_add("damages", 0)
+    var crit: bool = data.get_or_add("crit", false)
+    
+    Game.DmgNumber.display_number(
+        damages, 
+        entity.dmg_spawn.global_position, 
+        DamageNumber.DamageType.DAMAGE,
+        crit
+    )
+    
     if damages <= 0:
         finished.emit("Idle")
         return
