@@ -8,6 +8,11 @@ func _ready() -> void:
     body_collider = $CollisionShape2D
     dmg_spawn = $DmgSpawn
     
+    HP_MAX = 30
+    atk = 3
+    hp = HP_MAX
+    atk_speed = 1
+    
     hp_label = $HP
     hp_label.text = str(hp)
     

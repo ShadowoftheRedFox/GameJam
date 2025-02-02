@@ -8,7 +8,7 @@ extends CharacterBody2D
 @export var target_range: float = 50000.0
 
 @export_category("Stats")
-@export var HP_MAX: int = 200
+@export var HP_MAX: int = 100
 var hp: int = HP_MAX:
     set(value):
         hp = value
@@ -17,6 +17,7 @@ var hp: int = HP_MAX:
 @export var atk: int = 3
 @export_range(0, 1) var CRIT_RATE: float = 0.1
 @export var CRIT_MULT: int = 2
+## Attack/s
 @export var atk_speed: float = 1.5
 @export var friendly_fire: bool = false
 

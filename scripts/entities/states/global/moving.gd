@@ -33,6 +33,7 @@ func physics_update(delta: float) -> void:
         if entity.animation_sprite:
             entity.animation_sprite.play("fall")
     elif is_equal_approx(input_direction_x, 0.0):
+        # TODO path find?
         finished.emit("Idle")
     elif entity.is_on_wall():
         if entity.global_position.distance_squared_to(entity.target_player.global_position) < 1000 * entity.scale.x and entity.atk > 0:

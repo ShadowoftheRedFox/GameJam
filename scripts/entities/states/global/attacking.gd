@@ -1,6 +1,8 @@
 class_name GlobalAttacking
 extends State
 
+var attack_cooldown: float = 0
+
 func enter(_previous_state_path: String, _data := {}) -> void:
     var input_direction_x := entity.global_position.direction_to(entity.target_player.global_position).x
     # enable hitbox
@@ -12,7 +14,8 @@ func enter(_previous_state_path: String, _data := {}) -> void:
         entity.attack_box.rotation = deg_to_rad(180.0)
     
     entity.attack_box.body_entered.connect(attacking)
-
+    
+    attack_cooldown = 1000.0 / float(entity.atk_speed)
     entity.animate.emit("attack1")
     entity.info = "Attacking target"
 
@@ -30,12 +33,16 @@ func physics_update(delta: float) -> void:
     
     if entity.global_position.distance_squared_to(entity.target_player.global_position) > 1000 * entity.scale.x:
         finished.emit("Idle")
-    if entity.animation_sprite and !entity.animation_sprite.is_playing():
-        finished.emit("Idle")
-    if entity.animation_player and !entity.animation_player.is_playing():
-        finished.emit("Idle")
+    
+    attack_cooldown -= delta    
+    if attack_cooldown <= 0:
+        if entity.animation_sprite and !entity.animation_sprite.is_playing():
+            finished.emit("Idle")
+        if entity.animation_player and !entity.animation_player.is_playing():
+            finished.emit("Idle")
         
 func exit() -> void:
+    attack_cooldown = 0
     entity.attack_box.get_child(0).set_deferred("disabled", true)
     Game.Utils.remove_signal_listener(entity.attack_box.body_entered)
 

@@ -54,14 +54,27 @@ func generate_map(map_size: int = 0) -> MapData:
     for y: int in map.size():
         buffs_in_rooms.append([])
         for x: int in map[y].size():
+            var room: MapRoom = map[y][x]
+            
             # put buff in all spawn for now
             var buff_type: int = randi_range(Buff.BuffPreset.CUSTOM + 1, Buff.BuffPreset.MAX - 1)
             var buff: Buff = Game.BuffScene.instantiate()
             @warning_ignore("int_as_enum_without_cast")
             buff.buff_preset = buff_type
             
-            (map[y][x] as MapRoom).BuffSpawn.add_child(buff)
+            room.BuffSpawn.add_child(buff)
             buffs_in_rooms[y].append(buff_type)
+                          
+            var ennemy = Game.OrcScene.instantiate() if randi_range(0, 1) else Game.SlimeScene.instantiate()
+            room.BuffSpawn.add_child(ennemy)
+            
+            var tile_map = room.Map
+            var tile_rect = tile_map.get_used_rect()
+            var cell_size = tile_map.tile_set.tile_size
+            if abs(tile_rect.end.x * cell_size.x) > data.room_size.x:
+                data.room_size.x = abs(tile_rect.end.x * cell_size.x)
+            if abs(tile_rect.end.y * cell_size.y) > data.room_size.y:
+                data.room_size.y = abs(tile_rect.end.y * cell_size.y)
     
     data.room_size = max_room_size
     data.loaded_rooms = map
