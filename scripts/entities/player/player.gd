@@ -43,9 +43,9 @@ var jump_count: int = JUMP_COUNT_MAX
 
 #### Interractions ####
 @export_category("Stats")
-@export var HP_MAX: float = 20.0
+@export var HP_MAX: int = 20
 ## exported for the player sync
-@export var hp: float = HP_MAX:
+@export var hp: int = HP_MAX:
     set(value):
         hp = value
         if is_node_ready() and player_ui:
@@ -164,13 +164,13 @@ func update_buff(data: PlayerData) -> void:
         SPEED_CAP_GROUND = 200 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.SPEED_BOOSTER).buff_amount)
         SPEED_CAP_AIR = 300 * (1 + 0.2 * data.get_buff(Buff.BuffPreset.SPEED_BOOSTER).buff_amount)
     
-    var old_hp_ratio: float = hp / HP_MAX
+    var old_hp_ratio: float = float(hp) / float(HP_MAX)
     if data.has_buff(Buff.BuffPreset.HEALTH_UPGRADER):
-        HP_MAX = 20.0 * (1.0 + 0.2 * data.get_buff(Buff.BuffPreset.HEALTH_UPGRADER).buff_amount) # * 1.2 each
-        hp = old_hp_ratio * HP_MAX
+        HP_MAX = int(20.0 * (1.0 + 0.2 * data.get_buff(Buff.BuffPreset.HEALTH_UPGRADER).buff_amount)) # * 1.2 each
+        hp = int(old_hp_ratio * HP_MAX)
     if data.has_buff(Buff.BuffPreset.HEALTH_BOOSTER):
-        HP_MAX = HP_MAX + 5.0 * data.get_buff(Buff.BuffPreset.HEALTH_BOOSTER).buff_amount
-        hp = old_hp_ratio * HP_MAX
+        HP_MAX = int(HP_MAX + 5.0 * data.get_buff(Buff.BuffPreset.HEALTH_BOOSTER).buff_amount)
+        hp = int(old_hp_ratio * HP_MAX)
 #endregion
 
 @rpc("any_peer", "call_remote")

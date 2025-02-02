@@ -60,6 +60,7 @@ var door_hp: int = door_hit
 @onready var static_body: StaticBody2D = $StaticBody
 @onready var static_body_collider: CollisionShape2D = $StaticBody/Collider
 #@onready var border: CollisionShape2D = $StaticBody/Border
+@onready var particle: CPUParticles2D = $Collider/CPUParticles2D
 
 ## The room that this door connects to
 ## If null, does not trigger _change_room
@@ -102,6 +103,7 @@ func _resize_door() -> void:
         return
     
     scale = door_size
+    particle.emission_rect_extents = particle.emission_rect_extents * scale
 
 func _rotate_door() -> void:
     if !is_node_ready():
@@ -119,14 +121,17 @@ func _change_door_state() -> void:
             static_body.collision_layer = 0
             wall.hide()
             door.hide()
+            particle.emitting = true
         DoorState.WALLED:
             static_body.collision_layer = layer_block
             wall.show()
             door.hide()
+            particle.emitting = false
         DoorState.CLOSED:
             static_body.collision_layer = layer_block
             wall.hide()
             door.show()
+            particle.emitting = false
         _:
             push_error("unknown door state")
 
