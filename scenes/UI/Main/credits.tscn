@@ -78,7 +78,7 @@ Korée
 ShadowOfTheRedFox"
 horizontal_alignment = 1
 
-[node name="TransitionCredits" type="Label" parent="Main"]
+[node name="Orga" type="Label" parent="Main"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Organisateurs:
@@ -88,12 +88,20 @@ Thomas
 Émilien"
 horizontal_alignment = 1
 
-[node name="TransitionCredits2" type="Label" parent="Main"]
+[node name="TransitionCredits" type="Label" parent="Main"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Script de base pour la transition:
 
 Clément"
+horizontal_alignment = 1
+
+[node name="AssetsCredits" type="Label" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Asset du slime: rvros (itch.io)
+Asset de l'orc et du joueur: zerie (itch.io)
+Assets pour la carte: Kenney's \"Abstract Platformer\" pack"
 horizontal_alignment = 1
 
 [node name="Bottom" type="MarginContainer" parent="Main"]
