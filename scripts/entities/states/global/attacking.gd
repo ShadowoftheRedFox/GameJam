@@ -15,7 +15,7 @@ func enter(_previous_state_path: String, _data := {}) -> void:
     
     entity.attack_box.body_entered.connect(attacking)
     
-    attack_cooldown = 1000.0 / float(entity.atk_speed)
+    attack_cooldown = 1.0 / float(entity.atk_speed)
     entity.animate.emit("attack1")
     entity.info = "Attacking target"
 
@@ -24,12 +24,12 @@ func physics_update(delta: float) -> void:
         finished.emit("Idle")
         return
     
-    attack_cooldown -= delta    
+    attack_cooldown -= delta
     if attack_cooldown <= 0:
-        if entity.animation_sprite and !entity.animation_sprite.is_playing():
-            finished.emit("Idle")
-        if entity.animation_player and !entity.animation_player.is_playing():
-            finished.emit("Idle")
+        finished.emit("Idle")
+        #if entity.animation_sprite and !entity.animation_sprite.is_playing():
+            #finished.emit("Idle")
+        #if entity.animation_player and !entity.animation_player.is_playing():
         
 func exit() -> void:
     attack_cooldown = 0

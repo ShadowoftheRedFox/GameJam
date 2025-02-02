@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var jump_impulse: float = 100.0
 @export var speed: float = 30.0
 @export var gravity: float = 980.0
-@export var target_range: float = 50000.0
+@export var target_range: float = 80000.0
 
 @export_category("Stats")
 @export var HP_MAX: int = 100
