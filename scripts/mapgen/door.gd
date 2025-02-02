@@ -103,14 +103,21 @@ func _resize_door() -> void:
         return
     
     scale = door_size
-    particle.emission_rect_extents = particle.emission_rect_extents * scale
 
 func _rotate_door() -> void:
     if !is_node_ready():
         return
 
     rotation = deg_to_rad(float(door_facing * 90))
-
+    match door_facing:
+        DoorFacing.LEFT:
+            particle.gravity = Vector2(20,0)
+        DoorFacing.RIGHT:
+            particle.gravity = Vector2(-20,0)
+        DoorFacing.UP:
+            particle.gravity = Vector2(0,20)
+        DoorFacing.DOWN:
+            particle.gravity = Vector2(0,-20)
 
 func _change_door_state() -> void:
     if !is_node_ready():
