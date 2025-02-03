@@ -30,3 +30,4 @@ func physics_update(_delta: float) -> void:
         finished.emit("Idle")
     if entity.animation_player and !entity.animation_player.is_playing():
         finished.emit("Idle")
+    entity.move_and_slide()
