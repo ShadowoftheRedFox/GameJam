@@ -339,5 +339,6 @@ func dispawn() -> void:
     particle_gen.amount_ratio = 0
 
 func transition_to_color(_time: int, _new_color: Color) -> void:
-    # TODO transition color
+    var tween : Tween = get_tree().create_tween()
+    tween.tween_property(particle_material, "color", _new_color, _time)    
     pass

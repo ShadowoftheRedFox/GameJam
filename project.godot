@@ -27,6 +27,10 @@ Save="*res://scripts/Controllers/save_controller.gd"
 Multi="*res://scripts/Controllers/multiplayer_controller.gd"
 Server="*res://scripts/multiplayer/server.gd"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [dotnet]
 
 project/assembly_name="Game"
