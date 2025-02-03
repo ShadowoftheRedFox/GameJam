@@ -22,13 +22,13 @@ func _on_new_pressed() -> void:
     $Main.hide()
     $NewGame.show()
     $NewGame/MarginContainer/VBoxContainer/Back.grab_focus()
-    buff.particle_color = Color.DARK_SLATE_BLUE
+    buff.transition_to_color(2, Color.DARK_SLATE_BLUE)
 
 func _on_continue_pressed() -> void:
     $Main.hide()
     $Continue.show()
     $Continue/Main/MarginContainer/VBoxContainer/Back.grab_focus()
-    buff.particle_color = Color.DARK_ORANGE
+    buff.transition_to_color(2, Color.DARK_ORANGE)
     
 
 func _on_multiplayer_pressed() -> void:
@@ -36,14 +36,14 @@ func _on_multiplayer_pressed() -> void:
     $Main.hide()
     $Multiplayer.show()
     $Multiplayer/Margin/HBoxContainer/Main/VBoxContainer/Join.grab_focus()
-    buff.particle_color = Color.YELLOW
+    buff.transition_to_color(2, Color.YELLOW)
 
 func _on_options_pressed() -> void:
     # Hide all menu and show options
     $Main.hide()
     $Options.show()
     $Options/Margin/HBoxContainer/Main/VBoxContainer/Sound.grab_focus()
-    buff.particle_color = Color.DARK_BLUE
+    buff.transition_to_color(2, Color.DARK_BLUE)
 
 func _on_quit_pressed() -> void:
     # quit game
@@ -52,7 +52,7 @@ func _on_quit_pressed() -> void:
 func generic_back_pressed() -> void:
     $Main.show()
     $Main/MarginContainer/MarginContainer/VBoxContainer/New.grab_focus()
-    buff.particle_color = Color.CRIMSON
+    buff.transition_to_color(2, Color.CRIMSON)
 
 func _on_multiplayer_back_pressed() -> void:
     $Multiplayer.hide()
