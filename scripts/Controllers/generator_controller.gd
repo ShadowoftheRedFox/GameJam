@@ -85,10 +85,8 @@ func generate_map(map_size: int = 0) -> MapData:
     return data
 
 # room_types is Array[Array[String]]
-func load_map(data: MapData, map_size: int, load_seed: int) -> MapData:
+func load_map(data: MapData, map_size: int) -> MapData:
     var generator = MapGenerator.new()
-    save_seed = load_seed
-    generator.set_seed(load_seed)
     return generator.load_map(data, (map_size + 1) * MAP_WIDTH, (map_size + 1) * MAP_HEIGHT)
 
 # get the 2D array of the room type

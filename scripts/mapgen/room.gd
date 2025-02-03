@@ -141,7 +141,7 @@ func generate_room() -> bool:
         printerr("Room has not been generated yet")
         return false
     if left == null and right == null and up == null and down == null:
-        printerr("Room is not connected to any otehr room!")
+        printerr("Room is not connected to any other room!")
         return false
     
     # get our path in levels folder

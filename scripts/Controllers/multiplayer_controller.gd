@@ -159,32 +159,32 @@ func _work_position() -> Vector2:
     
 #region Random
     # random
-    #var selected = Vector2i(randi_range(0, size_x), randi_range(0, size_y))
-    #for p: BasePlayer in Game.PlayerNodes.get_children():
-        #if p.player_spawn == selected:
-            #return _work_position()
-    #return Vector2i(randi_range(0, size_x - 1), randi_range(0, size_y - 1))
+    var selected = Vector2i(Game.rng.randi_range(0, size_x - 1), Game.rng.randi_range(0, size_y - 1))
+    for p: BasePlayer in Game.PlayerNodes.get_children():
+        if p.player_spawn == selected:
+            return _work_position()
+    return selected
 #endregion
     
 #region Repartition
     # repartition
-    var rx = 0
-    var ry = 0
-
-    match index % 4:
-        0:
-            rx = 0 + int(index / 4.0)
-            ry = 0 + int(index / 4.0)
-        1:
-            rx = size_x - 1 + int(index / 4.0) * size_x
-            ry = size_y - 1 + int(index / 4.0) * size_y
-        2:
-            rx = (size_y) * (size_x - 1) - int(index / 4.0) * size_x
-            ry = (size_y) * (size_x - 1) - int(index / 4.0) * size_y
-        3:
-            rx = size_y * size_x - 1 - int(index / 4.0)
-            ry = size_y * size_x - 1 - int(index / 4.0)
-    return Vector2i(rx % size_x, int(ry / size_y))
+    #var rx = 0
+    #var ry = 0
+#
+    #match index % 4:
+        #0:
+            #rx = 0 + int(index / 4.0)
+            #ry = 0 + int(index / 4.0)
+        #1:
+            #rx = size_x - 1 + int(index / 4.0) * size_x
+            #ry = size_y - 1 + int(index / 4.0) * size_y
+        #2:
+            #rx = (size_y) * (size_x - 1) - int(index / 4.0) * size_x
+            #ry = (size_y) * (size_x - 1) - int(index / 4.0) * size_y
+        #3:
+            #rx = size_y * size_x - 1 - int(index / 4.0)
+            #ry = size_y * size_x - 1 - int(index / 4.0)
+    #return Vector2i(rx % size_x, int(ry / size_y))
 #endregion
     
 #region Matrix

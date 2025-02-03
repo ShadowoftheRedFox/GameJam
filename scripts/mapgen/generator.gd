@@ -6,9 +6,6 @@ var Room: PackedScene = load("res://scenes/levels/BaseRoom.tscn")
 # TODO: USE A REAL ALGORITHM
 var rng = RandomNumberGenerator.new()
 
-func set_seed(save_seed: int) -> void:
-    rng.seed = save_seed
-
 # Listen if you can't figure out what a function does based on its signature
 # then I screwed up.
 func create_map(width: int, height: int, probability: float) -> Array:
@@ -149,8 +146,8 @@ func load_map(data: MapData, width: int, height: int) -> MapData:
                 buff.buff_preset = data.buff_types[y][x]
                 room.BuffSpawn.add_child(buff)
                 buff.apply_to_children.call_deferred()
-                
-            var ennemy = Game.OrcScene.instantiate() if randi_range(0, 1) else Game.SlimeScene.instantiate()
+            
+            var ennemy = Game.OrcScene.instantiate() if Game.rng.randi_range(0, 1) else Game.SlimeScene.instantiate()
             room.BuffSpawn.add_child(ennemy)
             
             var tile_map = room.Map
