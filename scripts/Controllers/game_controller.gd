@@ -64,6 +64,9 @@ var current_room: MapRoom = null
 var MapNodes: Node2D
 var room_size: Vector2 = Vector2()
 
+## Random number generator synchronized with the seed
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
 # we need to keep track of player in solo between rooms
 # so here we put the node
 # other player node are in root, and just need to be checked against their type
@@ -91,7 +94,7 @@ func _init() -> void:
     MapNodes.name = "MapNodes"
     add_child(MapNodes)
     
-    # since they noew inherit from game_controller, make them pausable
+    # since they now inherit from game_controller, make them pausable
     PlayerNodes.process_mode = Node.PROCESS_MODE_PAUSABLE
     MapNodes.process_mode = Node.PROCESS_MODE_PAUSABLE
     
@@ -141,6 +144,7 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     hosted_difficulty = save_data.get("difficulty", 0)
     hosted_gamemode = save_data.get("gamemode", 0)
     hosted_map_size = save_data.get("map_size", 0)
+    rng.seed = save_data.get("seed", 0)
     
     var data = MapData.new()
     data.parse(save_data.get("map", ""))
@@ -148,7 +152,7 @@ func load_game(save_name: String, multiplayer_data: Dictionary = {}) -> void:
     
     # tansition with thread
     ThreadController.thread_transition(
-        GeneratorController.load_map.bind(data, hosted_map_size, save_data.get("seed", 0)),
+        GeneratorController.load_map.bind(data, hosted_map_size),
         game_loaded,
         multiplayer_data.is_empty(), # don't show loading screen for players joining host
         "Chargement de la carte...",
