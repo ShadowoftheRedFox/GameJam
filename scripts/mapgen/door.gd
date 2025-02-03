@@ -65,8 +65,7 @@ var door_hp: int = door_hit
 ## The room that this door connects to
 ## If null, does not trigger _change_room
 ## Also note that the connected door will be infered on the door orientation
-var door_cleared: bool = true
-var body_in_door: Dictionary = {}
+var body_in_door: Array[Node2D] = []
 
 signal player_entered(player: BasePlayer)
 signal player_exited(player: BasePlayer)
@@ -80,11 +79,7 @@ signal other_exited(player: Node2D)
 func _ready() -> void:
     body_entered.connect(_handle_entered)
     body_exited.connect(_handle_exited)
-    
-    # upward impulse
-    player_exited.connect(_clearing)
-    player_entered.connect(_upward_impulse)
-        
+            
     # setup collision mask
     collision_mask = layer_trigger
     
@@ -97,6 +92,14 @@ func _ready() -> void:
     # change the door state
     _change_door_state()
 
+func _process(_delta: float) -> void:
+    if body_in_door.is_empty():
+        return
+    
+    for body in body_in_door:
+        var dist: Vector2 = abs(body.global_position - global_position)
+        if dist.x > collider.shape.size.x or dist.y > collider.shape.size.y:
+            _handle_exited(body)
 
 func _resize_door() -> void:
     if !is_node_ready():
@@ -143,45 +146,17 @@ func _change_door_state() -> void:
             push_error("unknown door state")
 
 func _handle_entered(body: Node2D, _dont_remember: bool = false) -> void:
-    #if !dont_remember:
-        #body_in_door.get_or_add(str(body.get_path()), body.position)
+    if body in body_in_door:
+        return
     if body is BasePlayer:
         player_entered.emit(body)
     else:
         other_entered.emit(body)
+    body_in_door.append(body)
 
-func _handle_exited(body: Node2D) -> void:
-    # check if body has moved outside the map, if yes, change room
-    #var current_pos: Vector2 = body.position
-    #var old_pos: Vector2 = body_in_door.get_or_add(str(body.get_path()), body.position)
-    #body_in_door.erase(str(body.get_path()))
-    
-    #match door_facing:
-        #DoorFacing.UP:
-            #if current_pos.y < old_pos.y:
-                #_handle_entered(body, true)
-        #DoorFacing.DOWN:
-            #if current_pos.y > old_pos.y:
-                #_handle_entered(body, true)
-        #DoorFacing.RIGHT:
-            #if current_pos.x < old_pos.x:
-                #_handle_entered(body, true)
-        #DoorFacing.LEFT:
-            #if current_pos.x > old_pos.x:
-                #_handle_entered(body, true)
-    
+func _handle_exited(body: Node2D) -> void:  
     if body is BasePlayer:
         player_exited.emit(body)
     else:
         other_exited.emit(body)
-
-func _clearing(_body: Node2D) -> void:
-    if door_cleared == false:
-        door_cleared = true
-
-func _upward_impulse(body: Node2D) -> void:
-    # when leaving door, impulse upward 
-    if door_facing == DoorFacing.UP and !door_cleared:
-        print("push!")
-        var player: BasePlayer = body
-        player.velocity.y -= up_impulse
+    body_in_door.erase(body)

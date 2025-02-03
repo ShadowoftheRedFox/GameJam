@@ -26,9 +26,6 @@ var Map: TileMapLayer = null
 # to tell which layer trigger the event
 const AREA_COLLISION_MASK: int = 0b1110
 
-# to know from where the player come from to prevent back and forth
-var player_door_origin: String = ""
-
 # Self-explainatory
 func set_connection(direction: String, node: Node):
     match direction:
@@ -61,10 +58,6 @@ func area_entered(body: Node2D, direction: String) -> void:
     # only care about our player 
     if body != Game.main_player_instance:
         return
-    # if door origin is not cleared yet
-    if player_door_origin != "":
-        return
-    #print("player is going ", direction)
     # get the next room
     var next_room: MapRoom = get_connection(direction)
     if next_room == null:
@@ -74,22 +67,18 @@ func area_entered(body: Node2D, direction: String) -> void:
     # and tell the next room where the player enter to prevent back and forth
     var door: Door = null
     if direction == "up":
-        next_room.player_door_origin = "down"
         door = next_room.room.get_node("Map/Down")
     elif direction == "down":
-        next_room.player_door_origin = "up"
         door = next_room.room.get_node("Map/Up")
     elif direction == "left":
-        next_room.player_door_origin = "left"
         door = next_room.room.get_node("Map/Right")
     elif direction == "right":
-        next_room.player_door_origin = "right"
         door = next_room.room.get_node("Map/Left")
     if door == null:
         printerr("Can't find area of next room despite having connection")
         return
     
-    door.door_cleared = false
+    door.body_in_door.append(body)
     # TODO transition
     # change player pos and display next room
     Game.current_room = next_room
@@ -239,7 +228,3 @@ func set_area_listeners() -> void:
     
 func area_connect(door: Door, direction: String) -> void:
     door.player_entered.connect(area_entered.bind(direction))
-    door.player_exited.connect(area_leave)
-    
-func area_leave(_body: Node2D) -> void:
-    player_door_origin = ""
