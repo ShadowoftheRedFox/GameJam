@@ -1,10 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://ct850ic78xaur"]
+[gd_scene load_steps=8 format=3 uid="uid://ct850ic78xaur"]
 
 [ext_resource type="Script" path="res://scripts/mapgen/door.gd" id="1_1bwiw"]
 [ext_resource type="TileSet" uid="uid://551n7rlvwqgp" path="res://assets/tilesets/world.tres" id="2_05pwa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nxfrx"]
 size = Vector2(32, 64)
+
+[sub_resource type="Gradient" id="Gradient_44wii"]
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ggl0n"]
+gradient = SubResource("Gradient_44wii")
+width = 32
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bg42g"]
 size = Vector2(64, 64)
@@ -25,18 +34,8 @@ up_impulse = 200.0
 position = Vector2(-16, 0)
 shape = SubResource("RectangleShape2D_nxfrx")
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="Collider"]
-position = Vector2(15, 0)
-amount = 10
-emission_shape = 3
-emission_rect_extents = Vector2(8, 32)
-direction = Vector2(-1, 0)
-gravity = Vector2(-20, 0)
-initial_velocity_min = 2.0
-initial_velocity_max = 10.0
-angular_velocity_max = 157.09
-scale_amount_max = 2.5
-color = Color(0.942114, 0.929412, 0.665682, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Collider"]
+texture = SubResource("GradientTexture2D_ggl0n")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
