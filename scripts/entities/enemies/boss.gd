@@ -9,7 +9,7 @@ func _ready() -> void:
     dmg_spawn = $DmgSpawn
     hp_label = $HP
     
-    HP_MAX = 3
+    HP_MAX = 300
     hp = HP_MAX
     atk = 8
     atk_speed = 1
