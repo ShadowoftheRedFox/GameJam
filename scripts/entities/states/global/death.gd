@@ -1,9 +1,11 @@
 class_name GlobalDeath
 extends State
 
-func enter(_previous_state_path: String, _data := {}) -> void:
+func enter(_previous_state_path: String, data := {"killer": null}) -> void:
     entity.animate.emit("death")
     entity.info = "Dead"
+    
+    entity.ondeath.emit(data.get("killer", null))
     
     if entity.body_collider:
         entity.body_collider.set_deferred("disabled", true)

@@ -36,7 +36,7 @@ func exit() -> void:
 func attacking(body: Node2D) -> void:
     var crit_mult = (entity.CRIT_MULT) if (randf() <= entity.CRIT_RATE) else 1
     if body is GlobalEnemy and entity.friendly_fire:
-        (body as GlobalEnemy).damaged.emit(entity.atk * crit_mult, crit_mult != 1)
+        (body as GlobalEnemy).damaged.emit(body, entity.atk * crit_mult, crit_mult != 1)
     if body is BasePlayer:
-        (body as BasePlayer).damaged.emit(entity.atk * crit_mult, crit_mult != 1)
+        (body as BasePlayer).damaged.emit(body, entity.atk * crit_mult, crit_mult != 1)
     # TODO destroy some projectiles?

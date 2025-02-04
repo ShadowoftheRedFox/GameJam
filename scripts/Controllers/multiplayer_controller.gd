@@ -206,3 +206,11 @@ func _work_position() -> Vector2:
             #return _work_position()
     #return Vector2i(x, y)
 #endregion
+
+@rpc("any_peer", "call_local")
+func end_game(killerId: int) -> void:
+    if Game.game_ended:
+        return
+    
+    print("Game ended!")
+    print("Boss killed by ", ("player " + str(killerId)) if killerId != 0 else "a mob " + str(killerId))

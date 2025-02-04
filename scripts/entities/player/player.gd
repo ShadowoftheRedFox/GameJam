@@ -67,7 +67,7 @@ var damaging = false
 
 @onready var damage_handler: BasePlayerAttack = $AttackBox
 
-signal damaged(dmg: int, crit: bool)
+signal damaged(attacker:Node2D, dmg: int, crit: bool)
 signal respawn()
 signal room_changed()
 
@@ -120,8 +120,8 @@ func _ready():
         display_name.hide()
     
     # connect signals
-    damaged.connect(handle_damaged)
-    respawn.connect(handle_respawn)
+    damaged.connect(damage_handler.handle_damaged)
+    respawn.connect(damage_handler.handle_respawn)
     
     if DEBUG:
         # handle debug mode of this player instance
@@ -313,12 +313,6 @@ func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
         elif hor_direction == -1 and !anim_sprite_2d.flip_h:
             sprite_2d.flip_h = true
             anim_sprite_2d.flip_h = true
-
-func handle_damaged(dmg: int, crit: bool):
-    damage_handler.handle_damaged(dmg, crit)
-
-func handle_respawn() -> void:
-    damage_handler.handle_respawn()
 
 func change_state(new_state):
     if current_state == new_state:

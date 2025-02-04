@@ -33,6 +33,7 @@ const SpectatorScene = preload("res://scenes/UI/Spectator/Spectator.tscn")
 const BuffScene = preload("res://scenes/entities/buff.tscn")
 const OrcScene = preload("res://scenes/entities/enemies/orc.tscn")
 const SlimeScene = preload("res://scenes/entities/enemies/slime.tscn")
+const BossScene = preload("res://scenes/entities/enemies/boss.tscn")
 
 signal game_loaded(result_map: MapData)
 @warning_ignore("unused_signal")
@@ -57,6 +58,7 @@ var PlayerNodes: Node2D
 var MenuNodes: CanvasLayer
 
 var game_started: bool = false
+var game_ended: bool = false
 var game_paused: bool = false
 
 var current_map: Array = []

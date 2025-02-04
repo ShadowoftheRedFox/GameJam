@@ -28,8 +28,6 @@ func _ready() -> void:
     hp = HP_MAX
     atk_speed = 1.2
     
-    hp_label.text = str(hp)
-    
     info = "Idle"
     move_texture()
     # change the color of the slime to one in the array

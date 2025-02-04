@@ -1,4 +1,4 @@
-class_name EnemiesOrc
+class_name EnemiesBoss
 extends GlobalEnemy
 
 func _ready() -> void:
@@ -9,14 +9,25 @@ func _ready() -> void:
     dmg_spawn = $DmgSpawn
     hp_label = $HP
     
-    HP_MAX = 30
-    atk = 3
+    HP_MAX = 3
     hp = HP_MAX
+    atk = 8
     atk_speed = 1
+    speed = 20.0
+    target_range = 100000.0
+    jump_impulse = 200.0
     
     animate.connect(handle_animation)
+    ondeath.connect(handle_end_game)
     super()
     
+func handle_end_game(killer: Node2D) -> void:
+    var id = 0
+    if killer is BasePlayer:
+        id = killer.multiplayer_authority_id
+    
+    Multi.end_game.rpc(id)
+
 func handle_animation(animation: String) -> void:
     match animation:
         "jump":

@@ -41,7 +41,8 @@ var dmg_spawn: Marker2D
 
 @warning_ignore("unused_signal")
 signal animate(animation: String)
-signal damaged(damage: int, crit: bool)
+signal damaged(attacker: Node2D, damage: int, crit: bool)
+signal ondeath(killer: Node2D)
 
 func _ready() -> void:
     assert(state_machine != null and !machine_less, "Global enemies must include a state machine, or say they don't use one")
@@ -51,9 +52,9 @@ func _ready() -> void:
     
     damaged.connect(handle_damage)
 
-func handle_damage(damage: int, crit: bool = false) -> void:
+func handle_damage(attacker: Node2D, damage: int, crit: bool = false) -> void:
     if !machine_less:
-        state_machine._transition_to_next_state("Damaged", {"damages": damage, "crit": crit})
+        state_machine._transition_to_next_state("Damaged", {"damages": damage, "crit": crit, "attacker": attacker})
 
 var info: String = "":
     set(value):

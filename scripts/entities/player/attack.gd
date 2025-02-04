@@ -9,12 +9,12 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
     var crit_mult = (player.CRIT_MULT) if (randf() <= player.CRIT_RATE) else 1
     if body is GlobalEnemy:
-        body.damaged.emit(player.ATK * crit_mult, crit_mult != 1)
+        body.damaged.emit(player, player.ATK * crit_mult, crit_mult != 1)
     if body is BasePlayer and body != player:
-        (body as BasePlayer).damaged.emit(player.ATK * crit_mult, crit_mult != 1)
+        (body as BasePlayer).damaged.emit(player, player.ATK * crit_mult, crit_mult != 1)
     # TODO destroy some projectiles?
 
-func handle_damaged(dmg: int, crit: bool):
+func handle_damaged(_attacker: Node2D, dmg: int, crit: bool):
     if player.player_disabled:
         return
     
