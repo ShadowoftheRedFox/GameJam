@@ -212,5 +212,6 @@ func end_game(killerId: int) -> void:
     if Game.game_ended:
         return
     
+    Game.game_ended = true
     print("Game ended!")
     print("Boss killed by ", ("player " + str(killerId)) if killerId != 0 else "a mob " + str(killerId))

@@ -42,6 +42,7 @@ var dmg_spawn: Marker2D
 @warning_ignore("unused_signal")
 signal animate(animation: String)
 signal damaged(attacker: Node2D, damage: int, crit: bool)
+@warning_ignore("unused_signal")
 signal ondeath(killer: Node2D)
 
 func _ready() -> void:
