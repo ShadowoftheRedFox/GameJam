@@ -7,6 +7,14 @@ func enter(_previous_state_path: String, data := {"killer": null}) -> void:
     
     entity.ondeath.emit(data.get("killer", null))
     
+    if data.get("killer", null) == Game.main_player_instance:
+        if entity.is_boss:
+            Game.main_player_instance.update_score(ScoreData.Type.BKILL, 1)
+        elif entity.is_mini_boss:
+            Game.main_player_instance.update_score(ScoreData.Type.MBKILL, 1)
+        else:
+            Game.main_player_instance.update_score(ScoreData.Type.MKILL, 1)
+        
     if entity.body_collider:
         entity.body_collider.set_deferred("disabled", true)
 

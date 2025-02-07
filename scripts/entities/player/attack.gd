@@ -13,8 +13,10 @@ func _on_body_entered(body: Node2D) -> void:
     if body is BasePlayer and body != player:
         (body as BasePlayer).damaged.emit(player, player.ATK * crit_mult, crit_mult != 1)
     # TODO destroy some projectiles?
+    if player == Game.main_player_instance:
+        Game.main_player_instance.update_score(ScoreData.Type.DMGD, player.ATK * crit_mult)
 
-func handle_damaged(_attacker: Node2D, dmg: int, crit: bool):
+func handle_damaged(attacker: Node2D, dmg: int, crit: bool):
     if player.player_disabled:
         return
     
@@ -28,6 +30,9 @@ func handle_damaged(_attacker: Node2D, dmg: int, crit: bool):
     if dmg <= 0:
         return
         
+    if player == Game.main_player_instance:
+        Game.main_player_instance.update_score(ScoreData.Type.DMGR, dmg)
+        
     player.anim_sprite_2d.play("hurt")
     player.damaging = true
     player.hp -= dmg
@@ -36,11 +41,16 @@ func handle_damaged(_attacker: Node2D, dmg: int, crit: bool):
         player.anim_sprite_2d.play("death")
         player.collider.set_deferred("disabled", true)
         player.player_ui.start_counter.emit(player.DEATH_TIME)
+        if attacker is BasePlayer:
+            attacker.update_score(ScoreData.Type.MKILL, 1)
         
 func handle_respawn() -> void:
     if player.hp > 0:
         push_error("trying to respawn " + player.name + " while he's not dead")
         return
+        
+    if player == Game.main_player_instance:
+        Game.main_player_instance.update_score(ScoreData.Type.DEATH, 1)
     
     player.damaging = false
     player.attacking = false

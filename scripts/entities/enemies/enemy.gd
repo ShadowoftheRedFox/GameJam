@@ -39,6 +39,9 @@ var animation_player: AnimationPlayer
 var hp_label: Label
 var dmg_spawn: Marker2D
 
+var is_boss: bool = false
+var is_mini_boss: bool = false
+
 @warning_ignore("unused_signal")
 signal animate(animation: String)
 signal damaged(attacker: Node2D, damage: int, crit: bool)

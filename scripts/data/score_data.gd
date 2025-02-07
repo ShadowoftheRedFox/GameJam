@@ -65,15 +65,15 @@ func update_score(id: int, type: Type, value: int) -> void:
 
 func get_global() -> int:
     return death_amount + \
-            player_kill_amount + \
-            mob_kill_amount + \
-            miniboss_kill_amount + \
-            boss_kill_amount + \
-            damage_dealt + \
-            damage_received + \
-            distance_traveled + \
-            dashes + \
-            jumps
+            player_kill_amount * 1000 + \
+            mob_kill_amount * 10 + \
+            miniboss_kill_amount * 100 + \
+            boss_kill_amount * 2000 + \
+            damage_dealt #+ \
+            #damage_received + \
+            #distance_traveled + \
+            #dashes + \
+            #jumps
 
 func _to_string() -> String:
     return JSON.stringify({

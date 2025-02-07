@@ -4,6 +4,7 @@ extends State
 func enter(_previous_state_path: String, data := {"damages": 0, "crit": false, "attacker": null}) -> void:
     var damages: int = data.get_or_add("damages", 0)
     var crit: bool = data.get_or_add("crit", false)
+    var attacker: Node2D = data.get("attacker", null)
     
     Game.DmgNumber.display_number(
         damages, 
@@ -19,7 +20,7 @@ func enter(_previous_state_path: String, data := {"damages": 0, "crit": false, "
     entity.hp -= damages
     
     if entity.hp <= 0:
-        finished.emit("Death", {"killer": data.get("attacker", null)})
+        finished.emit("Death", {"killer": attacker})
         return
 
     entity.animate.emit("hurt")

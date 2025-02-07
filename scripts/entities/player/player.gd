@@ -112,6 +112,9 @@ func change_room(room: Vector2) -> void:
     if player_ui:
         player_ui.pos = str(room)
 
+func update_score(type: ScoreData.Type, value: int) -> void:
+    Game.Players.get_player(multiplayer_authority_id).score.update_score(multiplayer_authority_id, type, value)
+
 func _ready():
     camera.snap()
     
@@ -210,6 +213,7 @@ func _physics_process(delta: float) -> void:
 
         # Determine the horizontal direction of the velocity
         var vel_direction = sign(velocity.x)
+        update_score(ScoreData.Type.DIST, int(input_vector.distance_squared_to(Vector2.ZERO)))
 
         # State machine handling
         match current_state:
@@ -251,7 +255,7 @@ func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):
         dash_timer = -100
         jump_count -= 1
         change_state(PlayerState.AIRBORNE)
-        Game.Players.get_player(multiplayer_authority_id).score.update_score(multiplayer_authority_id, ScoreData.Type.JMP, 1)
+        update_score(ScoreData.Type.JMP, 1)
         return
 
     if dash_timer > 0:
@@ -266,6 +270,7 @@ func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):
             velocity.x -= vel_direction * drag_force
 
         if Input.is_action_just_pressed("Dash") and sign(input_vector.y) >= 0 and dash_count > 0:
+            update_score(ScoreData.Type.DASH, 1)
             dash_timer = DASH_DURATION
             dash_direction = input_vector
             dash_count -= 1
@@ -289,6 +294,7 @@ func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
         velocity.y = -JUMP_IMPULSE
         dash_timer = -100
         jump_count -= 1
+        update_score(ScoreData.Type.JMP, 1)
         return
 
     if dash_timer > 0:
@@ -307,6 +313,7 @@ func handle_airborne_state(delta, hor_direction, vel_direction, input_vector):
             dash_timer = DASH_DURATION
             dash_direction = input_vector
             dash_count -= 1
+            update_score(ScoreData.Type.DASH, 1)
 
         if hor_direction == 1 and anim_sprite_2d.flip_h:
             sprite_2d.flip_h = false

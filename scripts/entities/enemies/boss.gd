@@ -17,6 +17,7 @@ func _ready() -> void:
     target_range = 100000.0
     jump_impulse = 200.0
     disappear_on_death = false
+    is_boss = true
     
     animate.connect(handle_animation)
     ondeath.connect(handle_end_game)
