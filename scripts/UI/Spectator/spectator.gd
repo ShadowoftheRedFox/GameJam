@@ -1,12 +1,9 @@
 class_name SpectatorMenu
 extends Control
 
-const PlayerScorePanel = preload("res://scenes/UI/Spectator/PlayerScore.tscn")
-
 @onready var spectate: HBoxContainer = $CanvasLayer/MarginContainer/Spectate
 @onready var players_options: OptionButton = $CanvasLayer/MarginContainer/Spectate/Players
-@onready var score: MarginContainer = $CanvasLayer/MarginContainer/Score
-@onready var score_container: VBoxContainer = $CanvasLayer/MarginContainer/Score/ScrollContainer/MarginContainer/Container
+@onready var score: MarginContainer = $CanvasLayer/MarginContainer/Scores
 
 var player_spectating_id: int = 0
 
@@ -14,7 +11,6 @@ func _ready() -> void:
     Game.player_infos_update.connect(update_player_list)
     Server.player_disconnected.connect(remove_player)
     update_player_list(null)
-    update_score()
     focus_on_player.call_deferred()
     
 func update_player_list(_data: PlayerData) -> void:
@@ -36,19 +32,6 @@ func update_player_list(_data: PlayerData) -> void:
 
 func remove_player(id: int) -> void: 
     players_options.remove_item(players_options.get_item_index(id))
-
-func update_score() -> void:
-    # remove all child except header
-    for child in score_container.get_children():
-        if !child.name.contains("Header"):
-            child.queue_free()
-    
-    for p in Game.Players.list:
-        if !p.is_spectator:
-            var panel = PlayerScorePanel.instantiate()
-            panel.player_data = p
-            score_container.add_child(panel)
-            score_container.add_child(HSeparator.new())
 
 func _on_before_pressed() -> void:
     if players_options.selected == -1:
@@ -135,7 +118,6 @@ func _on_score_pressed() -> void:
     if score.visible:
         score.hide()
     else:
-        update_score()
         score.show()
     spectate.hide()
 

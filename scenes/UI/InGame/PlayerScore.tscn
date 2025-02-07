@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b6jid2jit70i"]
 
-[ext_resource type="Script" path="res://scripts/UI/Spectator/player_score.gd" id="1_68lmv"]
+[ext_resource type="Script" path="res://scripts/UI/Spectator/player_score.gd" id="1_65vf5"]
 
 [node name="PlayerScore" type="MarginContainer"]
 anchors_preset = 15
@@ -12,7 +12,7 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
-script = ExtResource("1_68lmv")
+script = ExtResource("1_65vf5")
 
 [node name="Main" type="VBoxContainer" parent="."]
 layout_mode = 2

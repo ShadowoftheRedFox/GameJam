@@ -22,6 +22,7 @@ var pos: String = "0, 0":
 @onready var player: BasePlayer = $"../../.."
 @onready var message_feed: MessageFeed = $MarginContainer/FeedContainer
 @onready var prompts: MarginContainer = $MarginContainer/Prompts
+@onready var scores: MarginContainer = $Scores
 
 signal start_counter(time: int)
 var time_remaining: float = 0.0
@@ -41,6 +42,12 @@ func _ready() -> void:
     
     await tween.finished
     prompts.queue_free()
+
+func _input(_event: InputEvent) -> void:
+    if Input.is_action_just_pressed("Score"):
+        scores.show()
+    if Input.is_action_just_released("Score"):
+        scores.hide()
 
 func _physics_process(delta: float) -> void:
     if !death_counter.visible:

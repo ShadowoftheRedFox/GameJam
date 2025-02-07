@@ -17,4 +17,4 @@ func infos_update(data: PlayerData) -> void:
 
 func update() -> void:
     $Main/Name.text = player_data.name
-    $Main/Score.text = "Score : " + str(player_data.score.global)
+    $Main/Score.text = "Score : " + str(player_data.score.get_global())

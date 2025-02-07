@@ -206,12 +206,8 @@ texture = ExtResource("9_s2wcw")
 expand_mode = 2
 
 [node name="Scores" parent="." instance=ExtResource("12_vmkl3")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-grow_horizontal = 1
-grow_vertical = 1
+visible = false
+layout_mode = 1
 
 [node name="EndGame" parent="." instance=ExtResource("13_boc5x")]
 visible = false
