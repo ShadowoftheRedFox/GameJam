@@ -22,7 +22,7 @@ func send_player_infos(data_raw: String) -> void:
         return
         
     if !Game.Players.has_player(data.id):
-        Game.Players.list.append(data)
+        Game.Players.add_player(data)
         Game.player_infos_update.emit(data)
     
     # update all connected peers with the new data
@@ -95,7 +95,7 @@ func spawn_player(player_data: PlayerData) -> void:
     currentPlayer.set_player_name(player_data.name)
     currentPlayer.set_authority(player_data.id)
     
-    Game.Players.add_node(player_data.id, currentPlayer)
+    Game.Players.add_pnode(player_data.id, currentPlayer)
     currentPlayer.change_room(spawn)
     currentPlayer.disable_others_camera(player_data.id)
     currentPlayer.camera.snap()
@@ -114,8 +114,8 @@ func remove_player(id: int) -> void:
         return
     
     #var player_data = Game.Players.get_player(id)
-    if Game.Players.has_node(id):
-        Game.Players.get_node(id).queue_free()
+    if Game.Players.has_pnode(id):
+        Game.Players.get_pnode(id).queue_free()
     Game.Players.erase_player(id)
     index -= 1
     # no player_infos_update because we should be listening to player disconnect instead
@@ -143,7 +143,7 @@ func player_buff_update(id: int, data_raw: String) -> void:
     var player_data := Game.Players.get_player(id)
     player_data.buff = data.buff
     
-    var player: BasePlayer = Game.Players.get_node(id)
+    var player: BasePlayer = Game.Players.get_pnode(id)
     player.update_buff(player_data)
     Game.player_infos_update.emit(player_data)
 

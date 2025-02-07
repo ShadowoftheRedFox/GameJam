@@ -251,6 +251,7 @@ func handle_grounded_state(delta, hor_direction, vel_direction, input_vector):
         dash_timer = -100
         jump_count -= 1
         change_state(PlayerState.AIRBORNE)
+        Game.Players.get_player(multiplayer_authority_id).score.update_score(multiplayer_authority_id, ScoreData.Type.JMP, 1)
         return
 
     if dash_timer > 0:

@@ -1,4 +1,5 @@
 class_name PlayerDataManager
+extends Node
 
 var list: Array[PlayerData] = []
 
@@ -42,6 +43,10 @@ func has_all_players(ids: Array[int]) -> bool:
             return false
     return true
 
+func add_player(data: PlayerData) -> void:
+    list.append(data)
+    add_child(data)
+
 func get_player(id: int) -> PlayerData:
     for p in list:
         if p.id == id:
@@ -64,12 +69,12 @@ func as_dictionary() -> Dictionary:
     return res
 #endregion
 
-func add_node(id: int, node: BasePlayer) -> void:
+func add_pnode(id: int, node: BasePlayer) -> void:
     node.name = str(id)
     Game.PlayerNodes.add_child(node)
     
-func has_node(id: int) -> bool:
+func has_pnode(id: int) -> bool:
     return Game.PlayerNodes.has_node(str(id))
 
-func get_node(id: int) -> BasePlayer:
+func get_pnode(id: int) -> BasePlayer:
     return Game.PlayerNodes.get_node(str(id))

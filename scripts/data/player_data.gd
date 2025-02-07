@@ -1,7 +1,7 @@
 class_name PlayerData
+extends Node
 
 var id: int = 0
-var name: String = "(Aucun)"
 var color: String = "ff0000"
 var score: ScoreData = ScoreData.new()
 var buff: Array[BuffData] = []
@@ -29,6 +29,8 @@ func _init(string: String = "") -> void:
     color = data.get("color", "ff0000")
     score = ScoreData.new(data.get("score", ""))
     score.player_id = id
+    score.name = name + "Score"
+    add_child(score)
     
     var raw_buff = data.get("buff", [])
     for buff_data in raw_buff:

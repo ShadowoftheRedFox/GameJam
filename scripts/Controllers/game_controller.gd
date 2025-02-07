@@ -55,7 +55,7 @@ var hosted_difficulty: Difficulties = Difficulties.Easy
 var hosted_map_size: MapSizes = MapSizes.Small
 var hosted_gamemode: GameModes = GameModes.Classic
 
-var Players: PlayerDataManager = PlayerDataManager.new()
+var Players: PlayerDataManager
 var PlayerNodes: Node2D
 var MenuNodes: CanvasLayer
 
@@ -88,6 +88,9 @@ func _init() -> void:
     DmgNumber.name = "DmgNumber"
     add_child(DmgNumber)
     
+    Players = PlayerDataManager.new()
+    Players.name = "PlayerDataManager"
+    add_child(Players)
     PlayerNodes = Node2D.new()
     PlayerNodes.name = "PlayerNodes"
     add_child(PlayerNodes)

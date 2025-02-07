@@ -72,8 +72,8 @@ func focus_on_player() -> void:
     # clear listeners
     var player: BasePlayer = null
     if player_spectating_id != 0:
-        if Game.Players.has_node(player_spectating_id):
-            player = Game.Players.get_node(player_spectating_id)
+        if Game.Players.has_pnode(player_spectating_id):
+            player = Game.Players.get_pnode(player_spectating_id)
             Game.Utils.remove_signal_listener(player.room_changed)
             player.camera.disable_camera()
             player = null
@@ -88,8 +88,8 @@ func focus_on_player() -> void:
     # listen if changing room
     # connect to it's camera, or own camera follows him
     var player_data = Game.Players.get_player(player_spectating_id)
-    if Game.Players.has_node(player_spectating_id):
-        player = Game.Players.get_node(player_spectating_id)
+    if Game.Players.has_pnode(player_spectating_id):
+        player = Game.Players.get_pnode(player_spectating_id)
         player.room_changed.connect(follow_camera)
         player.camera.enabled = true
         
@@ -101,8 +101,8 @@ func focus_on_player() -> void:
     Game.current_room = Game.current_map[player.player_room.y][player.player_room.x]
 
 func follow_camera() -> void:
-    if Game.Players.has_node(player_spectating_id):
-        var player: BasePlayer = Game.Players.get_node(player_spectating_id)
+    if Game.Players.has_pnode(player_spectating_id):
+        var player: BasePlayer = Game.Players.get_pnode(player_spectating_id)
         Game.current_room = Game.current_map[player.player_room.y][player.player_room.x]
         player.camera.snap()
         player.camera.set_limits(Game.current_room.Map)
