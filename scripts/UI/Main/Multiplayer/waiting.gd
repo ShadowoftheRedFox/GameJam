@@ -2,7 +2,8 @@ extends Control
 
 @onready var start: Button = $VBoxContainer/Actions/Start
 @onready var player_list: VBoxContainer = $VBoxContainer/PlayerList
-@onready var code: Label = $Code
+@onready var code: Label = $VBoxContainer2/Code
+@onready var ip: Label = $VBoxContainer2/IP
 
 signal back_pressed
 
@@ -17,7 +18,7 @@ func _ready() -> void:
     Game.game_starting.connect(reset_menu)
     Game.spectator_update.connect(update_spectator)
     Game.lobby_ready.connect(lobby_readying)
-
+    
 func lobby_readying(id: int) -> void:
     players_ready.append(id)
     update_buttons()
@@ -83,6 +84,8 @@ func _on_visibility_changed() -> void:
         
 func update_buttons() -> void:
     code.text = "Code : " + Server.server_code
+    ip.visible = Server.multiplayer.is_server()
+    ip.text = "IP : " + Server.Network.own_ip
 
     if multiplayer.is_server():
         if players_waiting.size() < 2:

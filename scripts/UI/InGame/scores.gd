@@ -6,9 +6,9 @@ var PlayerScorePanel = preload("res://scenes/UI/InGame/PlayerScore.tscn")
 
 func _ready() -> void:
     Game.player_infos_update.connect(update_score)
-    update_score()
+    update_score(null)
 
-func update_score() -> void:
+func update_score(_data: PlayerData) -> void:
     # remove all child except header
     for child in container.get_children():
         if !child.name.contains("Header"):

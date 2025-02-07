@@ -195,7 +195,7 @@ func _physics_process(delta: float) -> void:
 
     if multiplayer_authority_id == multiplayer.get_unique_id() or Server.solo_active or DEBUG:
         # Handle pause functionality
-        if Input.is_action_just_pressed("Pause"):
+        if Input.is_action_just_pressed("Pause") and !Game.game_ended:
             Game.pause()
             return
             

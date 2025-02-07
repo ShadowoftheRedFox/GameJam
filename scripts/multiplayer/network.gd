@@ -1,6 +1,8 @@
 class_name NetworkBroadCaster
 extends Node
 
+var own_ip: String = "None"
+
 var broadcast_port = 24520
 var udp_host: PacketPeerUDP = null
 var udp_peer: PacketPeerUDP = null
@@ -25,7 +27,22 @@ var worker_thread: Thread = Thread.new()
 func _ready() -> void:
     stop_broadcast.connect(_stop)
     start_broadcast.connect(_start)
-
+    
+    if OS.has_feature("windows"):
+        if OS.has_environment("COMPUTERNAME"):
+            own_ip = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
+    elif OS.has_feature("x11"):
+        if OS.has_environment("HOSTNAME"):
+            own_ip = IP.resolve_hostname(str(OS.get_environment("HOSTNAME")), IP.TYPE_IPV4)
+    elif OS.has_feature("OSX"):
+        if OS.has_environment("HOSTNAME"):
+            own_ip = IP.resolve_hostname(str(OS.get_environment("HOSTNAME")), IP.TYPE_IPV4)
+    elif OS.has_feature("linux"):
+        var out = []
+        OS.execute("bash", ["-c", "hostname -I"], out)
+        if out.size() >= 1:
+            own_ip = out[0].split(" ")[0]
+        
 func _stop() -> void:
     if _broadcast_host:
         _broadcast_host = false
@@ -115,7 +132,7 @@ func _brute(ips: Array[String], packet: String) -> Error:
 func _filtered_ips() -> Array[String]:
     var res: Array[String] = []
     for ip in IP.get_local_addresses():
-        if ip != "127.0.0.1" and !ip.contains(":"):
+        if ip != "127.0.0.1" and !ip.contains(":") and ip != own_ip:
             res.append(ip)
     return res
 
