@@ -33,6 +33,7 @@ func _ready() -> void:
     hp_label.text = hp
     pos_label.text = pos
     start_counter.connect(display_timer)
+    Game.game_end.connect(show_end_screen)
     
     # make prompts disappear
     var tween: Tween = get_tree().create_tween()
@@ -40,7 +41,6 @@ func _ready() -> void:
     
     await tween.finished
     prompts.queue_free()
-
 
 func _physics_process(delta: float) -> void:
     if !death_counter.visible:
@@ -57,3 +57,8 @@ func display_timer(timer: int) -> void:
     time_remaining = float(timer)
     death_counter.show()
     death_counter.text = "Vous êtes mort\n" + str(timer) + " secondes restantes"
+
+func show_end_screen(_id: int) -> void:
+    $MarginContainer.hide()
+    $Scores.hide()
+    $EndGame.show()

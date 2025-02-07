@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dh84xjkmhbh72"]
+[gd_scene load_steps=14 format=3 uid="uid://dh84xjkmhbh72"]
 
 [ext_resource type="Script" path="res://scripts/UI/InGame/ui.gd" id="1_476ek"]
 [ext_resource type="Script" path="res://scripts/UI/InGame/feed_container.gd" id="2_sxlir"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://cppod0m6dmjwl" path="res://assets/prompt/D_Key_Light.png" id="9_s2wcw"]
 [ext_resource type="Texture2D" uid="uid://bs83yd55gwmjy" path="res://assets/prompt/Q_Key_Light.png" id="9_tnqg8"]
 [ext_resource type="Texture2D" uid="uid://fx0y1mk45gwf" path="res://assets/prompt/S_Key_Light.png" id="10_5lex1"]
+[ext_resource type="PackedScene" uid="uid://c3vp2ievh1rn0" path="res://scenes/UI/InGame/Scores.tscn" id="12_vmkl3"]
+[ext_resource type="PackedScene" uid="uid://coqgxgryyci8a" path="res://scenes/UI/InGame/EndGame.tscn" id="13_boc5x"]
 
 [node name="Ui" type="Control"]
 layout_mode = 3
@@ -203,10 +205,14 @@ layout_mode = 2
 texture = ExtResource("9_s2wcw")
 expand_mode = 2
 
-[node name="Scores" type="MarginContainer" parent="."]
+[node name="Scores" parent="." instance=ExtResource("12_vmkl3")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="EndGame" parent="." instance=ExtResource("13_boc5x")]
+visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2

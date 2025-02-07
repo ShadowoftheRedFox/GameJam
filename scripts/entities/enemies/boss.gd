@@ -16,6 +16,7 @@ func _ready() -> void:
     speed = 20.0
     target_range = 100000.0
     jump_impulse = 200.0
+    disappear_on_death = false
     
     animate.connect(handle_animation)
     ondeath.connect(handle_end_game)

@@ -388,6 +388,13 @@ collision_mask = 27
 platform_floor_layers = 4278190089
 platform_wall_layers = 1
 script = ExtResource("1_fqeju")
+jump_impulse = 200.0
+speed = 20.0
+target_range = 100000.0
+HP_MAX = 300
+atk = 8
+atk_speed = 1.0
+disappear_on_death = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
