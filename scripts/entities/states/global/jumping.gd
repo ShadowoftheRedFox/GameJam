@@ -28,10 +28,7 @@ func physics_update(delta: float) -> void:
     entity.velocity.y += entity.gravity * delta
     entity.move_and_slide()
 
-    if !entity.is_on_floor():
-        if entity.animation_player:
-            entity.animation_player.play("fall")
-        if entity.animation_sprite:
-            entity.animation_sprite.play("fall")
+    if !entity.is_on_floor() && entity.velocity.y > 0:
+        entity.animate.emit("fall")
     else:
         finished.emit("Moving")

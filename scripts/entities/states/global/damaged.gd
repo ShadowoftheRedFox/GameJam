@@ -27,8 +27,7 @@ func enter(_previous_state_path: String, data := {"damages": 0, "crit": false, "
     entity.info = "Handling damages"
 
 func physics_update(_delta: float) -> void:
-    if entity.animation_sprite and !entity.animation_sprite.is_playing():
-        finished.emit("Idle")
-    if entity.animation_player and !entity.animation_player.is_playing():
+    if (entity.animation_sprite and !entity.animation_sprite.is_playing()) or \
+       (entity.animation_player and !entity.animation_player.is_playing()):
         finished.emit("Idle")
     entity.move_and_slide()

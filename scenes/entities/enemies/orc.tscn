@@ -399,7 +399,7 @@ shape = SubResource("RectangleShape2D_g7dlo")
 texture_filter = 1
 position = Vector2(0, -7)
 sprite_frames = SubResource("SpriteFrames_wjjoo")
-animation = &"hurt"
+animation = &"walk"
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("2_unawk")

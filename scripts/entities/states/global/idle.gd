@@ -35,7 +35,4 @@ func physics_update(_delta: float) -> void:
     entity.move_and_slide()
     
     if !entity.is_on_floor():
-        if entity.animation_player:
-            entity.animation_player.play("fall")
-        if entity.animation_sprite:
-            entity.animation_sprite.play("fall")
+        entity.animate.emit("fall")
