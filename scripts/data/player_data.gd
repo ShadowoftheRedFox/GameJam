@@ -38,19 +38,19 @@ func _init(string: String = "") -> void:
     
     is_spectator = data.get("is_spectator", false)
 
-func has_buff(buff_type: Buff.BuffPreset) -> bool:
+func has_buff(buff_type: int) -> bool:
     for b in buff:
         if b.buff_type == buff_type:
             return true
     return false
     
-func get_buff(buff_type: Buff.BuffPreset) -> BuffData:
+func get_buff(buff_type: int) -> BuffData:
     for b in buff:
         if b.buff_type == buff_type:
             return b
     return null
 
-func add_buff(buff_type: Buff.BuffPreset) -> void:
+func add_buff(buff_type: int) -> void:
     var buff_data = BuffData.new()
     buff_data.buff_type = buff_type
     

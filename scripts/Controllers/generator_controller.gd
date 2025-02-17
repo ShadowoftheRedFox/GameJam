@@ -59,7 +59,7 @@ func generate_map(map_size: int = 0) -> MapData:
             var room: MapRoom = data.loaded_rooms[y][x]
             
             # put buff in all spawn for now
-            data.buff_types[y].append(randi_range(Buff.BuffPreset.CUSTOM + 1, Buff.BuffPreset.MAX - 1))
+            data.buff_types[y].append(randi_range(Buff.CUSTOM + 1, Buff.MAX - 1))
             
             fill_room(room, data, x, y)
     
@@ -117,9 +117,8 @@ func load_map(data: MapData, map_size: int) -> MapData:
     return data
 
 func fill_room(room: MapRoom, data: MapData, x: int, y: int) -> void:
-    if data.buff_types[y][x] != Buff.BuffPreset.NONE:
+    if data.buff_types[y][x] != Buff.NONE:
         var buff: Buff = Game.BuffScene.instantiate()
-        @warning_ignore("int_as_enum_without_cast")
         buff.buff_preset = data.buff_types[y][x]
         room.BuffSpawn.add_child(buff)
         buff.apply_to_children.call_deferred()

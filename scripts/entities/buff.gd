@@ -1,7 +1,7 @@
 class_name Buff
 extends Node2D
 
-enum BuffPreset {
+enum {
     NONE = -1,
     
     CUSTOM = 0,
@@ -51,7 +51,7 @@ var collected: bool = false:
 #region Exported variables
 @export_group("Presets")
 ## Boosters add a property, Upgraders increase the boosters strength 
-@export var buff_preset: BuffPreset = BuffPreset.CUSTOM:
+@export_enum("NONE:-1","CUSTOM:0","SPEED_BOOSTER:1","SPEED_UPGRADER:2","HEALTH_BOOSTER:3","HEALTH_UPGRADER:4","JUMP_UPGRADER:5","DASH_UPGRADER:6","MAX:7") var buff_preset: int = 0:
     set(value):
         buff_preset = value
         apply_to_children()
@@ -175,9 +175,9 @@ func _ready() -> void:
     # check buff_preset, and set params to their value
 #region Buff Presets
     match buff_preset:
-        BuffPreset.CUSTOM:
+        CUSTOM:
             pass
-        BuffPreset.SPEED_UPGRADER:
+        SPEED_UPGRADER:
             particle_gravity = Vector2(5, -5)
             particle_amount = 50
             particle_scale_max = 5
@@ -187,7 +187,7 @@ func _ready() -> void:
             particle_emission_shape = ParticleProcessMaterial.EmissionShape.EMISSION_SHAPE_RING
             ring_inner_radius = 10
             ring_radius = 20
-        BuffPreset.SPEED_BOOSTER:
+        SPEED_BOOSTER:
             particle_amount = 50
             particle_scale_max = 5
             particle_color = Color("0010ff")
@@ -196,7 +196,7 @@ func _ready() -> void:
             particle_emission_shape = ParticleProcessMaterial.EmissionShape.EMISSION_SHAPE_RING
             ring_inner_radius = 10
             ring_radius = 20
-        BuffPreset.HEALTH_BOOSTER:
+        HEALTH_BOOSTER:
             particle_amount = 50
             particle_scale_max = 5
             particle_color = Color("ff0078")
@@ -207,7 +207,7 @@ func _ready() -> void:
             ring_radius = 20
             particle_gravity = Vector2(0, -3)
             size = 0.3
-        BuffPreset.HEALTH_UPGRADER:
+        HEALTH_UPGRADER:
             particle_amount = 50
             particle_scale_max = 5
             particle_color = Color("ff0078")
@@ -217,7 +217,7 @@ func _ready() -> void:
             sphere_radius = 10
             particle_gravity = Vector2(0, -3)
             size = 0.3
-        BuffPreset.JUMP_UPGRADER:
+        JUMP_UPGRADER:
             particle_amount = 50
             particle_scale_max = 5
             particle_color = Color("08ff00")
@@ -227,7 +227,7 @@ func _ready() -> void:
             sphere_radius = 10
             particle_gravity = Vector2(0, -10)
             animation.play("jump")
-        BuffPreset.DASH_UPGRADER:
+        DASH_UPGRADER:
             particle_amount = 50
             particle_scale_max = 5
             particle_color = Color("020044")
@@ -240,7 +240,7 @@ func _ready() -> void:
             ring_axis = Vector3(1, 10, 1)
         _:
             popup_disabled = true
-            push_error("Buff preset ", BuffPreset.get(buff_preset), " is not available")
+            push_error("Buff preset ", buff_preset, " is not available")
 #endregion
 
     # apply preset to childrens

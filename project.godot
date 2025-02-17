@@ -26,6 +26,7 @@ Transition="*res://scripts/Controllers/transition_controller.gd"
 Save="*res://scripts/Controllers/save_controller.gd"
 Multi="*res://scripts/Controllers/multiplayer_controller.gd"
 Server="*res://scripts/multiplayer/server.gd"
+Config="*res://scripts/config/config.gd"
 
 [display]
 
