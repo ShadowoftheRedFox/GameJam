@@ -40,6 +40,9 @@ func thread_transition(
     if workload == null:
         return false
     
+    if Game.LOW_PERF:
+        return await thread_transition_low_perf(workload, callback, show_loading, message, start_transition, end_transition)
+    
     var thread := Thread.new()
     var err := thread.start(workload)
     if err != OK:
@@ -87,3 +90,38 @@ func _check_thread_status(thread: Thread, callback: Signal, show_loading: bool) 
         transition_timer.queue_free()
         if show_loading:
             loading.finish_transition(transition_end)
+
+func thread_transition_low_perf(
+    workload: Callable,
+    callback: Signal = thread_finished,
+    show_loading: bool = false,
+    message: String = "Chargement en cours...",
+    start_transition: String = "fade_to_black",
+    end_transition: String = "fade_from_black"
+) -> bool:
+    if show_loading:
+        transition_start = start_transition
+        transition_end = end_transition
+        # load and display our transition scene
+        if loading != null:
+            await loading.transition_completed
+        loading = loading_scene.instantiate() as LoadingScreen
+        get_tree().root.add_child(loading)
+        loading.message.text = message
+        # launch the transition effect
+        loading.start_transition(transition_start)
+        await loading.transition_completed
+    
+    # launche the workload raw
+    var res = workload.call()
+    
+    # callback if there is one, else finish it anyway
+    if !callback.is_null():
+        callback.emit(res)
+    else:
+        thread_finished.emit(res)
+    
+    if show_loading:
+        loading.finish_transition(transition_end)
+    
+    return true

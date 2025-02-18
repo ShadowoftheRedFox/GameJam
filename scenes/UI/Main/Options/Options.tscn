@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://cfk1t3qe38si4" path="res://scenes/UI/Main/Options/Sounds.tscn" id="1_fp6hb"]
 [ext_resource type="Script" path="res://scripts/UI/Main/Options/Options.gd" id="1_h52gt"]
 [ext_resource type="PackedScene" uid="uid://b5vnqd8k8r6jg" path="res://scenes/UI/Main/Options/Controls.tscn" id="2_c5y68"]
-[ext_resource type="PackedScene" uid="uid://dk00cn8bktxtp" path="res://scenes/UI/Main/Options/General.tscn" id="4_jd2n4"]
+[ext_resource type="PackedScene" uid="uid://t32pxx4ydgmd" path="res://scenes/UI/Main/Options/General.tscn" id="4_jd2n4"]
 
 [node name="Options" type="Control"]
 layout_mode = 3
@@ -52,6 +52,8 @@ text = "Général"
 
 [node name="Sound" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../General")
+focus_neighbor_bottom = NodePath("../Control")
 text = "Son"
 
 [node name="Control" type="Button" parent="Margin/HBoxContainer/Main/VBoxContainer"]
@@ -85,6 +87,7 @@ size_flags_vertical = 4
 visible = false
 layout_mode = 2
 
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/General" to="." method="_on_general_pressed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Sound" to="." method="_on_sound_pressed"]
 [connection signal="pressed" from="Margin/HBoxContainer/Main/VBoxContainer/Control" to="." method="_on_control_pressed"]

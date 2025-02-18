@@ -5,6 +5,7 @@ const Room: PackedScene = preload("res://scenes/levels/BaseRoom.tscn")
 
 var mapgen_unique_id_counter: int = 0
 var save_seed: int = 0
+var entity_count: int = 0
 
 func mapgen_get_next_unique_id() -> int:
     mapgen_unique_id_counter += 1
@@ -122,9 +123,13 @@ func fill_room(room: MapRoom, data: MapData, x: int, y: int) -> void:
         buff.buff_preset = data.buff_types[y][x]
         room.BuffSpawn.add_child(buff)
         buff.apply_to_children.call_deferred()
+        buff.process_mode = Node.PROCESS_MODE_DISABLED
     
-    var ennemy = Game.OrcScene.instantiate() if Game.rng.randi_range(0, 1) else Game.SlimeScene.instantiate()
-    room.BuffSpawn.add_child(ennemy)
+    var enemy: GlobalEnemy = Game.OrcScene.instantiate() if Game.rng.randi_range(0, 1) else Game.SlimeScene.instantiate()
+    room.BuffSpawn.add_child(enemy)
+    
+    enemy.process_id = entity_count % GlobalEnemy.PROCESS_REPARTITION
+    entity_count += 1
     
     var tile_map = room.Map
     var tile_rect = tile_map.get_used_rect()
@@ -156,4 +161,7 @@ func free_map(map: Array):
     for line in map:
         for room in line:
             if room is MapRoom:
+                for n: Node in room.get_children(true):
+                    room.remove_child(n)
+                    n.queue_free()
                 room.queue_free()

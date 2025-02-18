@@ -25,6 +25,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+    if !state.entity.can_entity_process():
+        return
     state.update(delta)
 
 

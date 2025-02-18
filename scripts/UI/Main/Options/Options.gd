@@ -2,7 +2,6 @@ extends Control
 
 signal back_pressed
 
-
 func _on_back_pressed() -> void:
     hide_all()
     back_pressed.emit()
@@ -34,3 +33,8 @@ func _on_general_pressed() -> void:
         $Margin/HBoxContainer/Sub/General.hide()
     else:
         $Margin/HBoxContainer/Sub/General.show()
+
+
+func _on_visibility_changed() -> void:
+    if is_node_ready():
+        $Margin/HBoxContainer/Main/VBoxContainer/General.grab_focus()

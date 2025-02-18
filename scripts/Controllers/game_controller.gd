@@ -68,6 +68,9 @@ var current_room: MapRoom = null
 var MapNodes: Node2D
 var room_size: Vector2 = Vector2()
 
+## Whether of not to use low performance mode (in low performance, no threads are used)
+var LOW_PERF: bool = false
+
 ## Random number generator synchronized with the seed
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 

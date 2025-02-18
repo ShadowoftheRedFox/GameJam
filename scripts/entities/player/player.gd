@@ -105,12 +105,27 @@ func disable_others_camera(id: int) -> void:
         player_ui = null
 
 func change_room(room: Vector2) -> void:
+    var old_room: Vector2i = player_room
     player_room = room
     # snap camera
     camera.snap()
     camera.set_limits(Game.current_room.Map)
     if player_ui:
         player_ui.pos = str(room)
+    
+    # enable/disable entities in old room if no one there
+    var found = false
+    for player: BasePlayer in Game.PlayerNodes.get_children():
+        if player.player_room == old_room:
+            found = true
+            break
+
+    if !found:
+        Game.current_map[old_room.y][old_room.x].disable_entities()
+
+    # enable entities in current room
+    Game.current_map[player_room.y][player_room.x].enable_entities()
+
 
 func update_score(type: ScoreData.Type, value: int) -> void:
     Game.Players.get_player(multiplayer_authority_id).score.update_score(multiplayer_authority_id, type, value)

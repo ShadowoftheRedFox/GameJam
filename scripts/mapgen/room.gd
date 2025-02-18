@@ -22,6 +22,7 @@ var room_type: String = ""
 var PlayerSpawn: Marker2D = null
 var BuffSpawn: Marker2D = null
 var Map: TileMapLayer = null
+var EnemiesSpawn: Marker2D = null
 
 # to tell which layer trigger the event
 const AREA_COLLISION_MASK: int = 0b1110
@@ -92,6 +93,30 @@ func _ready():
     if room != null:
         add_child.call_deferred(room)
 
+## Enable entities's AI to save resources
+func enable_entities() -> void:
+    for enemy in EnemiesSpawn.get_children():
+        if enemy is not GlobalEnemy:
+            # FIXME enable, because currently is buff spawn
+            # printerr(enemy.name + " is in enemy spawn node but is not an ennemy")
+            pass
+        else:
+            (enemy as GlobalEnemy).enabled = true
+    for buff in BuffSpawn.get_children():
+        buff.process_mode = Node.PROCESS_MODE_INHERIT
+
+## Disable entities's AI to save resources
+func disable_entities() -> void:
+    for enemy in EnemiesSpawn.get_children():
+        if enemy is not GlobalEnemy:
+            # printerr(enemy.name + " is in enemy spawn node but is not an ennemy")
+            pass
+        else:
+            (enemy as GlobalEnemy).enabled = false
+    
+    for buff in BuffSpawn.get_children():
+        buff.process_mode = Node.PROCESS_MODE_DISABLED
+
 ## Check if the room has all elements needed
 func check_room_valid() -> void:
     if room == null:
@@ -108,6 +133,11 @@ func check_room_valid() -> void:
     # needs to have a BuffSpawn and be Marker2D
     assert(room.has_node("BuffSpawn"), "Room " + room.scene_file_path + " has no BuffSpawn Markder2D")
     assert(room.get_node("BuffSpawn") is Marker2D, "Room " + room.scene_file_path + " BuffSpawn is not a Markder2D")
+
+    # FIXME enable this
+    # needs to have a EnemiesSpawn and be Marker2D
+    #assert(room.has_node("EnemiesSpawn"), "Room " + room.scene_file_path + " has no EnemiesSpawn Markder2D")
+    #assert(room.get_node("EnemiesSpawn") is Marker2D, "Room " + room.scene_file_path + " EnemiesSpawn is not a Markder2D")
     
     # needs to have at least one door called either Up/Down/Left/Right and be a Door
     assert(room.has_node("Map/Up") or room.has_node("Map/Down") or room.has_node("Map/Left") or room.has_node("Map/Right"), "Room " + room.scene_file_path + " Map must at least have a Door")
@@ -122,6 +152,8 @@ func check_room_valid() -> void:
         
     PlayerSpawn = room.get_node("Spawn")
     BuffSpawn = room.get_node("BuffSpawn")
+    # FIXME set own spawn on each level
+    EnemiesSpawn = BuffSpawn
     Map = room.get_node("Map")
     
     

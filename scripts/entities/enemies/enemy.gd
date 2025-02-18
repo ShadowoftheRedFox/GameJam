@@ -42,11 +42,29 @@ var dmg_spawn: Marker2D
 var is_boss: bool = false
 var is_mini_boss: bool = false
 
+## the process will be made each number of frame specified
+const PROCESS_REPARTITION: int = 30
+## if process_frame_number == process_id, the process can be made
+var process_id: int = 0
+var process_frame_number: int = 0
+
+## if entity is not enabled, stop all interactions
+var enabled: bool = false:
+    set(value):
+        enabled = value
+        process_mode = ProcessMode.PROCESS_MODE_DISABLED if value == false else ProcessMode.PROCESS_MODE_INHERIT
+        state_machine.process_mode = process_mode
+
+var target_player: BasePlayer = null
+
 @warning_ignore("unused_signal")
 signal animate(animation: String)
 signal damaged(attacker: Node2D, damage: int, crit: bool)
 @warning_ignore("unused_signal")
 signal ondeath(killer: Node2D)
+
+func _init() -> void:
+    process_mode = ProcessMode.PROCESS_MODE_DISABLED
 
 func _ready() -> void:
     assert(state_machine != null and !machine_less, "Global enemies must include a state machine, or say they don't use one")
@@ -66,4 +84,9 @@ var info: String = "":
         if is_node_ready() and has_node("Info"):
             $Info.text = value
 
-var target_player: BasePlayer = null
+func can_entity_process() -> bool:
+    process_frame_number = (process_frame_number + 1) % PROCESS_REPARTITION
+    
+    if process_frame_number == process_id:
+        return true
+    return false

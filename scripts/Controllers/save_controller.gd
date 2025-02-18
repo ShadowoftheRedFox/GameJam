@@ -61,10 +61,6 @@ func _ready() -> void:
         saves_changed.emit()
     
     # print("Found ", len(save_names), " saves")
-    
-
-func p():
-    printerr("param change")
 
 #### Parameters save ####
 
@@ -103,6 +99,19 @@ func get_parameters() -> void:
     
     override_input_map()
     parameters_changed.emit()
+
+func save_parameter(param_name: String, param_value: Variant) -> void:
+    general_config.set_value("Custom", param_name, param_value)
+    general_config.save(CONFIG_PATH)
+    parameters_changed.emit()
+    
+func get_parameter(param_name: String) -> Variant:
+    if !general_config.has_section("Custom"):
+        return null
+    return general_config.get_value("Custom", param_name, null)
+    
+func get_parameter_list() -> PackedStringArray:
+    return general_config.get_section_keys("Custom")
     
 func reset_controls() -> void:
     InputMap.load_from_project_settings()

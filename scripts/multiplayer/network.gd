@@ -71,14 +71,16 @@ func _process(delta: float) -> void:
             current_timout = BroadCastTimeout
             # update info
             broadcast_data.update_from_server()
-            
-            if !worker_thread.is_alive():
-                if worker_thread.is_started():
-                    worker_thread.wait_to_finish()
-                worker_thread.start(_brute.bind(_filtered_ips(), str(broadcast_data)))
-                print("started iteration")
+            if !Game.LOW_PERF:
+                if !worker_thread.is_alive():
+                    if worker_thread.is_started():
+                        worker_thread.wait_to_finish()
+                    worker_thread.start(_brute.bind(_filtered_ips(), str(broadcast_data)))
+                    print("started iteration")
+                else:
+                    print("skipped iteration")
             else:
-                print("skipped iteration")
+                _brute(_filtered_ips(), str(broadcast_data))
         else:
             current_timout -= delta
     
