@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cx0ibmg12cpt6" path="res://scenes/platforms/2x1.tscn" id="4_8kq6o"]
 [ext_resource type="PackedScene" uid="uid://dgawu328wsjbu" path="res://scenes/platforms/3x1.tscn" id="5_j80ds"]
 [ext_resource type="PackedScene" uid="uid://b67nelkrljk4f" path="res://scenes/platforms/4x1.tscn" id="6_d1o4c"]
-[ext_resource type="PackedScene" path="res://scenes/mapgen/door.tscn" id="6_gufbi"]
+[ext_resource type="PackedScene" uid="uid://ct850ic78xaur" path="res://scenes/mapgen/door.tscn" id="6_gufbi"]
 
 [node name="Room" type="Node2D"]
 
@@ -16,14 +16,35 @@ tile_set = ExtResource("1_m8dgi")
 [node name="1x1" parent="Map" instance=ExtResource("3_qhg7p")]
 position = Vector2(-184, -272)
 
+[node name="1x1,2" parent="Map" instance=ExtResource("3_qhg7p")]
+position = Vector2(-126, -674)
+
+[node name="1x1,3" parent="Map" instance=ExtResource("3_qhg7p")]
+position = Vector2(756, -636)
+
 [node name="2x1" parent="Map" instance=ExtResource("4_8kq6o")]
 position = Vector2(-343, -173)
+
+[node name="2x1,2" parent="Map" instance=ExtResource("4_8kq6o")]
+position = Vector2(43, -443)
+
+[node name="2x1,3" parent="Map" instance=ExtResource("4_8kq6o")]
+position = Vector2(507, -275)
 
 [node name="3x1" parent="Map" instance=ExtResource("5_j80ds")]
 position = Vector2(34, -180)
 
+[node name="3x1,2" parent="Map" instance=ExtResource("5_j80ds")]
+position = Vector2(-382, -594)
+
+[node name="3x1,3" parent="Map" instance=ExtResource("5_j80ds")]
+position = Vector2(230, -724)
+
 [node name="4x1" parent="Map" instance=ExtResource("6_d1o4c")]
 position = Vector2(272, -88)
+
+[node name="4x1,2" parent="Map" instance=ExtResource("6_d1o4c")]
+position = Vector2(506, -496)
 
 [node name="Right" parent="Map" instance=ExtResource("6_gufbi")]
 position = Vector2(1248, -288)
