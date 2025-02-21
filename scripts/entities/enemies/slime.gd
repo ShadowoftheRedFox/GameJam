@@ -9,10 +9,13 @@ func _ready() -> void:
     dmg_spawn = $DmgSpawn
     hp_label = $HP
     
-    HP_MAX = 20
-    atk = 1
+    HP_MAX = int(40 * Config.difficulty.hp_mult)
     hp = HP_MAX
-    atk_speed = 1.2
+    atk = int(2 * Config.difficulty.atk_mult)
+    atk_speed = 1
+    
+    CRIT_RATE = 0.1 * Config.difficulty.crit_rate_mult
+    CRIT_MULT = int(2 * Config.difficulty.crit_damage_mult)
     
     info = "Idle"
      

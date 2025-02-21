@@ -9,10 +9,14 @@ func _ready() -> void:
     dmg_spawn = $DmgSpawn
     hp_label = $HP
     
-    HP_MAX = 300
+    HP_MAX = int(150 * Config.difficulty.hp_mult)
     hp = HP_MAX
-    atk = 8
+    atk = int(8 * Config.difficulty.atk_mult)
     atk_speed = 1
+    
+    CRIT_RATE = 0.1 * Config.difficulty.crit_rate_mult
+    CRIT_MULT = int(2 * Config.difficulty.crit_damage_mult)
+    
     speed = 20.0
     target_range = 100000.0
     jump_impulse = 200.0

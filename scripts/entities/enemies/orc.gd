@@ -9,10 +9,13 @@ func _ready() -> void:
     dmg_spawn = $DmgSpawn
     hp_label = $HP
     
-    HP_MAX = 30
-    atk = 3
+    HP_MAX = int(30 * Config.difficulty.hp_mult)
     hp = HP_MAX
+    atk = int(4 * Config.difficulty.atk_mult)
     atk_speed = 1
+    
+    CRIT_RATE = 0.1 * Config.difficulty.crit_rate_mult
+    CRIT_MULT = int(2 * Config.difficulty.crit_damage_mult)
     
     animate.connect(handle_animation)
     super()
